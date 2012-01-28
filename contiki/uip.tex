@@ -1,0 +1,38 @@
+\section{uIP}\label{sec:contiki-uip}
+The TCP/IP protocol family is often used for communication over the Internet as well as local networks.
+uIP (micro IP) is a complete TCP/IP communicating stack developed by Adam Dunkels for memory constrained systems such as embedded systems.
+
+
+uIP provides two different APIs to programmers: a BSD sockets-like API based on Protothreads called Protosockets
+and raw event-driven API.
+
+Protosockets are based on Protothreads putting the same limitation on them - such as 
+\!
+Protosockets only work with Transport Control Protocol (TCP) connections \cite{contiki-docs}.
+Since NTP uses User Datagram Protocol (UDP) Protosockets will not be
+discussed in this thesis anymore.
+
+In order to reduce amount of memory requirements and code size the
+uIP implementation uses an event-based Application programming interface (API).
+The application is invoked in response to certain events.
+It is up to application that is receiving events from uIP to handle all
+work with data to be transmitted. E.g. if the data is lost in the network,
+the application will be invoked with the uip\_rexmit event being set.
+The application will then have to resend the data.
+This approach is based on the fact that it should be an easy work for application
+to rebuild the same data.
+
+\!This way uIP does not have to have its own buffer and thus
+does not need
+
+
+This is fundamentally different from the most common TCP/IP API, the BSD sockets API \cite{thesis-programming}.
+\!!
+
+
+Before uIP ...TCP/IP heavyweight...
+
+uIP contains only the absolute minimum of required features to fulfill the protocol standard.
+It can only handle a single network interface and contains the IP, ICMP, UDP and TCP protocols.
+Despite being so small uIP is not only RFC compliant but also IPv6 Ready Phase 1 certified.
+uIP is written in the C programming language and it is fully integrated to Contiki operating system.

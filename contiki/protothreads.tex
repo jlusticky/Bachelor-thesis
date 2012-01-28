@@ -1,0 +1,167 @@
+\section{Protothreads}\label{sec:contiki-protothreads}
+Protothreads provide a way to run C functions quasi-paralelly, that is, a C functions work in a way similiar to thread.
+In Contiki Protothreads allow process to wait for incoming events. While waiting for an event to occur another function
+can be run. The core of this solution is C switch statement used in conjuction with variable (called local continuation)
+containing the position where the function was interrupted. Next time function continues from this point.
+
+The advantage of Protothreads over ordinary threads is that a Protothread does not require a separate stack.
+In memory constrained systems, the overhead of allocating multiple stacks can consume large amounts of
+the available memory. In contrast, each Protothread only requires few bytes for storing the state of execution.
+
+A Protothread is driven by repeated calls to the function in which the Protothread is running. Each time the
+function is called, the Protothread will run until it blocks or exits.
+Protothreads are implemented using local continuations. A local continuation represents the current state
+of execution at a particular place in the program, but does not provide any call history or local variables.
+
+The Protothreads API consists of four basic operations: initialization (PT\_INIT()), execution (PT\_BEGIN()),
+conditional blocking (PT\_WAIT\_UNTIL()) and exit (PT\_END()). On top of these, two convenience functions
+are built: reversed condition blocking (PT\_WAIT\_WHILE()) and Protothread blocking (PT\_WAIT\_THREAD())
+\cite{paper-protothreads}.
+
+
+Here is an example of delaying text scrolling on an LCD panel using Protothreads. This example is taken from
+Adam Dunkel's Protothreads site \cite{adam-protothreads} and slightly modified.
+Protothreads can be used for introducing delays inside a function, without using a full threading model.
+The following example shows a function writing text to a one-line LCD panel.
+If the text is longer than the size of the panel, the text should be scrolling in from the right. 
+
+\begin{lstlisting}
+#include "pt.h"
+#include "timer.h"
+
+typedef unsigned short lc_t;
+
+struct pt {
+  lc_t lc;         /* Local continuation */
+}; 
+
+struct state {
+  char *text;
+  char *scrollptr;
+  struct pt pt;
+  struct timer timer;
+};
+
+static struct state s;
+ 
+PT_THREAD(display_text(struct state *s))
+{
+  PT_BEGIN(&s->pt);
+ 
+  /* If the text is shorter than the display size, show it right
+     away. */
+  if(strlen(s->text) <= LCD_SIZE) {
+    lcd_display_text(s->text);
+  } else {    
+    /* If the text is longer than the display, we should scroll in the
+       text from the right with a delay of one second per scroll
+       step. We do this in a for() loop, where the loop variable is
+       the pointer to the first character to be displayed. */
+    for(s->scrollptr = s->text;
+        strlen(s->scrollptr) > LCD_SIZE;
+        ++s->scrollptr) {
+      lcd_display_text(s->scrollptr);
+ 
+      /* Wait for one second. */
+      timer_set(&s->timer, ONE_SECOND);
+      PT_WAIT_UNTIL(&s->pt, timer_expired(&s->timer));
+    }
+  }
+  
+  PT_END(&s->pt);
+}
+
+int main(void)
+{
+  PT_INIT(&s);
+  s.text = "Long text for LCD display";
+  for (;;) {
+    display_text(&s);
+    /* Here can be another thread run */
+  }
+  return 0;
+}
+
+\end{lstlisting}
+
+The {\it PT\_WAIT\_UNTIL} macro actually causes the function
+to return. While the function is waiting for the timer to expire another function can called and run.
+When the function is entered again the execution continues with the {\it PT\_WAIT\_UNTIL} macro
+which causes the function to check the condition it is waiting for (timer expired). If the condition is
+met the function resumes, if not it returns again.
+
+How does it work? The macro {\it PT\_BEGIN} exapands to {\it switch} statement while preprocessing the
+code for compilation. The {\it PT\_WAIT\_UNTIL} macro expands to {\it case} and setting the local continuation
+to the value, so that next time this function is run, it jumps to this {\it case}.
+The structure holding the state is defined outside of the function so its context is not lost when
+the function returns. The simplest state structure would hold just the local continuation variable.
+
+Follows the same sample of code after partial simplified preprocessing.
+
+\begin{lstlisting}
+#include "pt.h"
+#include "timer.h"
+
+typedef unsigned short lc_t;
+
+struct pt {
+  lc_t lc;         /* Local continuation */
+}; 
+
+struct state {
+  char *text;
+  char *scrollptr;
+  struct pt pt;
+  struct timer timer;
+};
+ 
+int display_text(struct state *s)       /* Expanded PT_THREAD macro */
+{
+  switch((&s->pt)->lc) {  case 0:      /* Expanded PT_BEGIN(&s->pt); */
+ 
+  /* If the text is shorter than the display size, show it right
+     away. */
+  if(strlen(s->text) <= LCD_SIZE) {
+    lcd_display_text(s->text);
+  } else {    
+    /* If the text is longer than the display, we should scroll in the
+       text from the right with a delay of one second per scroll
+       step. We do this in a for() loop, where the loop variable is
+       the pointer to the first character to be displayed. */
+    for(s->scrollptr = s->text;
+        strlen(s->scrollptr) > LCD_SIZE;
+        ++s->scrollptr) {
+      lcd_display_text(s->scrollptr);
+ 
+      /* Wait for one second. */
+      timer_set(&s->timer, ONE_SECOND);
+      (&s->pt)->lc = 31; case 31: if(!(timer_expired(&s->timer))) { return PT_WAITING; }
+    }
+  }
+  
+  (&s->pt)->lc = 0; return PT_ENDED; }   /* Expanded PT_END */
+  
+}
+
+int main(void)
+{
+  (&s)->lc = 0;                         /* Expanded PT_INIT */
+  s.text = "Long text for LCD display";
+  for (;;) {
+    display_text(&s);
+    /* Here can be another thread run */
+  }
+  return 0;
+}
+
+\end{lstlisting}
+
+
+Since Protothreads are implemented using pure C, library providing Protothreads can be used everywhere C toolchain is available.
+
+But there are some cons to consider. Because protothreads are stackless, a Protothread can only run within a single C function.
+There is also no way of storing automatic local variables. And since Protothreads are implemented using C {\it switch} statement, and these can
+not be nested, the code that uses Protothreads cannot use {\it switch} statements itself.
+Workaround for storing local variables is to prepend them with the {\it static} keyword, which make them being put into data segment
+by compiler and thus remembering the value between the function calls.
+

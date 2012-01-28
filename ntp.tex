@@ -1,0 +1,54 @@
+%=========================================================================
+% (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
+
+\chapter{Network Time Protocol}
+\!Uvod-citace,oldest
+Network Time Protocol provides mechanism for synchronising systems' clocks over the variable-latency data network.
+It is one of the oldest surviving protocol on the Internet. That does not imply it is old-fashioned
+at all. NTP version 4 described in RFC~5905~\cite{rfc5905} which is an update to older NTPv3 to accomodate
+NTP to IPv6. Version 4 also includes fundamental improvements in
+the mitigation and discipline algorithms that extend
+the potential accuracy to the tens of microseconds with modern
+workstations and fast LANs~\cite{rfc5905}. NTPv4 corrects some
+errors in NTPv3 design and includes optional extension mechanism
+that can be used for adding more capabilites to NTP, e.g. the
+Autokey security protocol described in RFC~5906~\cite{rfc5906}
+for authenticating servers to clients.
+
+Simple Network Time Protocol is simplified NTP implementation lacking complex
+synchronisation algorithms used by NTP~\cite{rfc4330}.
+
+A primary server is synchronized to a reference clock directly traceable
+to UTC~\cite{rfc5905}.
+
+\! Introduced and developed by David Mills at University of Delaware in Newark, United States.
+\! rfc5905
+\! older "Time" protocol
+
+
+The Coordinated Universal Time (UTC) timescale represents mean solar
+   time as disseminated by national standards laboratories.  The system
+   time is represented by the system clock maintained by the hardware
+   and operating system.  The goal of the NTP algorithms is to minimize
+   both the time difference and frequency difference between UTC and the
+   system clock.  When these differences have been reduced below nominal
+   tolerances, the system clock is said to be synchronized to UTC.
+
+
+
+   The date of an event is the UTC time at which the event takes place.
+   Dates are ephemeral values designated with uppercase T.  Running time
+   is another timescale that is coincident to the synchronization
+   function of the NTP program~\cite{rfc5905}.
+
+
+
+\section{Timestamps or Packet}
+The 64-bit timestamps used by NTP consist of a 32-bit seconds part and a 32-bit fractional second part.
+
+\section{Network}\label{sec:ntp-network}
+Network specification of NTP 
+The protocol uses the User Datagram Protocol (UDP) on port number 123~\cite{ianna-ports}.
+The NTP packet is a UDP datagram, carried on port 123.
+
+\section{System}
