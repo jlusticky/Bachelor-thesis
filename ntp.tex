@@ -2,26 +2,29 @@
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \chapter{Network Time Protocol}
-\!Uvod-citace,oldest
 Network Time Protocol provides mechanism for synchronising systems' clocks over the variable-latency data network.
-It is one of the oldest surviving protocol on the Internet. That does not imply it is old-fashioned
-at all. NTP version 4 described in RFC~5905~\cite{rfc5905} which is an update to older NTPv3 to accomodate
-NTP to IPv6. Version 4 also includes fundamental improvements in
+NTP was introduced and is still developed by David Mills at University of Delaware in Newark, United States.
+NTP is argueably the longest running, continuously operating,
+ubiquitously available protocol in the Internet~\cite{ntp-overview}.
+Despite being one of the oldest surviving protocol on the Internet it is not old-fashioned at all.
+NTP version 4 described in RFC~5905~\cite{rfc5905} is an update to older NTPv3 to accomodate NTP to IPv6.
+Version 4 also includes fundamental improvements in
 the mitigation and discipline algorithms that extend
 the potential accuracy to the tens of microseconds with modern
-workstations and fast LANs~\cite{rfc5905}. NTPv4 corrects some
+workstations and fast LANs~\cite{rfc5905}.
+NTPv4 corrects some
 errors in NTPv3 design and includes optional extension mechanism
 that can be used for adding more capabilites to NTP, e.g. the
 Autokey security protocol described in RFC~5906~\cite{rfc5906}
 for authenticating servers to clients.
 
 Simple Network Time Protocol is simplified NTP implementation lacking complex
-synchronisation algorithms used by NTP~\cite{rfc4330}.
+synchronisation algorithms used by NTP. SNTP is also described in RFC 5906~\cite{rfc5906}.
 
 A primary server is synchronized to a reference clock directly traceable
 to UTC~\cite{rfc5905}.
 
-\! Introduced and developed by David Mills at University of Delaware in Newark, United States.
+\! 
 \! rfc5905
 \! older "Time" protocol
 
