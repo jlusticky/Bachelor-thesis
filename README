@@ -2,4 +2,7 @@ Bachelor thesis - Contiki NTP Client
 ====================================
 I am using the template from http://www.fit.vutbr.cz/info/szz/sablona09.tar.gz
 The concrete task is at fig/zadani.jpg
-The main content is in obsah.tex which includes other files
+The main content is in obsah.tex which includes other files from contiki/ and ntp/
+
+fig/ - figures used in thesis
+cd/  - cd content attached to the thesis
