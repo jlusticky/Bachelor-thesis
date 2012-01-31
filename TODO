@@ -1,13 +1,14 @@
 Thesis
 ======
-uIP
+uIP - almost done
 NTP
 Rime and ZigBee
 Use more BOOKs not only MISC in citations
 User plain-text as URL for RFCs
 Read RFC for SNTP, Daytime, Time, NTPv3, ...
+Use figures
 
 Tasks
 =====
-Bridge tap0 and eth0
-Study clock interface on AVR
+Bridge tap0 and eth0 - failed, i will use localhost
+Study clock interface on AVR - done
