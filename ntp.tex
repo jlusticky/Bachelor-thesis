@@ -20,43 +20,54 @@ for authenticating servers to clients.
 
 Simple Network Time Protocol is simplified NTP implementation lacking complex
 synchronisation algorithms used by NTP. SNTP is also described in RFC 5906~\cite{rfc5906}.
-
 SNTP is a simplified sub-set of the algorithms used by the NTP protocol.
 
+NTP uses the Coordinated Universal Time.
+NTP manipulates with the time through timestamps.
+NTP timestamp has two parts - part for expressing the number of seconds
+and part for fraction of a second. \!Called RFC
+It has never been a goal of NTP to take care of local time,
+it is up to operating system to provide user the correct local time~\cite{ntp-overview}.
 
-\section{Time and timestamps}
+\section{Topology and Hierarchy}
+As in every other network protocol there are servers and clients in NTP.
+The servers are rated with the stratum (plural form strata) number which represents their position
+in an NTP hierarchy and their possible accurancy.
+Primary (stratum 1) servers synchronize to the reference clock directly traceable to UTC via
+radio, satellite or modem.
+The stratum 2 servers synchronize to stratum 1
+servers via hierarchical subnet.
+The stratum 3 servers synchronize to stratum 2 servers, and so on.
 
-A primary server is synchronized to a reference clock directly traceable
-to UTC~\cite{rfc5905}.
+\includegraphics[width=10cm,keepaspectratio]{fig/Network_Time_Protocol_servers_and_clients.pdf}
+
 
 \! 
 \! rfc5905
 \! older "Time" protocol
 
 
-The Coordinated Universal Time (UTC) timescale represents mean solar
-   time as disseminated by national standards laboratories.  The system
-   time is represented by the system clock maintained by the hardware
-   and operating system.  The goal of the NTP algorithms is to minimize
-   both the time difference and frequency difference between UTC and the
-   system clock.  When these differences have been reduced below nominal
-   tolerances, the system clock is said to be synchronized to UTC.
-
-
-
-   The date of an event is the UTC time at which the event takes place.
-   Dates are ephemeral values designated with uppercase T.  Running time
-   is another timescale that is coincident to the synchronization
-   function of the NTP program~\cite{rfc5905}.
-
-
-
-\section{Packet structure}
-The 64-bit timestamps used by NTP consist of a 32-bit seconds part and a 32-bit fractional second part.
+\section{Time and timestamps}
+\!WHAT IS UTC - definition
+The time specified by UTC is the same for all timezones.
+%The Coordinated Universal Time (UTC) timescale represents mean solar
+%time as disseminated by national standards laboratories.
+The system time is represented by the system clock maintained by
+the hardware and operating system.
+The goal of the NTP algorithms is to minimize
+both the time difference and frequency difference between UTC and the system clock.
+When these differences have been reduced below nominal
+tolerances, the system clock is said to be synchronized to UTC.
 
 \section{Network}\label{sec:ntp-network}
 Network specification of NTP 
 The protocol uses the User Datagram Protocol (UDP) on port number 123~\cite{ianna-ports}.
 The NTP packet is a UDP datagram, carried on port 123.
 
-\section{System}
+\subsection{Packet structure}
+The 64-bit timestamps used by NTP consist of a 32-bit seconds part and a 32-bit fractional second part.
+
+\section{Algorithms}
+
+\section{Errors}
+Jitter, ....
