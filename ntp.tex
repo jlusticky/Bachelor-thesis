@@ -63,7 +63,7 @@ These leap seconds are inserted on the advice of the International Earth Rotatio
 NTP is well designed for leap second occurance.
 There is Leap Indicator field
 in the structure of NTP packet and there are also fields intended for
-information about leap second in structures NTP algorithm uses~\rfc{5905}.
+information about leap second in structures NTP algorithm uses~\cite{rfc5905}.
 
 The system time is represented by the system clock maintained by
 the hardware and operating system.
@@ -83,7 +83,7 @@ representing the number of seconds since the prime epoch.
 
 NTP manipulates with the time through timestamps - a record of UTC time.
 NTP timestamp has two fields. The seconds field expressing the number of seconds
-and the fraction field expressing fraction of a second~\rfc{5905}.
+and the fraction field expressing fraction of a second~\cite{rfc5905}.
 It has never been a goal of NTP to take care of local time,
 it is up to operating system to provide user the correct local time~\cite{ntp-overview}.
 
@@ -91,7 +91,7 @@ it is up to operating system to provide user the correct local time~\cite{ntp-ov
 Network specification of NTP defines that
 the protocol uses the User Datagram Protocol (UDP) on port number 123~\cite{rfc5905, ianna-ports}.
 Reliable message delivery such as TCP can actually make the delivered NTP packet less reliable since retries
-would increase the delay value and other errors~\rfc{5905}.
+would increase the delay value and other errors~\cite{rfc5905}.
 This is mostly due to overhead of communication with TCP on transport layer.
 
 Because of network latency the timestamp recieved will never be corresponding to
