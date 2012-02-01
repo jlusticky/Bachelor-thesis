@@ -2,14 +2,18 @@
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \section{Protothreads}\label{sec:contiki-protothreads}
-Protothreads provide a way to run C functions quasi-paralelly, that is, a C functions work in a way similiar to thread.
-In Contiki Protothreads allow process to wait for incoming events. While waiting for an event to occur another function
-can be run. The core of this solution is C switch statement used in conjuction with variable (called local continuation)
-containing the position where the function was interrupted. Next time function continues from this point.
+Protothreads provide a way to run C functions quasi-paralelly,
+that is, a C functions work in a way similiar to thread~\cite{paper-protothreads}.
+In Contiki Protothreads allow process to wait for incoming events.
+While waiting for an event to occur another function
+can be run. The core of this solution is C {\it switch} statement used in conjuction with variable (called local continuation)
+containing the position where the function was interrupted~\cite{paper-protothreads}.
+Next time function continues from this point.
 
 The advantage of Protothreads over ordinary threads is that a Protothread does not require a separate stack.
 In memory constrained systems, the overhead of allocating multiple stacks can consume large amounts of
-the available memory. In contrast, each Protothread only requires few bytes for storing the state of execution.
+the available memory~\cite{paper-protothreads}.
+In contrast, each Protothread only requires few bytes for storing the state of execution.
 
 A Protothread is driven by repeated calls to the function in which the Protothread is running.
 Each time the
@@ -17,11 +21,9 @@ function is called, the Protothread will run until it blocks or exits.
 Protothreads are implemented using local continuations. A local continuation represents the current state
 of execution at a particular place in the program, but does not provide any call history or local variables.
 
-The Protothreads API consists of four basic operations: initialization (PT\_INIT()), execution (PT\_BEGIN()),
-conditional blocking (PT\_WAIT\_UNTIL()) and exit (PT\_END()). On top of these, two convenience functions
-are built: reversed condition blocking (PT\_WAIT\_WHILE()) and Protothread blocking (PT\_WAIT\_THREAD())~\cite{paper-protothreads}.
-
-To understand how are Protothreads implemented and how do the actually work please refer
+The Protothreads API consists of four basic operations: initialization PT\_INIT(), execution PT\_BEGIN(),
+conditional blocking PT\_WAIT\_UNTIL() and exit PT\_END()~\cite{paper-protothreads}.
+To understand how are Protothreads implemented and how do they actually work please refer
 to appendix~\ref{app:protothreads} in which an example of usage is shown.
 
 Since Protothreads are implemented using standard C, library providing Protothreads can be used everywhere C toolchain is available.

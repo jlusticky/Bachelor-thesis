@@ -3,10 +3,11 @@
 
 \chapter{Network Time Protocol}
 Network Time Protocol provides mechanism for synchronising systems' clocks over the variable-latency data network.
+% packet-oriented + citation
 NTP was introduced and is still developed by David Mills at University of Delaware in Newark, United States.
 NTP is argueably the longest running, continuously operating,
 ubiquitously available protocol in the Internet~\cite{ntp-overview}.
-Despite being one of the oldest surviving protocol on the Internet it is not old-fashioned at all.
+Despite being one of the oldest surviving protocol on the Internet, it is not old-fashioned at all.
 NTP version 4 described in RFC~5905~\cite{rfc5905} is an update to older NTPv3 to accomodate NTP to IPv6.
 Version 4 also includes improvements in
 the mitigation and discipline algorithms that extend
@@ -15,13 +16,14 @@ workstations and fast LANs~\cite{rfc5905}.
 NTPv4 corrects some
 errors in NTPv3 design and includes optional extension mechanism
 that can be used for adding more capabilites to NTP, e.g. the
-Autokey security protocol described in RFC~5906~\cite{rfc5906}
+Autokey security protocol described in RFC~5906
 for authenticating servers to clients.
 
 Simple Network Time Protocol is simplified NTP implementation lacking complex
 synchronisation algorithms used by NTP.
-SNTP is also described in RFC 5906~\cite{rfc5906}.
-The packet of SNTP has the same structure and content as packet of NTP.
+%citation  ?? ~\cite{rfc5905} ??
+SNTP is also described in RFC 5905.
+The packet of SNTP has the same structure and content as packet of NTP~\cite{rfc5905}.
 From observing the network communication one can not tell whether the client
 is full blown NTP implementation or just SNTP.
 SNTP is a simplified sub-set of the algorithms used by the NTP protocol
@@ -29,31 +31,36 @@ making the client implementation not only easier, but also suitable for
 resource constraint systems such as embedded systems.
 
 \section{Topology and Hierarchy}
-As in every other network protocol there are servers and clients in NTP.
+As in every other network protocol there are servers and clients.
 The servers are rated with the stratum (plural form strata) number which represents their position
 in an NTP hierarchy and their possible accurancy.
+% citation
 Primary (stratum 1) servers synchronise to the reference clock directly traceable to UTC via
 radio, satellite or modem.
 The stratum 2 servers synchronise to stratum 1
 servers via hierarchical subnet.
 The stratum 3 servers synchronise to stratum 2 servers, and so on.
-
+Synchronisation between servers in the same stratum level is also possible.
+%clients are leaves
+Figure~\ref{fig:ntp-hierarchy} shows a brief hierarchy of NTP.
 \begin{figure}
   \centering
   %\input{./xfig/test.pstex_t}
   \includegraphics[width=10cm,keepaspectratio]{fig/Network_Time_Protocol_servers_and_clients.pdf}
   \caption{Topology and Hierarchy of NTP}
   \label{fig:ntp-hierarchy}
+  \bigskip
 \end{figure}
 
 
 \section{Time and timestamps}\label{sec:ntp-time}
-NTP always uses the Coordinated Universal Time (UTC).
+NTP always uses the Coordinated Universal Time (UTC)~\cite{rfc5905}.
 UTC is maintained by the International Bureau of Weights and Measures in Paris, France.
 It is the time scale that forms the basis for the coordinated dissemination of standard frequencies and time signals~\cite{bipm-utc}.
 The time specified by UTC is the same for all timezones.
 Its calculation is the same as with Greenwich Mean Time (GMT) however
-the daylight savings are not accounted. %TODO: CITATION
+the daylight savings are not accounted.
+%TODO: CITATION
 The UTC scale is adjusted by the insertion of leap seconds to ensure approximate
 agreement with the time derived from the rotation of the Earth~\cite{bipm-utc}.
 %TODO: better defintion
@@ -71,6 +78,8 @@ The goal of the NTP algorithms is to minimize
 both the time difference and frequency difference between UTC and the system clock.
 When these differences have been reduced below nominal
 tolerances, the system clock is said to be synchronised to UTC~\cite{rfc5905}.
+It has never been a goal of NTP to take care of local time,
+it is up to operating system to provide user the correct local time~\cite{ntp-overview}.
 
 The NTP and POSIX timescales are based on the UTC timescale,
 but not always coincident with it~\cite{ntp-leap}.
@@ -78,35 +87,59 @@ The origin of the NTP timescale, the prime epoch, is 00:00:00 UTC on 1 January 1
 while the prime epoch of the POSIX timescale is 00:00:00 UTC on 1 January 1970~\cite{ntp-leap}.
 Both timescales reckon in seconds since the prime epoch.
 For instance, upon the first tick of UTC on 1 January 1972 the NTP clock read 2~272~060~800,
-representing the number of seconds since the prime epoch.
+representing the number of seconds since the NTP prime epoch.
 % TODO table with ntp time stamps
 
-NTP manipulates with the time through timestamps - a record of UTC time.
+NTP manipulates with the time through timestamps - a record of time.
 NTP timestamp has two fields. The seconds field expressing the number of seconds
 and the fraction field expressing fraction of a second~\cite{rfc5905}.
-It has never been a goal of NTP to take care of local time,
-it is up to operating system to provide user the correct local time~\cite{ntp-overview}.
 
 \section{Network}\label{sec:ntp-network}
 Network specification of NTP defines that
-the protocol uses the User Datagram Protocol (UDP) on port number 123~\cite{rfc5905, ianna-ports}.
+the protocol uses the User Datagram Protocol (UDP) on port number 123~\cite{ianna-ports,rfc5905}.
 Reliable message delivery such as TCP can actually make the delivered NTP packet less reliable since retries
 would increase the delay value and other errors~\cite{rfc5905}.
 This is mostly due to overhead of communication with TCP on transport layer.
+
+All NTP time values are represented in twos-complement format, with
+bits numbered in big-endian fashion from zero starting at the left, or high-order, position~\cite{rfc5905}.
+There are three NTP time formats:
+ 
+There are two formats of timestamp in NTP packet structure:
+long 64-bit and short 32-bit.
+The 64-bit long timestamp used by NTP consists of a 32-bit unsigned seconds
+field spanning 136 years and a 32-bit fraction field resolving 232
+picoseconds~\cite{rfc5905}.
+It is used for Reference, Origin, Receive and Transmit timestamp.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=12cm,keepaspectratio]{fig/ntp-long.pdf}
+	\caption{Long 64-bit NTP timestamp fields}
+	\label{fig:ntp-long}
+	\bigskip
+\end{figure}
+
+The short 32-bit timestamp includes a 16-bit unsigned seconds field
+and 16-bit fraction field.
+Root dispersion is accumulated total dispersion from primary server.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=12cm,keepaspectratio]{fig/ntp-short.pdf}
+	\caption{Short 32-bit NTP timestamp fields}
+	\label{fig:ntp-short}
+	\bigskip
+\end{figure}
+
+Because the short 32-bit timestamps are used for Root dispersion and Root Delay fields,
+they do not need so big scope and precision.
 
 Because of network latency the timestamp recieved will never be exactly corresponding to
 the current time.
 One of the main goals of NTP is to deal with the network latency~\cite{ntp-overview}.
 
-There are two types of timestamp in NTP packet structure:
-long 64-bit and short 32-bit.
-The long timestamps are used for...\!!!TODO
-
-As mentioned in~\ref{sec:ntp-time} there are two parts of timestamp.
-The 64-bit timestamp used by NTP is fixed point number and consists of a 32-bit unsigned seconds
-field spanning 136 years and a 32-bit fraction field resolving 232
-picoseconds~\cite{rfc5905}.
-
 \section{Algorithms}
 NTP uses the intersection algorithm for selecting the possible most exact timestamp recieved
 from various servers.
+\!!TODO

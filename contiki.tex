@@ -12,40 +12,43 @@ Operating system Contiki is targeted at embedded systems supporting MSP430, AVR,
 Contiki aims for maximum portability and therefore is written in C.
 It features TCP/IP communication stack called uIP~(micro~IP)
 that comforms to Request For Comments memorandums published by the Internet Engineering Task Force.
-The uIP provides communication abilities using both IPv4 and IPv6\cite{contiki-docs}.
+The uIP provides communication abilities using both IPv4 and IPv6~\cite{contiki-docs}.
 Contiki with its uIP stack is IPv6 Ready Phase 1 certified
 and therefore has the right to use the IPv6~Ready silver logo~\cite{ipv6ready-db}.
-Before Contiki's uIP the embedded world considered IP to be too heavyweight.
-That means all sonner available IP implementation were much bigger than the memory constrained embedded systems
-could use. For more about uIP refer to section~\ref{sec:contiki-uip}.
+%Before Contiki's uIP the embedded world considered IP to be too heavyweight.
+%That means all sonner available IP implementation were much bigger than the memory constrained embedded systems could use.
+The communication stack uIP is closely described in section~\ref{sec:contiki-uip}.
 
 Next to the uIP Contiki is equipped with other communication stack called Rime.
 Rime is a layered communication stack for sensor networks,
-with much tinner layers than traditional architectures.
+with much tinner layers than traditional architectures~\cite{paper-rime}.
 Rime is designed to simplify the implementation of communication
-protocols. \ref{sec:contiki-rime}
-\!
+protocols.
+Rime is shortly discussed in section~\ref{sec:contiki-rime}.
 
-Protothreads are another new concept brought by Contiki to the embedded world.
+Protothreads are another new concept brought by Contiki to the embedded world~\cite{paper-protothread}.
 Protothreads are very lightweight and compatible with standard C.
 Each Protothread does not require a separate stack which makes them perfectly
 fit for usage in programming memory constrained embedded systems.
 Protothreads are more detailed discussed in section~\ref{sec:contiki-protothreads}.
 
 Operating system Contiki, uIP and Protothreads are used by hundreds of companies in embedded devices in
-such diverse systems as car engines, oil boring equipment, satellites, and con-
-tainer security systems. The software is also used both in academic research
+such diverse systems as car engines, oil boring equipment, satellites, and container security systems~\cite{thesis-programming}.
+The software is also used both in academic research
 projects and in university project courses on embedded systems throughout the
-world \cite{thesis-programming}.
+world.
 
 Contiki is developed by a group of developers from industry and academia
 lead by Adam Dunkels from the Swedish Institute of Computer Science.
 The Contiki team currently consists of sixteen developers from SICS,
 SAP AG, Cisco, Atmel, NewAE and TU Munich~\cite{contiki-docs}.
 The 3-clause BSD license is placing minimal restrictions on how Contiki can be redistributed.
-Contiki version 1.0 was released in 2002, version 2.0 in 2007 and the latest version at the time of writing was 2.5
-released in 2011. The actual development happens in a repository online using the Git version control system.
+Contiki version 1.0 was released in 2002, version 2.0 in 2007 and the latest version
+at the time of writing was 2.5 released in 2011.
+The actual development happens in a repository online using the Git version control system
+accessible on Contiki homepage at \url{http://www.contiki-os.org/}.
 
+%TODO virtualbox image
 
 \input{contiki/uip.tex}
 

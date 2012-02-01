@@ -10,14 +10,21 @@
 %\end{tabular}
 
 \chapter{Protothreads example}\label{app:protothreads}
-Here is an example of delaying text scrolling on an LCD panel using Protothreads.
+%Here is
+Next page shows
+an example of delaying text on an LCD panel using Protothreads.
 It is taken from
-Adam Dunkel's Protothreads site~\cite{adam-protothreads} and slightly modified.
+Adam Dunkel's Protothreads website~\cite{adam-protothreads} and slightly modified.
 Protothreads can be used for introducing delays inside a function, without using a full threading model.
-The example shows a function writing text to a one-line LCD panel.
-If the text is longer than the size of the panel, the text should be scrolling in from the right. 
+The example shows a function writing characters to LCD panel.
+Suppose each character is shown for one second, then next character replaces previous.
 
-\begin{lstlisting}
+\newpage
+
+%\noindent
+%\begin{minipage}{\textwidth}
+\begin{alltt}
+%\begin{lstlisting}
 #include "pt.h"
 #include "timer.h"
 
@@ -27,72 +34,64 @@ struct pt {
   lc_t lc;         /* Local continuation */
 }; 
 
-struct state {
-  char *text;
-  char *scrollptr;
-  struct pt pt;
-  struct timer timer;
-};
-
-static struct state s;
+struct pt state;
+struct timer timer;
  
-PT_THREAD(display_text(struct state *s))
+PT_THREAD(display_text(struct pt *pt, const char *msg))
 {
-  PT_BEGIN(&s->pt);
- 
-  /* If the text is shorter than the display size, show it right
-     away. */
-  if(strlen(s->text) <= LCD_SIZE) {
-    lcd_display_text(s->text);
-  } else {    
-    /* If the text is longer than the display, we should scroll in the
-       text from the right with a delay of one second per scroll
-       step. We do this in a for() loop, where the loop variable is
-       the pointer to the first character to be displayed. */
-    for(s->scrollptr = s->text;
-        strlen(s->scrollptr) > LCD_SIZE;
-        ++s->scrollptr) {
-      lcd_display_text(s->scrollptr);
- 
-      /* Wait for one second. */
-      timer_set(&s->timer, ONE_SECOND);
-      PT_WAIT_UNTIL(&s->pt, timer_expired(&s->timer));
-    }
+  PT_BEGIN(pt);
+  for (int i = 0; i < strlen(msg); i++) {
+    lcd_display_char(msg[i]);
+    timer_set(&timer, ONE_SECOND);  /* Wait for one second. */
+    PT_WAIT_UNTIL(pt, timer_expired(&timer));
   }
-  
-  PT_END(&s->pt);
+  PT_END(pt);
 }
 
 int main(void)
 {
-  PT_INIT(&s);
-  s.text = "Long text for LCD display";
+  PT_INIT(&state);
   for (;;) {
-    display_text(&s);
+    display_text(&state, "Hello world");
     /* Here can be another thread run */
   }
   return 0;
 }
 
-\end{lstlisting}
+%\end{lstlisting}
+\end{alltt}
+%\end{minipage}
 
-The {\it PT\_WAIT\_UNTIL} macro actually causes the function
-to return. While the function is waiting for the timer to expire another function can called and run.
-When the function is entered again the execution continues with the {\it PT\_WAIT\_UNTIL} macro
-which causes the function to check the condition it is waiting for (timer expired). If the condition is
-met the function resumes, if not it returns again.
+\newpage
 
-How does it work? The macro {\it PT\_BEGIN} exapands to {\it switch} statement while preprocessing the
-code for compilation. The {\it PT\_WAIT\_UNTIL} macro expands to {\it case} and setting the local continuation
+The PT\_WAIT\_UNTIL macro actually causes the function to return.
+While the function is waiting for the timer to expire another function can be called and run.
+When the function is entered again the execution continues with the PT\_WAIT\_UNTIL macro
+which causes the function to check the condition it is waiting for (timer expired).
+If the condition is met the function resumes, if not it returns again.
+Strictly speaking the amount of time between showing each character can
+be more than one second.
+This is because Protothreads are not running simultenously: when the timer expires
+and another Protothread is running, this Protothread would have to wait until
+it is entered again. Than the condition specified in PT\_WAIT\_UNTIL is met and
+next iteration of loop started, that is, next character is displayed.
+
+How does it work? The macro PT\_BEGIN exapands to {\it switch} statement while preprocessing the
+code for compilation.
+The PT\_WAIT\_UNTIL macro expands to {\it case} and setting the local continuation
 to the value, so that next time this function is run, it jumps to this {\it case}.
 The structure holding the state is defined outside of the function so its context is not lost when
 the function returns. The simplest state structure would hold just the local continuation variable.
 
+%Now follows the same sample of code after simplified preprocessing.
+Next page shows the same sample of code after simplified preprocessing.
+
 \newpage
 
-Next follows the same sample of code after partial simplified preprocessing.
-
-\begin{lstlisting}
+%\noindent
+%\begin{minipage}{\textwidth}
+\begin{alltt}
+%\begin{lstlisting}
 #include "pt.h"
 #include "timer.h"
 
@@ -102,53 +101,41 @@ struct pt {
   lc_t lc;         /* Local continuation */
 }; 
 
-struct state {
-  char *text;
-  char *scrollptr;
-  struct pt pt;
-  struct timer timer;
-};
+struct pt state;
+struct timer timer;
  
-int display_text(struct state *s)       /* Expanded PT_THREAD macro */
+/* Expanded PT_THREAD macro */
+int display_text(struct pt *pt, const char *msg)
 {
-  switch((&s->pt)->lc) {  case 0:      /* Expanded PT_BEGIN(&s->pt); */
- 
-  /* If the text is shorter than the display size, show it right
-     away. */
-  if(strlen(s->text) <= LCD_SIZE) {
-    lcd_display_text(s->text);
-  } else {    
-    /* If the text is longer than the display, we should scroll in the
-       text from the right with a delay of one second per scroll
-       step. We do this in a for() loop, where the loop variable is
-       the pointer to the first character to be displayed. */
-    for(s->scrollptr = s->text;
-        strlen(s->scrollptr) > LCD_SIZE;
-        ++s->scrollptr) {
-      lcd_display_text(s->scrollptr);
- 
-      /* Wait for one second. */
-      timer_set(&s->timer, ONE_SECOND);
-      (&s->pt)->lc = 31; case 31: if(!(timer_expired(&s->timer))) { return PT_WAITING; }
-    }
-  }
+  switch(pt->lc) {  case 0:      /* Expanded PT_BEGIN(pt); */
   
-  (&s->pt)->lc = 0; return PT_ENDED; }   /* Expanded PT_END */
+    for (int i = 0; i < strlen(msg); i++) {
+      lcd_display_char(msg[i]);
+      timer_set(&timer, ONE_SECOND);  /* Wait for one second. */
+    
+      /* Expanded PT_WAIT_UNTIL(pt, timer_expired(&timer)); */
+      pt->lc = 31; case 31:
+      if(!(timer_expired(&timer))) { return PT_WAITING; }
+    
+    }
+  
+  pt->lc = 0; return PT_ENDED; }   /* Expanded PT_END */
   
 }
 
 int main(void)
 {
-  (&s)->lc = 0;                         /* Expanded PT_INIT */
-  s.text = "Long text for LCD display";
+  state->lc = 0;                         /* Expanded PT_INIT */
   for (;;) {
-    display_text(&s);
+    display_text(&state, "Hello world");
     /* Here can be another thread run */
   }
   return 0;
 }
 
-\end{lstlisting}
+%\end{lstlisting}
+\end{alltt}
+%\end{minipage
 
 
 
