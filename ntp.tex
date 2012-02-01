@@ -94,13 +94,18 @@ Reliable message delivery such as TCP can actually make the delivered NTP packet
 would increase the delay value and other errors~\cite{rfc5905}.
 This is mostly due to overhead of communication with TCP on transport layer.
 
-Because of network latency the timestamp recieved will never be corresponding to
-the actual time.
+Because of network latency the timestamp recieved will never be exactly corresponding to
+the current time.
 One of the main goals of NTP is to deal with the network latency~\cite{ntp-overview}.
 
-\subsection{Packet structure}\label{subsec:ntp-packet}
+There are two types of timestamp in NTP packet structure -
+long 64-bit and short 32-bit.
+The long timestamps are used for ... \!!! TODO
+
 As mentioned in~\ref{sec:ntp-time} there are two parts of timestamp.
-The 64-bit timestamps used by NTP consist of a 32-bit seconds part and a 32-bit fraction part.
+The 64-bit timestamp used by NTP is fixed point number and consists of a 32-bit unsigned seconds
+field spanning 136 years and a 32-bit fraction field resolving 232
+picoseconds~\cite{rfc5905}.
 
 \section{Algorithms}
 NTP uses the intersection algorithm for selecting the possible most exact timestamp recieved
