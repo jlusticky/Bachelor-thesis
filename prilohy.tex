@@ -10,13 +10,154 @@
 %\end{tabular}
 
 \chapter{Protothreads example}\label{app:protothreads}
+Here is an example of delaying text scrolling on an LCD panel using Protothreads.
+It is taken from
+Adam Dunkel's Protothreads site~\cite{adam-protothreads} and slightly modified.
+Protothreads can be used for introducing delays inside a function, without using a full threading model.
+The example shows a function writing text to a one-line LCD panel.
+If the text is longer than the size of the panel, the text should be scrolling in from the right. 
+
+\begin{lstlisting}
+#include "pt.h"
+#include "timer.h"
+
+typedef unsigned short lc_t;
+
+struct pt {
+  lc_t lc;         /* Local continuation */
+}; 
+
+struct state {
+  char *text;
+  char *scrollptr;
+  struct pt pt;
+  struct timer timer;
+};
+
+static struct state s;
+ 
+PT_THREAD(display_text(struct state *s))
+{
+  PT_BEGIN(&s->pt);
+ 
+  /* If the text is shorter than the display size, show it right
+     away. */
+  if(strlen(s->text) <= LCD_SIZE) {
+    lcd_display_text(s->text);
+  } else {    
+    /* If the text is longer than the display, we should scroll in the
+       text from the right with a delay of one second per scroll
+       step. We do this in a for() loop, where the loop variable is
+       the pointer to the first character to be displayed. */
+    for(s->scrollptr = s->text;
+        strlen(s->scrollptr) > LCD_SIZE;
+        ++s->scrollptr) {
+      lcd_display_text(s->scrollptr);
+ 
+      /* Wait for one second. */
+      timer_set(&s->timer, ONE_SECOND);
+      PT_WAIT_UNTIL(&s->pt, timer_expired(&s->timer));
+    }
+  }
+  
+  PT_END(&s->pt);
+}
+
+int main(void)
+{
+  PT_INIT(&s);
+  s.text = "Long text for LCD display";
+  for (;;) {
+    display_text(&s);
+    /* Here can be another thread run */
+  }
+  return 0;
+}
+
+\end{lstlisting}
+
+The {\it PT\_WAIT\_UNTIL} macro actually causes the function
+to return. While the function is waiting for the timer to expire another function can called and run.
+When the function is entered again the execution continues with the {\it PT\_WAIT\_UNTIL} macro
+which causes the function to check the condition it is waiting for (timer expired). If the condition is
+met the function resumes, if not it returns again.
+
+How does it work? The macro {\it PT\_BEGIN} exapands to {\it switch} statement while preprocessing the
+code for compilation. The {\it PT\_WAIT\_UNTIL} macro expands to {\it case} and setting the local continuation
+to the value, so that next time this function is run, it jumps to this {\it case}.
+The structure holding the state is defined outside of the function so its context is not lost when
+the function returns. The simplest state structure would hold just the local continuation variable.
+
+\newpage
+
+Next follows the same sample of code after partial simplified preprocessing.
+
+\begin{lstlisting}
+#include "pt.h"
+#include "timer.h"
+
+typedef unsigned short lc_t;
+
+struct pt {
+  lc_t lc;         /* Local continuation */
+}; 
+
+struct state {
+  char *text;
+  char *scrollptr;
+  struct pt pt;
+  struct timer timer;
+};
+ 
+int display_text(struct state *s)       /* Expanded PT_THREAD macro */
+{
+  switch((&s->pt)->lc) {  case 0:      /* Expanded PT_BEGIN(&s->pt); */
+ 
+  /* If the text is shorter than the display size, show it right
+     away. */
+  if(strlen(s->text) <= LCD_SIZE) {
+    lcd_display_text(s->text);
+  } else {    
+    /* If the text is longer than the display, we should scroll in the
+       text from the right with a delay of one second per scroll
+       step. We do this in a for() loop, where the loop variable is
+       the pointer to the first character to be displayed. */
+    for(s->scrollptr = s->text;
+        strlen(s->scrollptr) > LCD_SIZE;
+        ++s->scrollptr) {
+      lcd_display_text(s->scrollptr);
+ 
+      /* Wait for one second. */
+      timer_set(&s->timer, ONE_SECOND);
+      (&s->pt)->lc = 31; case 31: if(!(timer_expired(&s->timer))) { return PT_WAITING; }
+    }
+  }
+  
+  (&s->pt)->lc = 0; return PT_ENDED; }   /* Expanded PT_END */
+  
+}
+
+int main(void)
+{
+  (&s)->lc = 0;                         /* Expanded PT_INIT */
+  s.text = "Long text for LCD display";
+  for (;;) {
+    display_text(&s);
+    /* Here can be another thread run */
+  }
+  return 0;
+}
+
+\end{lstlisting}
+
+
 
 \chapter{Requirements for NTP client and Contiki support}\label{app:requirements}
 \begin{tabular}{|l|l|}
 	\hline
 	Requirement & Contiki support \\ \hline
-	Communication using UDP & Complete (uIP) \\
-	DNS resolution & IPv6 \\
+	Communication using UDP & Complete \\
+	DNS resolution & Missing IPv6, otherwise complete \\
 	Setting the clock & Complete \\
 	Adjusting the clock & None \\
 	Setting the time & None \\
