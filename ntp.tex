@@ -8,7 +8,7 @@ NTP is argueably the longest running, continuously operating,
 ubiquitously available protocol in the Internet~\cite{ntp-overview}.
 Despite being one of the oldest surviving protocol on the Internet it is not old-fashioned at all.
 NTP version 4 described in RFC~5905~\cite{rfc5905} is an update to older NTPv3 to accomodate NTP to IPv6.
-Version 4 also includes fundamental improvements in
+Version 4 also includes improvements in
 the mitigation and discipline algorithms that extend
 the potential accuracy to the tens of microseconds with modern
 workstations and fast LANs~\cite{rfc5905}.
@@ -19,11 +19,13 @@ Autokey security protocol described in RFC~5906~\cite{rfc5906}
 for authenticating servers to clients.
 
 Simple Network Time Protocol is simplified NTP implementation lacking complex
-synchronisation algorithms used by NTP. SNTP is also described in RFC 5906~\cite{rfc5906}.
+synchronisation algorithms used by NTP.
+SNTP is also described in RFC 5906~\cite{rfc5906}.
+\!...
 SNTP is a simplified sub-set of the algorithms used by the NTP protocol.
 
-NTP uses the Coordinated Universal Time.
-NTP manipulates with the time through timestamps.
+NTP always uses the Coordinated Universal Time.
+NTP manipulates with the time through timestamps - a record of time.
 NTP timestamp has two parts - part for expressing the number of seconds
 and part for fraction of a second. \!Called RFC
 It has never been a goal of NTP to take care of local time,

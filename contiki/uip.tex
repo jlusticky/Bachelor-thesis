@@ -26,8 +26,7 @@ from the most common TCP/IP API, the BSD sockets API \cite{thesis-programming}.
 The application is invoked in response to certain events and
 it is up to application that is receiving events from uIP to handle all
 work with data to be transmitted. E.g. if the data is lost in the network,
-the application will be invoked with the uip\_rexmit event being set.
-The application will then have to resend the data.
+the application will be invoked and then has to resend the data.
 This approach is based on the fact that it should be an easy work for application
 to rebuild the same data.
 This way uIP stack does not use explicit dynamic memory allocation.
@@ -50,6 +49,9 @@ that are large enough to contain at least 4 maximum sized Ethernet frames~\cite{
 This way uIP does not have to have its own buffer structures and thus
 needs only minimal memory amount.
 Possible packet loss is a trade-off for minimalism and ability to communicate using TCP/IP.
+It is not such a big deal for communication using TCP on transport layer
+because of acknowledgment system used in TCP to prevent data loss.
+However data carried on UDP can be irrecoverably lost.
 
 As was expected the measurements shows that uIP implementation provides very low
 throughput, particularly when communicating with a PC host.
