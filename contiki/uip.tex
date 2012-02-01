@@ -2,7 +2,7 @@
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \section{uIP}\label{sec:contiki-uip}
-The TCP/IP protocol suite~\cite{rfc1180} is often used for communication over the Internet as well as local networks.
+The TCP/IP protocol suite is often used for communication over the Internet as well as local networks.
 uIP (micro IP) is a complete TCP/IP communicating stack developed by Adam Dunkels
 for memory constrained systems such as embedded systems.
 
@@ -13,8 +13,8 @@ uIP provides two different application programming interfaces (API) to programme
 a BSD sockets-like API based on Protothreads called Protosockets and raw event-driven API.
 Protosockets are based on Protothreads putting the same limitation on them - such as 
 no way of storing automatic local variables and the C switch statement can not be used.
-Protosockets only work with Transmission Control Protocol (TCP) connections~\cite{rfc793, contiki-docs}.
-Since NTP uses User Datagram Protocol (UDP)~\cite{rfc768} Protosockets will not be
+Protosockets only work with Transmission Control Protocol (TCP) connections~\cite{contiki-docs}.
+Since NTP uses User Datagram Protocol (UDP) Protosockets will not be
 discussed in this thesis anymore. For more information about Protosockets
 please refer to Contiki documentation~\cite{contiki-docs}.
 
