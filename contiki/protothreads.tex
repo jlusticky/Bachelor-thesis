@@ -19,12 +19,11 @@ of execution at a particular place in the program, but does not provide any call
 
 The Protothreads API consists of four basic operations: initialization (PT\_INIT()), execution (PT\_BEGIN()),
 conditional blocking (PT\_WAIT\_UNTIL()) and exit (PT\_END()). On top of these, two convenience functions
-are built: reversed condition blocking (PT\_WAIT\_WHILE()) and Protothread blocking (PT\_WAIT\_THREAD())
-\cite{paper-protothreads}.
+are built: reversed condition blocking (PT\_WAIT\_WHILE()) and Protothread blocking (PT\_WAIT\_THREAD())~\cite{paper-protothreads}.
 
 \!
 Here is an example of delaying text scrolling on an LCD panel using Protothreads. This example is taken from
-Adam Dunkel's Protothreads site \cite{adam-protothreads} and slightly modified.
+Adam Dunkel's Protothreads site~\cite{adam-protothreads} and slightly modified.
 Protothreads can be used for introducing delays inside a function, without using a full threading model.
 The following example shows a function writing text to a one-line LCD panel.
 If the text is longer than the size of the panel, the text should be scrolling in from the right. 
