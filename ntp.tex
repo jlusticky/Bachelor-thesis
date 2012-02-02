@@ -46,7 +46,7 @@ Figure~\ref{fig:ntp-hierarchy} shows a brief hierarchy of NTP.
 \begin{figure}
   \centering
   %\input{./xfig/test.pstex_t}
-  \includegraphics[width=10cm,keepaspectratio]{fig/Network_Time_Protocol_servers_and_clients.pdf}
+  \includegraphics[width=9cm,keepaspectratio]{fig/Network_Time_Protocol_servers_and_clients.pdf}
   \caption{Topology and Hierarchy of NTP}
   \label{fig:ntp-hierarchy}
   \bigskip
@@ -65,8 +65,12 @@ The UTC scale is adjusted by the insertion of leap seconds to ensure approximate
 agreement with the time derived from the rotation of the Earth~\cite{bipm-utc}.
 %TODO: better defintion
 
-The leap second is 
-These leap seconds are inserted on the advice of the International Earth Rotation and Reference Systems Service (IERS)~\cite{bipm-utc}.
+The atomic clocks, on which is UTC based, is so precise that
+they do not match the rotation of the Earth
+which periodically speeds up and slows down due to the action
+of the tides and changes within the Earth's core~\cite{cnn-earth}.
+The goal of a leap second is to catch up UTC with these changes.
+The leap second is inserted on the advice of the International Earth Rotation and Reference Systems Service~\cite{bipm-utc}.
 NTP is well designed for leap second occurance.
 There is Leap Indicator field
 in the structure of NTP packet and there are also fields intended for
@@ -102,23 +106,20 @@ would increase the delay value and other errors~\cite{rfc5905}.
 This is mostly due to overhead of communication with TCP on transport layer.
 
 All NTP time values are represented in twos-complement format, with
-bits numbered in big-endian fashion from zero starting at the left, or high-order, position~\cite{rfc5905}.
-There are three NTP time formats:
- 
+bits numbered in big-endian fashion from zero starting at the left, or high-order, position~\cite{rfc5905}. 
 There are two formats of timestamp in NTP packet structure:
-long 64-bit and short 32-bit.
+long 64-bit and short 32-bit as shown on figure~\ref{fig:ntp-timestamps}.
 The 64-bit long timestamp used by NTP consists of a 32-bit unsigned seconds
-field spanning 136 years and a 32-bit fraction field resolving 232
+field spanning 136 years (from 1900 to 2036) and a 32-bit fraction field resolving 232
 picoseconds~\cite{rfc5905}.
-It is used for Reference, Origin, Receive and Transmit timestamp.
 
-\begin{figure}
-	\centering
-	\includegraphics[width=12cm,keepaspectratio]{fig/ntp-long.pdf}
-	\caption{Long 64-bit NTP timestamp fields}
-	\label{fig:ntp-long}
-	\bigskip
-\end{figure}
+%\!!
+%An NTP timestamp is a truncated NTP date expressed as
+%an unsigned 64-bit integer including the low order 32 bits of
+%the seconds field concatenated with the high-order 32 bits of
+%the fraction field.
+%This format can represent the 136 years from 1900 to 2036 with a precision of 232 ps.
+%\!!
 
 The short 32-bit timestamp includes a 16-bit unsigned seconds field
 and 16-bit fraction field.
@@ -126,14 +127,20 @@ Root dispersion is accumulated total dispersion from primary server.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=12cm,keepaspectratio]{fig/ntp-short.pdf}
-	\caption{Short 32-bit NTP timestamp fields}
-	\label{fig:ntp-short}
+	\includegraphics[width=13cm,keepaspectratio]{fig/ntp-timestamps.pdf}
+	\caption{Formats used in NTP}
+	\label{fig:ntp-timestamps}
 	\bigskip
 \end{figure}
 
-Because the short 32-bit timestamps are used for Root dispersion and Root Delay fields,
+% TODO - packet
+
+Because the short 32-bit format is used for Root dispersion and Root Delay fields,
 they do not need so big scope and precision.
+Root dispersion express accumulated total dispersion from primary server
+and Root Delay express accumulated roundtrip delay via primary server~\cite{ntp-arch}.
+
+%TODO
 
 Because of network latency the timestamp recieved will never be exactly corresponding to
 the current time.
@@ -141,5 +148,37 @@ One of the main goals of NTP is to deal with the network latency~\cite{ntp-overv
 
 \section{Algorithms}
 NTP uses the intersection algorithm for selecting the possible most exact timestamp recieved
-from various servers.
-\!!TODO
+from various servers. The resulting exact timestamp does not have to be the same
+as one of those servers provided.
+There are four timestamps in NTP packet: Reference, Origin, Receive and Transmit timestamp.
+The 64-bit long NTP format is used for expressing them~\cite{rfc5905}.
+Using these four timestamps NTP can compute the
+the offset which is given by $\theta = \frac{1}{2}[(t_1 - t_0) + (t_2 - t_1)]$
+where $t_0$ is the time of the request packet transmission,
+$t_1$ is the time of the request packet reception,
+$t_2$ is the time of the response packet transmission and
+$t_3$ is the time of the response packet reception~\cite{ntp-algor}.
+
+When computing result from more servers the intersection algorithms is used~\cite{rfc5905}.
+First of all a set of bad and good servers must be made.
+Bad servers are called Falsetickers and good are called Truechimers~\cite{rfc5905}.
+The division to these sets is based on their response.
+As one can assume for sensible result there must be more Truechimers than Falsetickers~\cite{rfc5905}.
+% TODO f < M\2
+Intersection algorithm computes with estimates converted to intervals.
+E.g. if we have the estimates $10 \pm 2$, $12 \pm 1$ and $11 \pm 1$
+then these intervals are $<8; 12>$, $<11; 13>$ and $<10; 12>$ which
+intersect to form $<11; 12>$ or $11.5 \pm 0.5$ as consistent with all three values.
+The arithmetic mean is used as a value of result.
+When querying servers again the algorithm repeats but the new result computation
+also depends on the previous result~\cite{rfc5905}.
+This eliminates possible jitter which can be caused by reapeatedly quering the servers
+and getting slightly different answers from them.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=13cm,keepaspectratio]{fig/Marzullo_example-1.jpg}
+	\caption{Intersection algorithm}
+	\label{fig:ntp-intersection}
+	\bigskip
+\end{figure}
