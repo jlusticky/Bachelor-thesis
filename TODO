@@ -1,12 +1,16 @@
 Thesis
 ======
-uIP - almost done
-NTP
+
+NTP - algorithms, packet structure
 Rime and ZigBee
+Kernel - events, process are protothreads, ...
 Use more BOOKs not only MISC in citations
-User plain-text as URL for RFCs - done
 Read RFC for SNTP, Daytime, Time, NTPv3, ...
-Use figures
+C code template and shortening
+
+uIP - almost done
+Use plain-text as URL for RFCs - done
+Use figures - done
 
 Tasks
 =====
