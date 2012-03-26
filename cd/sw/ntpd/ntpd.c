@@ -35,8 +35,7 @@
 #include "contiki.h"
 #include "contiki-lib.h"
 #include "contiki-net.h"
-#include "net/simple-udp.h"
-#include "sys/clock.h"
+//#include "sys/clock.h"
 
 #include "ntpd.h"
 
@@ -46,24 +45,17 @@
 #define DEBUG DEBUG_PRINT
 #include "net/uip-debug.h"
 
+/*
 #if CONTIKI_TARGET_AVR_RAVEN
 #include <avr/pgmspace.h>
 #else
 #define PROGMEM
 #endif
-
-#define FRAC       4294967296.0             /* 2^32 as a double */
-#define D2LFP(a)   ((unsigned long long)((a) * FRAC))  /* NTP timestamp */
-#define LFP2D(a)   ((double)(a) / FRAC)
-#define U2LFP(a)   (((unsigned long long) \
-                       ((a).tv_sec + JAN_1970) << 32) + \
-                       (unsigned long long) \
-                       ((a).tv_usec / 1e6 * FRAC))
+*/
 
 
-static const char * host = "ntp.nic.cz";
-#define UDP_PORT 123
-static uint16_t port = UDP_PORT;
+static const char * host = "aaaa::1"; // NTP server
+static uint16_t port = NTP_PORT; // NTP port
 
 static struct ntp_msg msg = { .padding = 0x23 }; // client
 /*{

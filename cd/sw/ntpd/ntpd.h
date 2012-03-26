@@ -35,21 +35,18 @@
 #ifndef __NTPD_H__
 #define __NTPD_H__
 
-#include "contiki.h"
-#include "contiki-lib.h"
-#include "contiki-net.h"
+//#define UDP_IP_BUF   ((struct uip_udpip_hdr *)&uip_buf[UIP_LLH_LEN])
 
-#include <string.h>
 
-#define DEBUG DEBUG_PRINT
-#include "net/uip-debug.h"
+/*#define	NTP_DIGESTSIZE		16
+#define	NTP_MSGSIZE_NOAUTH	48
+#define	NTP_MSGSIZE		(NTP_MSGSIZE_NOAUTH + 4 + NTP_DIGESTSIZE)
+*/
 
-#define NTP_EPOCH            (86400U * (365U * 70U + 17U))
-#define NTPD_PORT             123
-
-#define UDP_IP_BUF   ((struct uip_udpip_hdr *)&uip_buf[UIP_LLH_LEN])
-
-/* NTP structures - borrowed from OpenNTPD 4.6 */
+/*
+ * NTP structures - borrowed from OpenNTPD 4.6
+ */
+ 
 struct l_fixedpt {
 	uint32_t int_partl;
 	uint32_t fractionl;
@@ -61,9 +58,9 @@ struct s_fixedpt {
 };
 
 struct ntp_msg {
-	u_int8_t status;	/* status of local clock and leap info */
-	u_int8_t stratum;	/* Stratum level */
-	u_int8_t ppoll;		/* poll value */
+	uint8_t status;	/* status of local clock and leap info */
+	uint8_t stratum;	/* Stratum level */
+	uint8_t ppoll;		/* poll value */
 	int8_t precision;
 	struct s_fixedpt rootdelay;
 	struct s_fixedpt dispersion;
@@ -75,7 +72,10 @@ struct ntp_msg {
 };
 
 
-/* Macros for packet - borrowed from DragonflyBSD's dntpd */
+
+/*
+ * Macros for packet - borrowed from DragonflyBSD's dntpd
+ */
 
 /* Leap Second Codes (high order two bits) */
 #define	LI_NOWARNING	(0 << 6)	/* no warning */
@@ -83,9 +83,7 @@ struct ntp_msg {
 #define	LI_MINUSSEC	(2 << 6)	/* minus a second (59 seconds) */
 #define	LI_ALARM	(3 << 6)	/* alarm condition */
 
-/*
- *	Mode values
- */
+/* Mode values */
 #define	MODE_RES0	0	/* reserved */
 #define	MODE_SYM_ACT	1	/* symmetric active */
 #define	MODE_SYM_PAS	2	/* symmetric passive */
@@ -95,10 +93,26 @@ struct ntp_msg {
 #define	MODE_RES1	6	/* reserved for NTP control message */
 #define	MODE_RES2	7	/* reserved for private use */
 
-#define	JAN_1970	2208988800UL	/* 1970 - 1900 in seconds */
+
+
+/*
+ * Numbers and conversions according to RFC 5905
+ */
+#define NTP_PORT             123
+#define NTP_EPOCH            (86400U * (365U * 70U + 17U))
+#define	JAN_1970             2208988800UL    /* 1970 - 1900 in seconds */
 
 #define	NTP_VERSION	4
 #define	NTP_MAXSTRATUM	15
 
-#endif /* __NTPD_H__ */
 
+
+#define FRAC       4294967296.0             /* 2^32 as a double */
+#define D2LFP(a)   ((unsigned long long)((a) * FRAC))  /* NTP timestamp */
+#define LFP2D(a)   ((double)(a) / FRAC)
+#define U2LFP(a)   (((unsigned long long) \
+                       ((a).tv_sec + JAN_1970) << 32) + \
+                       (unsigned long long) \
+                       ((a).tv_usec / 1e6 * FRAC))
+
+#endif /* __NTPD_H__ */
