@@ -35,7 +35,7 @@
 #include "contiki.h"
 #include "contiki-lib.h"
 #include "contiki-net.h"
-//#include "sys/clock.h"
+#include "sys/clock.h"
 
 #include "ntpd.h"
 
@@ -45,19 +45,11 @@
 #define DEBUG DEBUG_PRINT
 #include "net/uip-debug.h"
 
-/*
-#if CONTIKI_TARGET_AVR_RAVEN
-#include <avr/pgmspace.h>
-#else
-#define PROGMEM
-#endif
-*/
-
 
 static const char * host = "aaaa::1"; // NTP server
 static uint16_t port = NTP_PORT; // NTP port
 
-static struct ntp_msg msg = { .padding = 0x23 }; // client
+static struct ntp_msg msg = { .status = 0x23 }; // client
 /*{
 	.padding = 0x23, // client
 	.rootdelay = 0,
@@ -70,131 +62,67 @@ static struct ntp_msg msg = { .padding = 0x23 }; // client
 	.xmttime = 0
 };*/
 
-static struct simple_udp_connection connection;
-
-static void
-receiver(struct simple_udp_connection *c,
-         const uip_ipaddr_t *sender_addr,
-         uint16_t sender_port,
-         const uip_ipaddr_t *receiver_addr,
-         uint16_t receiver_port,
-         const uint8_t *data,
-         uint16_t datalen)
-{
-  printf("Data received on port %d from port %d with length %d\n",
-         receiver_port, sender_port, datalen);
-}
-
+#define SEND_INTERVAL 5*CLOCK_SECOND
 
 static struct uip_udp_conn *udpconn;
+static clock_time_t clocktime;
+static clock_time_t clockseconds;
+		
+/*---------------------------------------------------------------------------*/
+static void
+tcpip_handler(void)
+{
+  char *str;
+
+  if(uip_newdata()) {
+    str = uip_appdata;
+    str[uip_datalen()] = '\0';
+    printf("Response from the server: '%s'\n", str);
+    
+	clocktime = clock_time(); // get the current clock time
+	printf("clock_time: %u\n", clocktime);
+	clockseconds = clock_seconds(); // get the current clock seconds
+	printf("clock_seconds: %u\n", clockseconds);
+  }
+}
+/*---------------------------------------------------------------------------*/
+static void
+timeout_handler(void)
+{
+  printf("Sending NTP packet to server: ");
+  PRINT6ADDR(&udpconn->ripaddr);
+  uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
+}
 /*---------------------------------------------------------------------------*/
 PROCESS(ntpd_process, "ntpd");
 AUTOSTART_PROCESSES(&ntpd_process);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(ntpd_process, ev, data)
-{
-	/*static struct etimer et;
-	static uip_ipaddr_t ipaddr;*/
-	static uip_ipaddr_t *serveraddr;
-	static clock_time_t systime; /* Unsigned (long/short) int */
-	
-	static uip_ipaddr_t numaddr;
-	///uip_ipaddr(&numaddr, 217,31,205,226); // ntp.nic.cz
-	uip_ipaddr(&numaddr, 192,168,56,1);
-	
-	static uip_ipaddr_t dnsserver;
-	dnsserver.u8[0] = 4;
-	dnsserver.u8[1] = 4;
-	dnsserver.u8[2] = 4;
-	dnsserver.u8[3] = 4;
+{	
+	static struct etimer et;
+	uip_ipaddr_t ipaddr;	
 	
 	PROCESS_BEGIN();
-	PRINTF("ntpd process started\n");
 	
-	clock_init();           /* Initialize system clock */
-	systime = clock_time(); /* Get the current clock time */
+	uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,0x0001); // host
 	
-	static struct timer timer;
-	
-	/*resolv_conf(&dnsserver);  
-	
-	
-	resolv_query(host);
-	serveraddr = resolv_lookup(host);
-	if (serveraddr == NULL)
-	{
-		printf("ERROR RESOLVING HOSTNAME\n");
-	}
-	*/
-	
-	/// call, after the uip_udp_new() function has been 
-	
-	//uiplib_ipaddrconv(server, &serveraddr);
-	///udpconn = udp_new((const uip_ipaddr_t *) &serveraddr, uip_htons(port), NULL);
-	udpconn = udp_new((const uip_ipaddr_t *) &numaddr, uip_htons(port), NULL);
-	
-	uip_udp_bind(udpconn, UDP_PORT);
-	
-for (;;)
-{
-	systime = clock_time(); /* Get the current clock time */
-	printf("%lu\n", systime);
-	
-	uip_udp_packet_send(udpconn, (const void *) &msg, sizeof(msg));
-
-	/*static clock_time_t time;
-	init_simple_udp();
-	
-	simple_udp_register(&unicast_connection, UDP_PORT, NULL, UDP_PORT, receiver);*/
-
-	printf("packet sent\n");
-	
-	timer_set(&timer, CLOCK_SECOND);
-	
-	while(!timer_expired(&timer))
-	{}
-	//PROCESS_WAIT_UNTIL();
-	//PROCESS_WAIT_EVENT();
-	//PROCESS_YIELD_UNTIL(timer_expired(&timer));
-}
-	
-	//simple_udp_sendto(&unicast_connection, buf, strlen(buf) + 1, addr);
-
-	//set_connection_address(&ipaddr);
-
-	/* find the IP of router */
-	/*etimer_set(&et, CLOCK_SECOND);
-	while(1){
-		if(uip_ds6_defrt_choose()){
-			uip_ipaddr_copy(&ipaddr, uip_ds6_defrt_choose());
-			break;
-		}
-		etimer_set(&et, CLOCK_SECOND);
-		PROCESS_YIELD_UNTIL(etimer_expired(&et));
-	}*/
-
 	/* new connection with remote host */
-	/*ntp_conn = udp_new(&ipaddr, UIP_HTONS(NTPD_PORT), NULL);
-
-	etimer_set(&et, SEND_INTERVAL * CLOCK_SECOND);
-	while(1) {
-		PROCESS_YIELD();
-		if(etimer_expired(&et)) {
-			timeout_handler();
-			
-			if((clock_seconds() > 4294967290U) || (clock_seconds() < 20)){
-	SEND_INTERVAL = 2 * CLOCK_SECOND;
+	udpconn = udp_new(&ipaddr, UIP_HTONS(123), NULL); // remote port
+	udp_bind(udpconn, UIP_HTONS(123)); // local port
+	
 	etimer_set(&et, SEND_INTERVAL);
-			} else {
-	if(SEND_INTERVAL <= 512 && (getCurrTime() != 0)) {
-		SEND_INTERVAL = 2 * SEND_INTERVAL;
-	}
-	etimer_set(&et, SEND_INTERVAL * CLOCK_SECOND);
-			}
-		} else if(ev == tcpip_event) {
+	for(;;) {
+		PROCESS_YIELD();
+		if(etimer_expired(&et))
+		{
+			timeout_handler();
+			etimer_restart(&et);
+		}
+		else if(ev == tcpip_event)
+		{
 			tcpip_handler();
 		}
-	}*/
+	}
 
 	PROCESS_END();
 }
