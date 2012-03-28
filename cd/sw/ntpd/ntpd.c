@@ -87,10 +87,10 @@ receiver(struct simple_udp_connection *c,
 
 
 static struct uip_udp_conn *udpconn;
-
+/*---------------------------------------------------------------------------*/
 PROCESS(ntpd_process, "ntpd");
 AUTOSTART_PROCESSES(&ntpd_process);
-
+/*---------------------------------------------------------------------------*/
 PROCESS_THREAD(ntpd_process, ev, data)
 {
 	/*static struct etimer et;
