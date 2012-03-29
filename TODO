@@ -2,7 +2,6 @@ Thesis
 ======
 
 NTP - algorithms, packet structure + popisky + bile pozadi, Round Trip Time (RTT)
-Rime and ZigBee
 Kernel - events, process are protothreads, ...
 Use more BOOKs not only MISC in citations
 Read RFC for SNTP, Daytime, Time, NTPv3, ...
@@ -12,7 +11,10 @@ uIP - almost done
 Use plain-text as URL for RFCs - done
 Use figures - done
 
+
 Tasks
 =====
+study clock interface on POSIX systems
+
 Bridge tap0 and eth0 - failed, i will use localhost
 Study clock interface on AVR - done
