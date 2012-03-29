@@ -30,164 +30,23 @@ SNTP is a simplified sub-set of the algorithms used by the NTP protocol
 making the client implementation not only easier, but also suitable for
 resource constraint systems such as embedded systems.
 
-\section{Topology and Hierarchy}
-As in every other network protocol there are servers and clients.
-The servers are rated with the stratum (plural form strata) number which represents their position
-in an NTP hierarchy and their possible accurancy.
-% citation
-Primary (stratum 1) servers synchronise to the reference clock directly traceable to UTC via
-radio, satellite or modem.
-The stratum 2 servers synchronise to stratum 1
-servers via hierarchical subnet.
-The stratum 3 servers synchronise to stratum 2 servers, and so on.
-Synchronisation between servers in the same stratum level is also possible.
-%clients are leaves
-Figure~\ref{fig:ntp-hierarchy} shows a brief hierarchy of NTP.
-\begin{figure}
-  \centering
-  %\input{./xfig/test.pstex_t}
-  \includegraphics[width=9cm,keepaspectratio]{fig/Network_Time_Protocol_servers_and_clients.pdf}
-  \caption{Topology and Hierarchy of NTP}
-  \label{fig:ntp-hierarchy}
-  \bigskip
-\end{figure}
+
+\input{ntp/topology.tex}
+
+\input{ntp/time.tex}
+
+\input{ntp/network.tex}
 
 
-\section{Time and timestamps}\label{sec:ntp-time}
-NTP always uses the Coordinated Universal Time (UTC)~\cite{rfc5905}.
-UTC is maintained by the International Bureau of Weights and Measures in Paris, France.
-It is the time scale that forms the basis for the coordinated dissemination of standard frequencies and time signals~\cite{bipm-utc}.
-The time specified by UTC is the same for all timezones.
-Its calculation is the same as with Greenwich Mean Time (GMT) however
-the daylight savings are not accounted.
-%TODO: CITATION
-The UTC scale is adjusted by the insertion of leap seconds to ensure approximate
-agreement with the time derived from the rotation of the Earth~\cite{bipm-utc}.
-%TODO: better defintion
+\section{NTP on POSIX-compliant systems}
+Operating systems
+Linux
+OpenBSD
+DragonflyBSD
 
-The atomic clocks, on which is UTC based, is so precise that
-they do not match the rotation of the Earth
-which periodically speeds up and slows down due to the action
-of the tides and changes within the Earth's core~\cite{cnn-earth}.
-The goal of a leap second is to catch up UTC with these changes.
-The leap second is inserted on the advice of the International Earth Rotation and Reference Systems Service~\cite{bipm-utc}.
-NTP is well designed for leap second occurance.
-There is Leap Indicator field
-in the structure of NTP packet and there are also fields intended for
-information about leap second in structures NTP algorithm uses~\cite{rfc5905}.
+NTP implementations
+NTP from ntp.org project - reference implementation
+Chrony
+OpenNTPD - OpenBSD
+dntpd - DragonflyBSD
 
-The system time is represented by the system clock maintained by
-the hardware and operating system.
-The goal of the NTP algorithms is to minimize
-both the time difference and frequency difference between UTC and the system clock.
-When these differences have been reduced below nominal
-tolerances, the system clock is said to be synchronised to UTC~\cite{rfc5905}.
-It has never been a goal of NTP to take care of local time,
-it is up to operating system to provide user the correct local time~\cite{ntp-overview}.
-
-The NTP and POSIX timescales are based on the UTC timescale,
-but not always coincident with it~\cite{ntp-leap}.
-The origin of the NTP timescale, the prime epoch, is 00:00:00 UTC on 1 January 1900,
-while the prime epoch of the POSIX timescale is 00:00:00 UTC on 1 January 1970~\cite{ntp-leap}.
-Both timescales reckon in seconds since the prime epoch.
-For instance, upon the first tick of UTC on 1 January 1972 the NTP clock read 2~272~060~800,
-representing the number of seconds since the NTP prime epoch.
-% TODO table with ntp time stamps
-
-NTP manipulates with the time through timestamps - a record of time.
-NTP timestamp has two fields. The seconds field expressing the number of seconds
-and the fraction field expressing fraction of a second~\cite{rfc5905}.
-
-\section{Network}\label{sec:ntp-network}
-Network specification of NTP defines that
-the protocol uses the User Datagram Protocol (UDP) on port number 123~\cite{ianna-ports,rfc5905}.
-Reliable message delivery such as TCP can actually make the delivered NTP packet less reliable since retries
-would increase the delay value and other errors~\cite{rfc5905}.
-This is mostly due to overhead of communication with TCP on transport layer.
-
-All NTP time values are represented in twos-complement format, with
-bits numbered in big-endian fashion from zero starting at the left, or high-order, position~\cite{rfc5905}. 
-There are two formats of timestamp in NTP packet structure:
-long 64-bit and short 32-bit as shown on figure~\ref{fig:ntp-timestamps}.
-The 64-bit long timestamp used by NTP consists of a 32-bit unsigned seconds
-field spanning 136 years (from 1900 to 2036) and a 32-bit fraction field resolving 232
-picoseconds~\cite{rfc5905}.
-
-%\!!
-%An NTP timestamp is a truncated NTP date expressed as
-%an unsigned 64-bit integer including the low order 32 bits of
-%the seconds field concatenated with the high-order 32 bits of
-%the fraction field.
-%This format can represent the 136 years from 1900 to 2036 with a precision of 232 ps.
-%\!!
-
-The short 32-bit timestamp includes a 16-bit unsigned seconds field
-and 16-bit fraction field.
-Root dispersion is accumulated total dispersion from primary server.
-
-\begin{figure}
-	\centering
-	\includegraphics[width=13cm,keepaspectratio]{fig/ntp-timestamps.pdf}
-	\caption{Formats used in NTP}
-	\label{fig:ntp-timestamps}
-	\bigskip
-\end{figure}
-
-% TODO - packet
-
-\begin{figure}
-	\centering
-	\includegraphics[width=6cm,keepaspectratio]{fig/ntp-packet.png}
-	\caption{Basic NTP packet structure}
-	\label{fig:ntp-packet}
-	\bigskip
-\end{figure}
-
-
-Because the short 32-bit format is used for Root dispersion and Root Delay fields,
-they do not need so big scope and precision.
-Root dispersion express accumulated total dispersion from primary server
-and Root Delay express accumulated roundtrip delay via primary server~\cite{ntp-arch}.
-
-%TODO
-
-Because of network latency the timestamp recieved will never be exactly corresponding to
-the current time.
-One of the main goals of NTP is to deal with the network latency~\cite{ntp-overview}.
-
-\section{Algorithms}
-NTP uses the intersection algorithm for selecting the possible most exact timestamp recieved
-from various servers. The resulting exact timestamp does not have to be the same
-as one of those servers provided.
-There are four timestamps in NTP packet: Reference, Origin, Receive and Transmit timestamp.
-The 64-bit long NTP format is used for expressing them~\cite{rfc5905}.
-Using these four timestamps NTP can compute the
-the offset which is given by $\theta = \frac{1}{2}[(t_1 - t_0) + (t_2 - t_1)]$
-where $t_0$ is the time of the request packet transmission,
-$t_1$ is the time of the request packet reception,
-$t_2$ is the time of the response packet transmission and
-$t_3$ is the time of the response packet reception~\cite{ntp-algor}.
-
-When computing result from more servers the intersection algorithms is used~\cite{rfc5905}.
-First of all a set of bad and good servers must be made.
-Bad servers are called Falsetickers and good are called Truechimers~\cite{rfc5905}.
-The division to these sets is based on their response.
-As one can assume for sensible result there must be more Truechimers than Falsetickers~\cite{rfc5905}.
-% TODO f < M\2
-Intersection algorithm computes with estimates converted to intervals.
-E.g. if we have the estimates $10 \pm 2$, $12 \pm 1$ and $11 \pm 1$
-then these intervals are $<8; 12>$, $<11; 13>$ and $<10; 12>$ which
-intersect to form $<11; 12>$ or $11.5 \pm 0.5$ as consistent with all three values.
-The arithmetic mean is used as a value of result.
-When querying servers again the algorithm repeats but the new result computation
-also depends on the previous result~\cite{rfc5905}.
-This eliminates possible jitter which can be caused by reapeatedly quering the servers
-and getting slightly different answers from them.
-
-\begin{figure}
-	\centering
-	\includegraphics[width=13cm,keepaspectratio]{fig/Marzullo_example-1.jpg}
-	\caption{Intersection algorithm}
-	\label{fig:ntp-intersection}
-	\bigskip
-\end{figure}

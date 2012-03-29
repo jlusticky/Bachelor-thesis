@@ -1,0 +1,47 @@
+%=========================================================================
+% (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
+
+\section{Time and timestamps}\label{sec:ntp-time}
+NTP always uses the Coordinated Universal Time (UTC)~\cite{rfc5905}.
+UTC is maintained by the International Bureau of Weights and Measures in Paris, France.
+It is the time scale that forms the basis for the coordinated dissemination of standard frequencies and time signals~\cite{bipm-utc}.
+The time specified by UTC is the same for all timezones.
+Its calculation is the same as with Greenwich Mean Time (GMT) however
+the daylight savings are not accounted.
+%TODO: CITATION
+The UTC scale is adjusted by the insertion of leap seconds to ensure approximate
+agreement with the time derived from the rotation of the Earth~\cite{bipm-utc}.
+%TODO: better defintion
+
+The atomic clocks, on which is UTC based, is so precise that
+they do not match the rotation of the Earth
+which periodically speeds up and slows down due to the action
+of the tides and changes within the Earth's core~\cite{cnn-earth}.
+The goal of a leap second is to catch up UTC with these changes.
+The leap second is inserted on the advice of the International Earth Rotation and Reference Systems Service~\cite{bipm-utc}.
+NTP is well designed for leap second occurance.
+There is Leap Indicator field
+in the structure of NTP packet and there are also fields intended for
+information about leap second in structures NTP algorithm uses~\cite{rfc5905}.
+
+The system time is represented by the system clock maintained by
+the hardware and operating system.
+The goal of the NTP algorithms is to minimize
+both the time difference and frequency difference between UTC and the system clock.
+When these differences have been reduced below nominal
+tolerances, the system clock is said to be synchronised to UTC~\cite{rfc5905}.
+It has never been a goal of NTP to take care of local time,
+it is up to operating system to provide user the correct local time~\cite{ntp-overview}.
+
+The NTP and POSIX timescales are based on the UTC timescale,
+but not always coincident with it~\cite{ntp-leap}.
+The origin of the NTP timescale, the prime epoch, is 00:00:00 UTC on 1 January 1900,
+while the prime epoch of the POSIX timescale is 00:00:00 UTC on 1 January 1970~\cite{ntp-leap}.
+Both timescales reckon in seconds since the prime epoch.
+For instance, upon the first tick of UTC on 1 January 1972 the NTP clock read 2~272~060~800,
+representing the number of seconds since the NTP prime epoch.
+% TODO table with ntp time stamps
+
+NTP manipulates with the time through timestamps - a record of time.
+NTP timestamp has two fields. The seconds field expressing the number of seconds
+and the fraction field expressing fraction of a second~\cite{rfc5905}.
