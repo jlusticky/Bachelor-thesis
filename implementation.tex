@@ -24,13 +24,13 @@ For developing and testing Contiki NTP client the AVR Raven platform was used.
 Contiki feature a basic clock interface with a simple goal - measuring time.
 This interface provides needed calls for timers and its defintion is to be found in /core/sys/clock.h file.
 Specific implementations of this common interface are localed in /cpu direcory of Contiki source code.
-Interface provides call for initialising cpu's clock system - clock_init, that is automatically called during
+Interface provides call for initialising cpu's clock system - clock\_init, that is automatically called during
 boot sequence of Contiki.
-The goal of the clock_init call is to set up
+The goal of the clock\_init call is to set up
 appropriate timer/counter registers and interrupt service routines.
-On AVR CPUs this call is implemented as C macro 
-clock_seconds
-CLOCK_SECOND
+%On AVR CPUs this call is implemented as C macro ...
+%clock\_seconds
+%CLOCK\_SECOND
 This is however enough for implementing a reasonable time interface and later using it for NTP client.
 
 % ntp interface extending the clock library, similiar to posix calls
