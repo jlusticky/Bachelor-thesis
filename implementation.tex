@@ -1,5 +1,7 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
+%=========================================================================
+% (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \chapter{NTP client in Contiki OS}
 %\!Distinguish between TIME and CLOCK
@@ -17,9 +19,20 @@ is platform specific.
 Another deal is possible packet loss if communication uses UDP on transport layer.
 The reason while this can often happen is explained in section~\ref{sec:contiki-uip}.
 
+For developing and testing Contiki NTP client the AVR Raven platform was used.
+%How to get a working set up with Contiki on this platform is described in documents on the CD enclosed to this thesis.
 
-\section{Time interface}
-Clock interface with a simple goal - measuring time.
+\section{Clock interface}
+Contiki feature a basic clock interface with a simple goal - measuring time.
+This interface provides needed calls for timers and its defintion is to be found in /core/sys/clock.h file.
+Specific implementations of this common interface are localed in /cpu direcory of Contiki source code.
+Interface provides call for initialising cpu's clock system - clock_init, that is automatically called during
+boot sequence of Contiki.
+The goal of the clock_init call is to set up
+appropriate timer/counter registers and interrupt service routines.
+On AVR CPUs this call is implemented as C macro 
+clock_seconds
+CLOCK_SECOND
 This is however enough for implementing a reasonable time interface and later using it for NTP client.
 
 % ntp interface extending the clock library, similiar to posix calls
@@ -28,3 +41,4 @@ This is however enough for implementing a reasonable time interface and later us
 
 
 \section{NTP client implementation}
+The structures representing NTP message were borrowed from OpenNTPD NTP Unix daemon.
