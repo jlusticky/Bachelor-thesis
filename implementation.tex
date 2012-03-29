@@ -11,7 +11,20 @@ lack of time support.
 Not only no common interface availability but also
 almost no platform-specific code has been implemented towards time support yet.
 Contiki provides basic clock interface particularly for use of timers though.
-%\!!AVR
+This interface is is common to for all supported platforms, but the particular implementation
+is platform specific.
 
 Another deal is possible packet loss if communication uses UDP on transport layer.
 The reason while this can often happen is explained in section~\ref{sec:contiki-uip}.
+
+
+\section{Time interface}
+Clock interface with a simple goal - measuring time.
+This is however enough for implementing a reasonable time interface and later using it for NTP client.
+
+% ntp interface extending the clock library, similiar to posix calls
+
+%\!!AVR
+
+
+\section{NTP client implementation}
