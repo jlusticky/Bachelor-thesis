@@ -89,8 +89,8 @@ tcpip_handler(void)
 static void
 timeout_handler(void)
 {
-  printf("Sending NTP packet to server: ");
-  PRINT6ADDR(&udpconn->ripaddr);
+  printf("Sending NTP packet to server\n");
+  //PRINT6ADDR(&udpconn->ripaddr);
   uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
 }
 /*---------------------------------------------------------------------------*/
@@ -103,8 +103,13 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	uip_ipaddr_t ipaddr;	
 	
 	PROCESS_BEGIN();
-	
-	uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,0x0001); // host
+
+	// set the NTP server address
+#ifdef UIP_CONF_IPV6	
+	uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,0x0001);
+#else
+	uip_ipaddr(&ipaddr, 10, 18, 48, 75);
+#endif /* UIP_CONF_IPV6 */
 	
 	/* new connection with remote host */
 	udpconn = udp_new(&ipaddr, UIP_HTONS(123), NULL); // remote port
