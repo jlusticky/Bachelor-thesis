@@ -15,6 +15,7 @@ Use figures - done
 Tasks
 =====
 study clock interface on POSIX systems
+study clock hardware on x86
 
 Bridge tap0 and eth0 - failed, i will use localhost
 Study clock interface on AVR - done
