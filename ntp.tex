@@ -40,6 +40,21 @@ resource constraint systems such as embedded systems.
 \input{ntp/algorithms.tex}
 
 
+\section{Hardware concerns for implementing real-time support}
+x86
+RTC in CMOS, also in BCD - battery powered
+PIT Intel 8253 and 8254 - 3 counters (counter 0 interrupt to OS)
+Used by historic versions of Linux
+=> read initial time from RTC, setup PIT and interrupts (IRQ 0, INT 8), increment jiffies on every interrupt, provide app resolution of jiffies
+
+init/main.c - time_init() - read from RTC and save to startup_time
+kernel/sched.c - sched_init() = PTI setup for interrupts - LATCH (1193180/HZ)
+kernel/system_call.s - timer_interrupt() in assembly - increments jiffies
+
+The current real time is provided by CURRENT_TIME (startup_time+jiffies/HZ) => since jiffies is integer and HZ is 100 => resolution of 10ms.
+kernel/sys.c - sys_time() - CURRENT_TIME returned
+
+
 \section{NTP on POSIX-compliant systems}
 Operating systems
 Linux
