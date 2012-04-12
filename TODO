@@ -14,8 +14,9 @@ Use figures - done
 
 Tasks
 =====
-study clock interface on POSIX systems
-study clock hardware on x86
+documentation for avr atmega1284p - 3timers and their usage
+study clock interface on POSIX systems - FreeBSD paper <- citation
+study clock hardware on x86 - hpet
 
 Bridge tap0 and eth0 - failed, i will use localhost
 Study clock interface on AVR - done
