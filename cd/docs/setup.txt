@@ -4,12 +4,15 @@ How to setup Contiki on AVR Raven with ATMega1284P guide
 
 1 - Preparation
 ===============
-For this guide we assume the following equipment:
+In this guide we assume the following equipment:
 
 Hardware:
-AVR Raven with ATmega1284P
-AVR Dragon programer - JTAG connected to AVR Raven
-PC running Linux
+PC running Linux (any other Unix-like OS should also work, but the GNU software is needed)
+AVR Raven with ATmega1284P - http://www.atmel.com/tools/RZRAVEN.aspx
+AVR Dragon programer - JTAG connected to AVR Raven - http://www.atmel.com/tools/AVRDRAGON.aspx
+USB A/B Cable for connecting PC with AVR Raven
+OPTIONAL RZ USB stick for communication between PC and AVR Raven (you won't have fun without it) - http://www.atmel.com/tools/RZUSBSTICK.aspx
+NOTE: Two AVR Raven devices and one RZ USB stick can be ordered as evaluation starter kit called RZ Raven - http://www.atmel.com/tools/RZRAVEN.aspx
 
 Software:
 Contiki source code - version 2.5
@@ -77,6 +80,7 @@ Now we can select brakepoints and debug as usual.
 
 
 
+
 Example - Seting up webserver
 =============================
 
@@ -132,14 +136,16 @@ $ sudo /etc/init.d/radvd start
 Now we have radvd running, we can use Wireshark to check if Router Advertisement packets are being sent on usb0 interface.
 
 
+The last thing is flashing our compiled binary file to AVR Raven:
+$ avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex webserver6-avr-raven.elf webserver6-avr-raven.flash
+$ avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex webserver6-avr-raven.elf webserver6-avr-raven.eeprom
+$ avrdude -c dragon_jtag -P usb -p m1284p -Ueeprom:w:webserver6-avr-raven.eeprom -Uflash:w:webserver6-avr-raven.flash
 
-avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex webserver6-avr-raven.elf webserver6-avr-raven.flash
-avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex webserver6-avr-raven.elf webserver6-avr-raven.eeprom
+---# /etc/avrdude.conf
 
-avrdude -c dragon_jtag -P usb -p m1284p -Ueeprom:w:webserver6-avr-raven.eeprom -Uflash:w:webserver6-avr-raven.flash
-# /etc/avrdude.conf
-
-ping6 aaaa::0011:22ff:fe33:4455
+Finally we can ping the AVR Raven and use the webserver running on it:
+$ ping6 aaaa::0011:22ff:fe33:4455              # the actual IPv6 address can be determined from Wireshark or radvd output
+$ wget http://[aaaa::0011:22ff:fe33:4455]      # or any other web browser
 
 
 pomoci RZUSBSTICK (rzusbstick + contiki/example/ravenusbstick = jackdaw):
@@ -151,4 +157,9 @@ screen /dev/ttyACM0
 If you desire more information on working with AVR Raven please consult
 Contiki wiki page for AVR Raven - http://www.sics.se/contiki/wiki/index.php/Avr_Raven
 Contiki documentation that can be generated from source code or - http://www.sics.se/~adam/contiki/docs/
+
+-- + Jackdaw + ravenusbstick example
+http://www.sics.se/~adam/contiki/docs/a01829.html
+http://www.sics.se/~adam/contiki/docs/a01828.html
+
 
