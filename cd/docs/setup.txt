@@ -1,5 +1,5 @@
-How to setup Contiki on AVR Raven with ATMega1284P guide
 ========================================================
+How to setup Contiki on AVR Raven with ATMega1284P guide
 ========================================================
 
 1 - Preparation
@@ -77,30 +77,60 @@ Now we can select brakepoints and debug as usual.
 
 
 
-
-
 Example - Seting up webserver
 =============================
 
+Assuming we have a working hello-world project, we can setup a webserver-ipv6-raven project from Contiki examples.
+Navigate to webserver-ipv6-raven project and compile it for AVR Raven hardware:
+$ cd contiki/examples/webserver-ipv6-raven
+$ make                             # no need to specify target as it is already specified to AVR Raven in this particular project
+---OR---- $ make TARGET=avr-raven
 
-pomoci RZUSBSTICK (rzusbstick + contiki/example/ravenusbstick = jackdaw):
-ve skupine dialout
-screen /dev/ttyACM0
+
+NOTE: Some of the following commands must be issued by root or with sudo. We assume sudo is configured on the system.
+
+Connect the RZ USB stick to PC and check if the network interface establishes.
+$ ifconfig
+
+We should see interface called usb0 and it should get automatically IPv6 link local address, i.e. fe80::0012:13ff:fe14:1516/64.
+If not add it manually:
+$ sudo ip -6 address add fe80::0012:13ff:fe14:1516/64 scope link dev usb0
+
+Next we assign this interface IPv6 address and route for the whole subnet.
+$ sudo ip -6 address add aaaa::1/64 dev usb0   # our PC becomes aaaa::1 IPv6 address
+$ sudo ip -6 route add aaaa::/64 dev usb0      # traffic to aaaa::/64 network goes through usb0 (RZ USB stick) interface
 
 
+Next thing is to setup Router Advertisement Daemon (radvd), so that the Contiki node connects correctly to our IPv6 network.
+Insert this configuration to /etc/radvd.conf or any other configuration file radvd uses.
 
-webserver
-------------
+interface usb0
+{
+    AdvSendAdvert on;
+    AdvLinkMTU 1280;
+    AdvCurHopLimit 128;
+    AdvReachableTime 360000;
+    MinRtrAdvInterval 100;
+    MaxRtrAdvInterval 150;
+    AdvDefaultLifetime 200;
+    prefix AAAA::/64
+    {
+        AdvOnLink on;
+        AdvAutonomous on;
+        AdvPreferredLifetime 4294967295; 
+        AdvValidLifetime 4294967295; 
+    };
+};
 
-cd ~/contiki/examples/webserver-ipv6-raven
-make
 
-sudo ip -6 address add aaaa::1/64 dev usb0
-sudo ip -6 route add aaaa::/64 dev usb0
-sysctl -w net.ipv6.conf.all.forwarding=1
+Before starting radvd we must enable forwarding for IPv6:
+$ sudo sysctl -w net.ipv6.conf.all.forwarding=1
+Now we can start the radvd - this should be done in the same way as other daemons are started on your OS.
+The path might be /etc/rc.d/radvd, /etc/init.d/radvd, /usr/local/etc/rc.d/radvd or any other helper script (service, rc.d, ...) might be used.
+$ sudo /etc/init.d/radvd start
 
-radvd.conf
-radvd start
+Now we have radvd running, we can use Wireshark to check if Router Advertisement packets are being sent on usb0 interface.
+
 
 
 avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex webserver6-avr-raven.elf webserver6-avr-raven.flash
@@ -112,8 +142,13 @@ avrdude -c dragon_jtag -P usb -p m1284p -Ueeprom:w:webserver6-avr-raven.eeprom -
 ping6 aaaa::0011:22ff:fe33:4455
 
 
+pomoci RZUSBSTICK (rzusbstick + contiki/example/ravenusbstick = jackdaw):
+ve skupine dialout
+screen /dev/ttyACM0
+
 
 
 If you desire more information on working with AVR Raven please consult
 Contiki wiki page for AVR Raven - http://www.sics.se/contiki/wiki/index.php/Avr_Raven
+Contiki documentation that can be generated from source code or - http://www.sics.se/~adam/contiki/docs/
 
