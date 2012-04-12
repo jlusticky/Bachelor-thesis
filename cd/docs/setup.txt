@@ -130,7 +130,7 @@ interface usb0
 Before starting radvd we must enable forwarding for IPv6:
 $ sudo sysctl -w net.ipv6.conf.all.forwarding=1
 Now we can start the radvd - this should be done in the same way as other daemons are started on your OS.
-The path might be /etc/rc.d/radvd, /etc/init.d/radvd, /usr/local/etc/rc.d/radvd or any other helper script (service, rc.d, ...) might be used.
+The path might be /etc/rc.d/radvd, /etc/init.d/radvd, /usr/local/etc/rc.d/radvd or any other helper script (service, systemctl, ...) might be used.
 $ sudo /etc/init.d/radvd start
 
 Now we have radvd running, we can use Wireshark to check if Router Advertisement packets are being sent on usb0 interface.
