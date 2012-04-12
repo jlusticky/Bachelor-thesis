@@ -1,6 +1,5 @@
 Thesis
 ======
-
 NTP - algorithms, packet structure + popisky + bile pozadi, Round Trip Time (RTT)
 Kernel - events, process are protothreads, ...
 Use more BOOKs not only MISC in citations
@@ -14,6 +13,8 @@ Use figures - done
 
 Tasks
 =====
+generate documentation from source code
+finish and review setup.txt
 documentation for avr atmega1284p - 3timers and their usage
 study clock interface on POSIX systems - FreeBSD paper <- citation
 study clock hardware on x86 - hpet
