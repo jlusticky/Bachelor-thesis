@@ -41,18 +41,26 @@ resource constraint systems such as embedded systems.
 
 
 \section{Hardware concerns for implementing real-time support}
-x86
-RTC in CMOS, also in BCD - battery powered
+A typical desktop computer today includes CPU based on Intel x86 architecture.
+Real-Time Clock (RTC) in CMOS memory that is battery powered
+
+Unfortunately Intel x86 architecture is heavily influenced by backwards compatibility,
+e.g. the time value can also be stored in Binary Code Digit (BCD) encoding in RTC.
+
+In year 19xx / Starting with Intel 386
+Intel introduced
 PIT Intel 8253 and 8254 - 3 counters (counter 0 interrupt to OS)
+
+
 Used by historic versions of Linux
 => read initial time from RTC, setup PIT and interrupts (IRQ 0, INT 8), increment jiffies on every interrupt, provide app resolution of jiffies
 
-init/main.c - time_init() - read from RTC and save to startup_time
-kernel/sched.c - sched_init() = PTI setup for interrupts - LATCH (1193180/HZ)
-kernel/system_call.s - timer_interrupt() in assembly - increments jiffies
+init/main.c - time\_init() - read from RTC and save to startup\_time
+kernel/sched.c - sched\_init() = PTI setup for interrupts - LATCH (1193180/HZ)
+kernel/system\_call.s - timer\_interrupt() in assembly - increments jiffies
 
-The current real time is provided by CURRENT_TIME (startup_time+jiffies/HZ) => since jiffies is integer and HZ is 100 => resolution of 10ms.
-kernel/sys.c - sys_time() - CURRENT_TIME returned
+The current real time is provided by CURRENT\_TIME (startup\_time+jiffies/HZ) => since jiffies is integer and HZ is 100 => resolution of 10ms.
+kernel/sys.c - sys\_time() - CURRENT\_TIME returned
 
 
 \section{NTP on POSIX-compliant systems}
