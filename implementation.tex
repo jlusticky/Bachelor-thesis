@@ -17,8 +17,9 @@ is platform specific.
 Another deal is possible packet loss if communication uses UDP on transport layer.
 The reason while this can often happen is explained in section~\ref{sec:contiki-uip}.
 
-For developing and testing Contiki NTP client the AVR Raven platform was used.
-%How to get a working set up with Contiki on this platform is described in documents on the CD enclosed to this thesis.
+For developing and testing Contiki NTP client the AVR Raven platform with CPU ATmega1284P was used.
+How to get a working set up with Contiki on this platform is described in
+docs/setup.txt file on the CD enclosed to this thesis.
 
 \section{Clock interface}
 Contiki feature a basic clock interface with a simple goal - measuring time.
@@ -28,7 +29,15 @@ Interface provides call for initialising CPU's clock system - clock\_init, that 
 boot sequence of Contiki.
 The goal of the clock\_init call is to set up
 appropriate timer/counter registers and interrupt service routines.
-%On AVR CPUs this call is implemented as C macro ...
+On AVR CPUs this call is implemented as C macro which evaluates to specific setup code for each CPU
+when compiling.
+The setup code is not common to all CPUs because of differencies among them - e.g. there are usually
+only three Timer/Counter modules, but AVR ATmega1284P has four Timer/Counter modules.
+
+%At least one of those is always 16 bit wide
+%This extra module on AVR ATmega1284P is used for
+% three vs. 3
+
 %clock\_seconds
 %CLOCK\_SECOND
 This is however enough for implementing a reasonable time interface and later using it for NTP client.
