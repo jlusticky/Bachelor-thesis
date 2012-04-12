@@ -1,41 +1,87 @@
-#Hardware:
-avr raven with atmega1284p and lcd displey
-avr dragon programator - JTAG connected to avr raven
+How to setup Contiki on AVR Raven with ATMega1284P guide
+========================================================
+========================================================
 
+1 - Preparation
+===============
+For this guide we assume the following equipment:
+
+Hardware:
+AVR Raven with ATmega1284P
+AVR Dragon programer - JTAG connected to AVR Raven
+PC running Linux
 
 Software:
-avrdude (flasher) - http://www.nongnu.org/avrdude/
-avr-libc, binutils-avr, gcc-avr, (gdb-avr, avarice)
-/etc/udev/rules.d/99-avrdragon.rules
+Contiki source code - version 2.5
+	from http://sourceforge.net/projects/contiki/files/Contiki/Contiki%202.5/contiki-2.5.zip/download
+	or after cloning git repository by issuing git checkout 2.5
+Programmer (flasher) for AVR - avrdude - http://www.nongnu.org/avrdude/
+Toolchaing for AVR - avr-libc, binutils-avr, gcc-avr
+OPTIONAL debugger (GDB) and interface between AVR JTAG and GDB - gdb-avr, avarice - http://avarice.sourceforge.net/
++OPTIONALLY we can use DDD as a GDB frontend
+
+
+If we want to interface with the hardware as non-root user, we need to configure udev.
+Put the following line to file under /etc/udev/rules.d/99-avrdragon.rules
+
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="03eb", ATTRS{idProduct}=="2107", MODE="0666"
 
-git clone
-
-cd contiki/examples/hello-world
-make TARGET=avr-raven savetarget
-make
-make hello-world.u # naflashuje program do avr ravenu
-make hello-world.hex  # extrahuje hex soubor -- viz http://www.sics.se/contiki/wiki/index.php/Avr_Raven
+The idVendor and idProduct can be read from output of lsusb command when the hardware is connected.
+The mode 0666 sets this device writable for all users.
+The udev or a whole PC might need to be restarted to apply changes.
 
 
-make targets # zobrazi cile
+2 - Compiling and flashing
+==========================
+After everything from step 1 installed and connected we can navigate to a Contiki project and flash it to AVR Raven:
+$ cd contiki/examples/hello-world
+$ make TARGET=avr-raven savetarget  # select target platform and save our choice to Makefile.target file
+$ make                              # this will compile the project for avr-raven platform
+
+Now we have the hello-world project compiled for avr-raven target.
+
+To see all avaliable target platforms issue the following command:
+$ make targets
 
 
-dolu do makefile
+Next we need to upload our compiled project to AVR Raven.
+Since we are using the AVR Dragon with JTAG, we need to inform the programmer about it.
+Edit Makefile and append the following line at the bottom of file:
+
 AVRDUDE_PROGRAMMER := -c dragon_jtag
 
--nahoru pro ladeni
--CFLAGS += -g -DDEBUG=1
+This appends "-c dragon_jtag" parameter to avrdude programmer, so it knows we are using Dragon with JTAG connected to AVR Raven.
+Now we can upload the file:
+$ make hello-world.u                # upload compiled project to device using avrdude (this must be issued by root if udev was not configured as above)
 
-ladeni:
+After successful upload we should have a running hello-world project on AVR Raven device.
+
+
+3 - Debugging
+=============
+For debugging we gdb-avr and avarice software. We can also use a DDD graphical frontend for debugging.
+Avarice tool need a hex file from our project. The following will extract it:
+$ make hello-world.hex              # extract a .hex file for flashing with other programmers and avarice
+
+Next we lunch avarice which will also flash the project to hardware and create a port (1212) for connecting the GDB debugger.
 avarice -g -j usb -P atmega1284p --erase --program --file hello-world.hex -B 1MHz  :1212
 
-avr-gdb hello-wolrd.avr-raven
-layout asm
-target remote :1212
-continue
+After then we start the GDB debugger with our compiled binary file.
+$ avr-gdb hello-wolrd.avr-raven
+target remote :1212                 # connect to 1212 port for communicating with the hardware, after then we can debug as usual
+continue                            # run the program (we should set some brakepoints before)
 
-ddd --debugger avr-gdb hello-world.avr-raven
+If we want to use a DDD frontend we start the DDD with avr-gdb debugger:
+$ ddd --debugger avr-gdb  hello-world.avr-raven
+Now we can select brakepoints and debug as usual.
+
+
+
+
+
+Example - Seting up webserver
+=============================
+
 
 pomoci RZUSBSTICK (rzusbstick + contiki/example/ravenusbstick = jackdaw):
 ve skupine dialout
@@ -64,3 +110,10 @@ avrdude -c dragon_jtag -P usb -p m1284p -Ueeprom:w:webserver6-avr-raven.eeprom -
 # /etc/avrdude.conf
 
 ping6 aaaa::0011:22ff:fe33:4455
+
+
+
+
+If you desire more information on working with AVR Raven please consult
+Contiki wiki page for AVR Raven - http://www.sics.se/contiki/wiki/index.php/Avr_Raven
+
