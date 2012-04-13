@@ -19,7 +19,7 @@ A Protothread is driven by repeated calls to the function in which the Protothre
 Each time the
 function is called, the Protothread will run until it blocks or exits.
 Protothreads are implemented using local continuations. A local continuation represents the current state
-of execution at a particular place in the program, but does not provide any call history or local variables.
+of execution at a particular place in the program, but does not provide any call history or local variables~\cite{contiki-docs}.
 
 The Protothreads API consists of four basic operations: initialization PT\_INIT(), execution PT\_BEGIN(),
 conditional blocking PT\_WAIT\_UNTIL() and exit PT\_END()~\cite{paper-protothreads}.
@@ -28,7 +28,7 @@ to appendix~\ref{app:protothreads} in which an example of usage is shown.
 
 Since Protothreads are implemented using standard C, library providing Protothreads can be used everywhere C toolchain is available.
 But there are some cons to consider. Because protothreads are stackless, a Protothread can only run within a single C function.
-There is also no way of storing automatic local variables. And since Protothreads are implemented using C {\it switch} statement, and these can
+There is also no way of storing automatic local variables~\cite{contiki-docs}. And since Protothreads are implemented using C {\it switch} statement, and these can
 not be nested, the code that uses Protothreads cannot use {\it switch} statements itself.
 Workaround for storing local variables is to prepend them with the {\it static} keyword, which make them being put into data segment
-by compiler and thus remembering the value between the function calls.
+by compiler and thus remembering the value between the function calls~\cite{paper-protothreads}.
