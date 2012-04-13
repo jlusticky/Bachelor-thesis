@@ -14,6 +14,10 @@ USB A/B Cable for connecting PC with AVR Raven
 OPTIONAL RZ USB stick for communication between PC and AVR Raven (you won't have fun without it) - http://www.atmel.com/tools/RZUSBSTICK.aspx
 NOTE: Two AVR Raven devices and one RZ USB stick can be ordered as evaluation starter kit called RZ Raven - http://www.atmel.com/tools/RZRAVEN.aspx
 
+
+----#--SETUP AVR Raven connection + Photos -> HTML
+
+
 Software:
 Contiki source code - version 2.5
 	from http://sourceforge.net/projects/contiki/files/Contiki/Contiki%202.5/contiki-2.5.zip/download
@@ -79,12 +83,10 @@ $ ddd --debugger avr-gdb  hello-world.avr-raven
 Now we can select brakepoints and debug as usual.
 
 
+4 - Network communication
+=========================
 
-
-Example - Seting up webserver
-=============================
-
-Assuming we have a working hello-world project, we can setup a webserver-ipv6-raven project from Contiki examples.
+Assuming we have RZ USB stick and working hello-world project, we can setup a webserver-ipv6-raven project from Contiki examples.
 Navigate to webserver-ipv6-raven project and compile it for AVR Raven hardware:
 $ cd contiki/examples/webserver-ipv6-raven
 $ make                             # no need to specify target as it is already specified to AVR Raven in this particular project
@@ -92,6 +94,13 @@ $ make                             # no need to specify target as it is already 
 
 
 NOTE: Some of the following commands must be issued by root or with sudo. We assume sudo is configured on the system.
+
+
+----#--SETUP RZ USB stick connection + firmware + Photos -> HTML
+Flash the RZ USB stick:
+avrdude -u -p usb1287 -c jtagmkII -v -P usb -Uefuse:w:0xFF:m -Uhfuse:w:0x99:m -Ulfuse:w:0xE2:m -Ueeprom:w:ravenusbstick-eeprom.hex -Uravenusbstick.hex
+---
+
 
 Connect the RZ USB stick to PC and check if the network interface establishes.
 $ ifconfig
@@ -136,7 +145,8 @@ $ sudo /etc/init.d/radvd start
 Now we have radvd running, we can use Wireshark to check if Router Advertisement packets are being sent on usb0 interface.
 
 
-The last thing is flashing our compiled binary file to AVR Raven:
+The last thing is flashing our compiled binary file to AVR Raven.
+We need to do it manually because this project does not have the upload target:
 $ avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex webserver6-avr-raven.elf webserver6-avr-raven.flash
 $ avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex webserver6-avr-raven.elf webserver6-avr-raven.eeprom
 $ avrdude -c dragon_jtag -P usb -p m1284p -Ueeprom:w:webserver6-avr-raven.eeprom -Uflash:w:webserver6-avr-raven.flash
