@@ -10,7 +10,13 @@ The memory constraints make programming for embedded systems a challange.
 
 Operating system Contiki is targeted at embedded systems supporting MSP430, AVR, ARM, x86 architecture and many others.
 Contiki aims for maximum portability and therefore is written in C.
-It features TCP/IP communication stack called uIP~(micro~IP)
+Protothreads are a new concept brought by Contiki to the embedded world~\cite{paper-protothreads}.
+Protothreads are very lightweight and compatible with standard C.
+Each Protothread does not require a separate stack which makes them perfectly
+fit for usage in programming memory constrained embedded systems.
+Protothreads are more detailed discussed in section~\ref{sec:contiki-protothreads}.
+
+Contiki also features TCP/IP communication stack called uIP~(micro~IP)
 that comforms to Request For Comments memorandums published by the Internet Engineering Task Force.
 The uIP provides communication abilities using both IPv4 and IPv6~\cite{contiki-docs}.
 Contiki with its uIP stack is IPv6 Ready Phase 1 certified
@@ -25,12 +31,6 @@ with much tinner layers than traditional architectures~\cite{paper-rime}.
 Rime is designed to simplify the implementation of communication
 protocols.
 Rime is shortly discussed in section~\ref{sec:contiki-rime}.
-
-Protothreads are another new concept brought by Contiki to the embedded world~\cite{paper-protothreads}.
-Protothreads are very lightweight and compatible with standard C.
-Each Protothread does not require a separate stack which makes them perfectly
-fit for usage in programming memory constrained embedded systems.
-Protothreads are more detailed discussed in section~\ref{sec:contiki-protothreads}.
 
 Operating system Contiki, uIP and Protothreads are used by hundreds of companies in embedded devices in
 such diverse systems as car engines, oil boring equipment, satellites, and container security systems~\cite{thesis-programming}.
