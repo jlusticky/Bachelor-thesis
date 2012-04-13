@@ -2,22 +2,22 @@ Thesis
 ======
 NTP - algorithms, packet structure + popisky + bile pozadi, Round Trip Time (RTT)
 Kernel - events, process are protothreads, ...
+Timers
+Ask Mr. Kasparek for including the setup guide into to thesis + cd content - bib, contiki source code, docs,..
 Use more BOOKs not only MISC in citations
-Read RFC for SNTP, Daytime, Time, NTPv3, ...
 C code template and shortening
 
-uIP - almost done
-Use plain-text as URL for RFCs - done
-Use figures - done
+uIP - review
+Create custom figures
 
 
 Tasks
 =====
-generate documentation from source code - DOXYGE
+generate documentation from source code - DOXYGEN
 finish and review setup.txt - CONNECTIONS + Jackdaw
+
 documentation for avr atmega1284p - 3timers and their usage
 study clock interface on POSIX systems - FreeBSD paper <- citation
 study clock hardware on x86 - hpet
 
-Bridge tap0 and eth0 - failed, i will use localhost
-Study clock interface on AVR - done
+Study ISR clock and timer interface on AVR
