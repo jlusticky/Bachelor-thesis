@@ -2,9 +2,9 @@
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \section{Algorithms}
-NTP uses the intersection algorithm for selecting the possible most exact timestamp recieved
-from various servers. The resulting exact timestamp does not have to be the same
-as one of those servers provided.
+
+% communication with one server
+
 There are four timestamps in NTP packet: Reference, Origin, Receive and Transmit timestamp.
 The 64-bit long NTP format is used for expressing them~\cite{rfc5905}.
 Using these four timestamps NTP can compute the
@@ -14,12 +14,15 @@ $t_1$ is the time of the request packet reception,
 $t_2$ is the time of the response packet transmission and
 $t_3$ is the time of the response packet reception~\cite{ntp-algor}.
 
-When computing result from more servers the intersection algorithms is used~\cite{rfc5905}.
+When computing result from more servers the intersection algorithms is used
+for selecting the possible most exact timestamp recieved from various servers~\cite{rfc5905}.
+The resulting exact timestamp does not have to be the same
+as one of those servers provided.
 First of all a set of bad and good servers must be made.
 Bad servers are called Falsetickers and good are called Truechimers~\cite{rfc5905}.
 The division to these sets is based on their response.
 As one can assume for sensible result there must be more Truechimers than Falsetickers~\cite{rfc5905}.
-% TODO f < M\2
+
 Intersection algorithm computes with estimates converted to intervals.
 E.g. if we have the estimates $10 \pm 2$, $12 \pm 1$ and $11 \pm 1$
 then these intervals are $<8; 12>$, $<11; 13>$ and $<10; 12>$ which
@@ -33,8 +36,15 @@ and getting slightly different answers from them.
 \begin{figure}
 	\centering
 	\includegraphics[width=13cm,keepaspectratio]{fig/Marzullo_example-1.jpg}
-	\caption{Intersection algorithm}
+	\caption{Intersection algorithm by Daniel Exb}
 	\label{fig:ntp-intersection}
 	\bigskip
 \end{figure}
 
+%Since the clients complying with a subset of NTP, called
+%the Simple Network Time Protocol (SNTPv4) [RFC4330], do not need to
+%implement the mitigation algorithms ... ~\cite{rfc5905}.
+% 
+% No limitation on .. since ..
+% NTP and SNTP servers and clients are
+% completely interoperable and can be intermixed in NTP subnets~\cite{5905}.
