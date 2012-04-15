@@ -1,7 +1,7 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
-\section{Time and timestamps}\label{sec:ntp-time}
+\section{Time and timescales}\label{sec:ntp-time}
 NTP always uses the Coordinated Universal Time (UTC)~\cite{rfc5905}.
 UTC is maintained by the International Bureau of Weights and Measures in Paris, France.
 It is the time scale that forms the basis for the coordinated dissemination of standard frequencies and time signals~\cite{bipm-utc}.
@@ -41,7 +41,3 @@ Both timescales reckon in seconds since the prime epoch.
 For instance, upon the first tick of UTC on 1 January 1972 the NTP clock read 2~272~060~800,
 representing the number of seconds since the NTP prime epoch.
 % TODO table with ntp time stamps
-
-NTP manipulates with the time through timestamps - a record of time.
-NTP timestamp has two fields. The seconds field expressing the number of seconds
-and the fraction field expressing fraction of a second~\cite{rfc5905}.

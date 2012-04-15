@@ -1,13 +1,16 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
-\section{Network}\label{sec:ntp-network}
+\section{Network and timestamps}\label{sec:ntp-network}
 Network specification of NTP defines that
 the protocol uses the User Datagram Protocol (UDP) on port number 123~\cite{ianna-ports,rfc5905}.
 Reliable message delivery such as TCP can actually make the delivered NTP packet less reliable since retries
 would increase the delay value and other errors~\cite{rfc5905}.
 This is mostly due to overhead of communication with TCP on transport layer.
 
+NTP manipulates with the time through timestamps - a record of time.
+NTP timestamp has two fields. The seconds field expressing the number of seconds
+and the fraction field expressing fraction of a second~\cite{rfc5905}.
 All NTP time values are represented in twos-complement format, with
 bits numbered in big-endian fashion from zero starting at the left, or high-order, position~\cite{rfc5905}. 
 There are two formats of timestamp in NTP packet structure:
