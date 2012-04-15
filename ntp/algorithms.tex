@@ -4,8 +4,12 @@
 \section{Algorithms}
 
 % communication with one server
+% However, the
+% NTP protocol does not include a specification of the algorithms for
+% doing this, which is left as a topic for further study
 
-There are four timestamps in NTP packet: Reference, Origin, Receive and Transmit timestamp.
+As the figure~\ref{fig:ntp-packet} shows, there are four timestamps
+in NTP packet: Reference, Origin, Receive and Transmit timestamp.
 The 64-bit long NTP format is used for expressing them~\cite{rfc5905}.
 Using these four timestamps NTP can compute the
 the offset which is given by $\theta = \frac{1}{2}[(t_1 - t_0) + (t_2 - t_1)]$
@@ -38,7 +42,7 @@ and getting slightly different answers from them.
 \begin{figure}
 	\centering
 	\includegraphics[width=13cm,keepaspectratio]{fig/Marzullo_example-1.jpg}
-	\caption{Intersection algorithm by Daniel Exb}
+	\caption{Intersection algorithm by D. Exb}
 	\label{fig:ntp-intersection}
 	\bigskip
 \end{figure}
