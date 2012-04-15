@@ -33,8 +33,8 @@ to rebuild the same data.
 This way uIP stack does not need to use explicit dynamic memory allocation.
 Instead, it uses a single global buffer for holding packets and has a fixed
 table for holding connection state.
-
 The global packet buffer is large enough to contain one packet of maximum size~\cite{contiki-docs}.
+
 When a packet arrives from the network, the device driver places it in the
 global buffer and calls the TCP/IP stack.
 If the packet contains data, the TCP/IP stack will notify the corresponding application.
