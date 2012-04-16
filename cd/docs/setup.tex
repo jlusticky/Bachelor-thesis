@@ -1,9 +1,13 @@
-========================================================
-How to setup Contiki on AVR Raven with ATMega1284P guide
-========================================================
+\documentclass{article}
+\usepackage{a4wide}
+\begin{document}
 
-1 - Preparation
-===============
+\title{How to setup Contiki on AVR Raven with ATMega1284P}
+\author{Josef Lusticky}
+
+\maketitle
+
+\section{Preparation}
 In this guide we assume the following equipment:
 
 Hardware:
@@ -20,7 +24,7 @@ NOTE: Two AVR Raven devices and one RZ USB stick can be ordered as evaluation st
 
 Software:
 Contiki source code - version 2.5
-	from http://sourceforge.net/projects/contiki/files/Contiki/Contiki%202.5/contiki-2.5.zip/download
+	from http://sourceforge.net/projects/contiki/files/Contiki/Contiki\%202.5/contiki-2.5.zip/download
 	or after cloning git repository by issuing git checkout 2.5
 Programmer (flasher) for AVR - avrdude - http://www.nongnu.org/avrdude/
 Toolchaing for AVR - avr-libc, binutils-avr, gcc-avr
@@ -38,8 +42,7 @@ The mode 0666 sets this device writable for all users.
 The udev or a whole PC might need to be restarted to apply changes.
 
 
-2 - Compiling and flashing
-==========================
+\section{Compiling and flashing}
 After everything from step 1 installed and connected we can navigate to a Contiki project and flash it to AVR Raven:
 $ cd contiki/examples/hello-world
 $ make TARGET=avr-raven savetarget  # select target platform and save our choice to Makefile.target file
@@ -64,8 +67,7 @@ $ make hello-world.u                # upload compiled project to device using av
 After successful upload we should have a running hello-world project on AVR Raven device.
 
 
-3 - Debugging
-=============
+\section{Debugging}
 For debugging we gdb-avr and avarice software. We can also use a DDD graphical frontend for debugging.
 Avarice tool need a hex file from our project. The following will extract it:
 $ make hello-world.hex              # extract a .hex file for flashing with other programmers and avarice
@@ -85,8 +87,7 @@ On the GDB Console connect to target using (if you can not see it, click View ->
 Now we can select brakepoints and debug using continue as usual.
 
 
-4 - Network communication
-=========================
+\section{Network communication}
 NOTE: Some of the following commands must be issued by root or with sudo. We assume sudo is configured on the system.
 
 Assuming we have RZ USB stick and working hello-world project, we can setup a webserver-ipv6-raven project from Contiki examples.
@@ -196,4 +197,4 @@ Contiki documentation that can be generated from source code or - http://www.sic
 http://www.sics.se/~adam/contiki/docs/a01829.html
 http://www.sics.se/~adam/contiki/docs/a01828.html
 
-
+\end{document}

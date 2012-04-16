@@ -1,5 +1,11 @@
-How to use AVR Studio 4 simulator with Contiki OS
-=================================================
+\documentclass{article}
+\usepackage{a4wide}
+\begin{document}
+
+\title{How to use AVR Studio 4 simulator with Contiki OS}
+\author{Josef Lusticky}
+
+\maketitle
 
 As debugging using GDB might not be sufficient for all cases of development (such as the Timer/Counter modules),
 this guide shows how to set up AVR Studio 4 for simulation with Contiki project.
@@ -8,29 +14,32 @@ First of all we need a PC with Windows or Virtualbox with Windows installed on o
 The installation of Windows in Virtualbox is prefered because this way we can easily copy our compiled binaries to Windows
 without need of setting up build environment in Windows or network connection between two PCs.
 
-1. Installation
-===============
+\section{Installation}
 Install Windows and the Guest addition in Windows if running under Virtualbox.
-Set up shared folder (this need the Guest additions) between your development host PC and virtual Windows PC, so you can copy files to Windows.
+Set up shared folder (this needs the Guest additions) between your development host PC and virtual Windows PC, so you can copy files to Windows.
 Install the AVR Studio version 4 (this version is easy to get working with Contiki and provides everything needed for simulation).
 
-Copy the complete Contiki source code with your compiled project from your development PC to C:\YOUR_HOME_FOLDER_ON_DEVELOPMENT_PC\ in Windows -
-e.g. your contiki source code is located at /home/josef/contiki then you have to copy Contiki to directory C:\home\josef\contiki.
+Copy the complete Contiki source code with your compiled project from your development PC to
+C:\textbackslash YOUR\_HOME\_FOLDER\_ON\_DEVELOPMENT\_PC\textbackslash
+in Windows - e.g. your contiki source code is located at /home/josef/contiki
+then you have to copy Contiki to directory \\
+C:\textbackslash home\textbackslash josef\textbackslash contiki.
 By other words - the root directory on your development PC remains root directory on Windows.
 
-Similarly copy the avr header files usually from /usr/lib/avr/include to C:\usr\lib\avr\include.
+Similarly copy the avr header files usually from /usr/lib/avr/include to
+C:\textbackslash usr\textbackslash lib\textbackslash avr\textbackslash include.
 
 If you will not stick to this paths you might be later asked by AVR Studio to locate this files and directories manually.
 
 
-2. Simulation
-=============
+\section{Simulation}
 Execute the AVR Studio 4. From the Startup dialog select Open and open to your Contiki binary ELF file for AVR target.
 If the Startup dialog does not show, go to menu File and select Open File.
-You will be asked where to save your newly created AVR Studio project (aps file). Choose anything you like (My Documents\AVR fits good).
+You will be asked where to save your newly created AVR Studio project (aps file).
+Choose anything you like (My Documents\textbackslash AVR fits good).
 Now you will be asked to select the debug platform and the device.
 Choose AVR Simulator and ATmega1284P for AVR Raven. (There seems to be a problem with the newer Simulator 2 with Timer/Counter 2 module).
 You may be asked if you want to load EEPROM data - click OK.
 Now you can simulate and debug you Contiki project in AVR Studio 4.
 The debug menu has all you need to step through the code. The I/O view shows current status of the hardware.
-
+\end{document}
