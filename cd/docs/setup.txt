@@ -85,20 +85,25 @@ Now we can select brakepoints and debug as usual.
 
 4 - Network communication
 =========================
+NOTE: Some of the following commands must be issued by root or with sudo. We assume sudo is configured on the system.
 
 Assuming we have RZ USB stick and working hello-world project, we can setup a webserver-ipv6-raven project from Contiki examples.
-Navigate to webserver-ipv6-raven project and compile it for AVR Raven hardware:
-$ cd contiki/examples/webserver-ipv6-raven
-$ make                             # no need to specify target as it is already specified to AVR Raven in this particular project
----OR---- $ make TARGET=avr-raven
 
+As first we need to flash the RZ USB stick to work as ethernet interface.
 
-NOTE: Some of the following commands must be issued by root or with sudo. We assume sudo is configured on the system.
+There is no widely available 802.15.4 and 6lowpan stack for PCs.
+As a temporary solution and to be able to connect IPv6 hosts such as RAVEN boards to IP networks,
+Contiki implemented a "bridge" function on the RZ USB Stick.
+The RZ USB stick bridges 802.15.4 packets to Ethernet (The Ethernet interface is emulated on the USB port).
 
 
 ----#--SETUP RZ USB stick connection + firmware + Photos -> HTML
-Flash the RZ USB stick:
-avrdude -u -p usb1287 -c jtagmkII -v -P usb -Uefuse:w:0xFF:m -Uhfuse:w:0x99:m -Ulfuse:w:0xE2:m -Ueeprom:w:ravenusbstick-eeprom.hex -Uravenusbstick.hex
+Compile the project to allow RZ USB stick work as ethernet interface:
+$ cd contiki/examples/ravenusbstick
+$ make                                        # the target is already set up to avr-ravenusb in Makefile.target
+
+Flash the RZ USB stick through AVR Dragon:
+$ avrdude -u -p usb1287 -c dragon_jtag -v -P usb -Uefuse:w:0xFF:m -Uhfuse:w:0x99:m -Ulfuse:w:0xE2:m -Ueeprom:w:ravenusbstick-eeprom.hex -Uravenusbstick.hex
 ---
 
 
@@ -143,6 +148,14 @@ The path might be /etc/rc.d/radvd, /etc/init.d/radvd, /usr/local/etc/rc.d/radvd 
 $ sudo /etc/init.d/radvd start
 
 Now we have radvd running, we can use Wireshark to check if Router Advertisement packets are being sent on usb0 interface.
+
+
+We can now setup the Contiki project and flash it to AVR Raven.
+
+Navigate to webserver-ipv6-raven project and compile it for AVR Raven hardware:
+$ cd contiki/examples/webserver-ipv6-raven
+$ make                             # no need to specify target as it is already specified to AVR Raven in this particular project
+---OR---- $ make TARGET=avr-raven
 
 
 The last thing is flashing our compiled binary file to AVR Raven.
