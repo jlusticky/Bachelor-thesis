@@ -26,8 +26,10 @@ If you will not stick to this paths you might be later asked by AVR Studio to lo
 2. Simulation
 =============
 Execute the AVR Studio 4. From the Startup dialog select Open and open to your Contiki binary ELF file for AVR target.
+If the Startup dialog does not show, go to menu File and select Open File.
 You will be asked where to save your newly created AVR Studio project (aps file). Choose anything you like (My Documents\AVR fits good).
-Now you will be asked to select the debug platform and the device. Choose AVR Simulator and ATmega1284P for AVR Raven.
+Now you will be asked to select the debug platform and the device.
+Choose AVR Simulator and ATmega1284P for AVR Raven. (There seems to be a problem with the newer Simulator 2 with Timer/Counter 2 module).
 You may be asked if you want to load EEPROM data - click OK.
 Now you can simulate and debug you Contiki project in AVR Studio 4.
 The debug menu has all you need to step through the code. The I/O view shows current status of the hardware.
