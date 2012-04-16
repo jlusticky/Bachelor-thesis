@@ -100,12 +100,13 @@ The RZ USB stick bridges 802.15.4 packets to Ethernet (The Ethernet interface is
 ----#--SETUP RZ USB stick connection + firmware + Photos -> HTML
 Compile the project to allow RZ USB stick work as ethernet interface:
 $ cd contiki/examples/ravenusbstick
-$ make                                        # the target is already set up to avr-ravenusb in Makefile.target
+$ make TARGET=avr-ravenusb
 
 Flash the RZ USB stick through AVR Dragon:
 We need to do it manually because this project does not have the upload target:
 $ avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex ravenusbstick.elf ravenusbstick.flash
 $ avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex ravenusbstick.elf ravenusbstick.eeprom
+Assuming we have setup udev we can flash the hardware as non-root user:
 $ avrdude -u -p usb1287 -c dragon_jtag -v -P usb -Uefuse:w:0xFF:m -Uhfuse:w:0x99:m -Ulfuse:w:0xE2:m -Ueeprom:w:ravenusbstick.eeprom -Uravenusbstick.flash
 
 
@@ -156,12 +157,10 @@ We can now setup the Contiki project and flash it to AVR Raven.
 
 Navigate to webserver-ipv6-raven project and compile it for AVR Raven hardware:
 $ cd contiki/examples/webserver-ipv6-raven
-$ make                             # no need to specify target as it is already specified to AVR Raven in this particular project
----OR---- $ make TARGET=avr-raven
+$ make TARGET=avr-raven
 
 
-The last thing is flashing our compiled binary file to AVR Raven.
-We need to do it manually because this project does not have the upload target:
+The last thing is flashing our compiled binary file to AVR Raven. We need to do it manually because this project does not have the upload target.
 $ avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex webserver6-avr-raven.elf webserver6-avr-raven.flash
 $ avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex webserver6-avr-raven.elf webserver6-avr-raven.eeprom
 $ avrdude -c dragon_jtag -P usb -p m1284p -Ueeprom:w:webserver6-avr-raven.eeprom -Uflash:w:webserver6-avr-raven.flash
