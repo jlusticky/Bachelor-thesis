@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage{a4wide}
+\usepackage{listings}
 \begin{document}
 
 \title{How to setup Contiki on AVR Raven with ATMega1284P}
@@ -19,12 +20,13 @@ OPTIONAL RZ USB stick for communication between PC and AVR Raven (you won't have
 NOTE: Two AVR Raven devices and one RZ USB stick can be ordered as evaluation starter kit called RZ Raven - http://www.atmel.com/tools/RZRAVEN.aspx
 
 
-----#--SETUP AVR Raven connection + Photos -> HTML
+%----#--SETUP AVR Raven connection + Photos -> HTML
 
 
 Software:
 Contiki source code - version 2.5
-	from http://sourceforge.net/projects/contiki/files/Contiki/Contiki\%202.5/contiki-2.5.zip/download
+	from\\
+	http://sourceforge.net/projects/contiki/files/Contiki/Contiki\%202.5/contiki-2.5.zip/download
 	or after cloning git repository by issuing git checkout 2.5
 Programmer (flasher) for AVR - avrdude - http://www.nongnu.org/avrdude/
 Toolchaing for AVR - avr-libc, binutils-avr, gcc-avr
@@ -44,25 +46,26 @@ The udev or a whole PC might need to be restarted to apply changes.
 
 \section{Compiling and flashing}
 After everything from step 1 installed and connected we can navigate to a Contiki project and flash it to AVR Raven:
+\begin{lstlisting}
 $ cd contiki/examples/hello-world
 $ make TARGET=avr-raven savetarget  # select target platform and save our choice to Makefile.target file
 $ make                              # this will compile the project for our saved target avr-raven
-
+\end{lstlisting}
 Now we have the hello-world project compiled for avr-raven target.
 
 To see all avaliable target platforms issue the following command:
-$ make targets
+\$ make targets
 
 
 Next we need to upload our compiled project to AVR Raven.
 Since we are using the AVR Dragon with JTAG, we need to inform the programmer about it.
 Edit Makefile and append the following line at the bottom of file:
 
-AVRDUDE_PROGRAMMER := -c dragon_jtag
+%AVRDUDE_PROGRAMMER := -c dragon_jtag
 
-This appends "-c dragon_jtag" parameter to avrdude programmer, so it knows we are using Dragon with JTAG connected to AVR Raven.
+This appends "-c dragon\_jtag" parameter to avrdude programmer, so it knows we are using Dragon with JTAG connected to AVR Raven.
 Now we can upload the file:
-$ make hello-world.u                # upload compiled project to device using avrdude (this must be issued by root if udev was not configured as above)
+\$ make hello-world.u                \# upload compiled project to device using avrdude (this must be issued by root if udev was not configured as above)
 
 After successful upload we should have a running hello-world project on AVR Raven device.
 
@@ -70,18 +73,18 @@ After successful upload we should have a running hello-world project on AVR Rave
 \section{Debugging}
 For debugging we gdb-avr and avarice software. We can also use a DDD graphical frontend for debugging.
 Avarice tool need a hex file from our project. The following will extract it:
-$ make hello-world.hex              # extract a .hex file for flashing with other programmers and avarice
+\$ make hello-world.hex              \# extract a .hex file for flashing with other programmers and avarice
 
 Next we lunch avarice which will also flash the project to hardware and create a port (1212) for connecting the GDB debugger.
-$ avarice -g -j usb -P atmega1284p --erase --program --file hello-world.hex -B 1MHz  :1212
+\$ avarice -g -j usb -P atmega1284p --erase --program --file hello-world.hex -B 1MHz  :1212
 
 After then we start the GDB debugger with our compiled binary file.
-$ avr-gdb hello-wolrd.avr-raven
-target remote :1212                 # connect to 1212 port for communicating with the hardware, after then we can debug as usual
-continue                            # run the program (we should set some brakepoints before)
+\$ avr-gdb hello-wolrd.avr-raven
+target remote :1212                 \# connect to 1212 port for communicating with the hardware, after then we can debug as usual
+continue                            \# run the program (we should set some brakepoints before)
 
 If we want to use a DDD frontend we start the DDD with avr-gdb debugger:
-$ ddd --debugger avr-gdb  hello-world.avr-raven
+\$ ddd --debugger avr-gdb  hello-world.avr-raven
 On the GDB Console connect to target using (if you can not see it, click View -> GDB Console):
 (gdb) target remote :1212
 Now we can select brakepoints and debug using continue as usual.
@@ -100,31 +103,31 @@ Contiki implemented a "bridge" function on the RZ USB Stick.
 The RZ USB stick bridges 802.15.4 packets to Ethernet (The Ethernet interface is emulated on the USB port).
 
 
-----#--SETUP RZ USB stick connection + firmware + Photos -> HTML
+%----#--SETUP RZ USB stick connection + firmware + Photos -> HTML
 Compile the project to allow RZ USB stick work as ethernet interface:
-$ cd contiki/examples/ravenusbstick
-$ make TARGET=avr-ravenusb
+\$ cd contiki/examples/ravenusbstick
+\$ make TARGET=avr-ravenusb
 
 Flash the RZ USB stick through AVR Dragon - We need to do it manually because this project does not have the upload target:
 For manual flashing we need a hex file and eeprom file. The hex file should be created by Contiki automatically and called ravenusbstick.hex.
 If not, we can extract it from the binary elf file:
-$ avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex ravenusbstick.elf ravenusbstick.hex
+\$ avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex ravenusbstick.elf ravenusbstick.hex
 Next we need the eeprom file. Extract it by issuing the following:
-$ avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex ravenusbstick.elf ravenusbstick.eeprom
+\$ avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex ravenusbstick.elf ravenusbstick.eeprom
 Assuming we have setup udev we can flash the hardware as non-root user:
-$ avrdude -u -p usb1287 -c dragon_jtag -v -P usb -Uefuse:w:0xFF:m -Uhfuse:w:0x99:m -Ulfuse:w:0xE2:m -Ueeprom:w:ravenusbstick.eeprom -Uravenusbstick.hex
+\$ avrdude -u -p usb1287 -c dragon\_jtag -v -P usb -Uefuse:w:0xFF:m -Uhfuse:w:0x99:m -Ulfuse:w:0xE2:m -Ueeprom:w:ravenusbstick.eeprom -Uravenusbstick.hex
 
 
 Connect the RZ USB stick to PC and check if the network interface establishes.
-$ ifconfig
+\$ ifconfig
 
 We should see interface called usb0 and it should get automatically IPv6 link local address, i.e. fe80::0012:13ff:fe14:1516/64.
 If not add it manually:
-$ sudo ip -6 address add fe80::0012:13ff:fe14:1516/64 scope link dev usb0
+\$ sudo ip -6 address add fe80::0012:13ff:fe14:1516/64 scope link dev usb0
 
 Next we assign this interface IPv6 address and route for the whole subnet.
-$ sudo ip -6 address add aaaa::1/64 dev usb0   # our PC becomes aaaa::1 IPv6 address
-$ sudo ip -6 route add aaaa::/64 dev usb0      # traffic to aaaa::/64 network goes through usb0 (RZ USB stick) interface
+\$ sudo ip -6 address add aaaa::1/64 dev usb0   \# our PC becomes aaaa::1 IPv6 address
+\$ sudo ip -6 route add aaaa::/64 dev usb0      \# traffic to aaaa::/64 network goes through usb0 (RZ USB stick) interface
 
 
 Next thing is to setup Router Advertisement Daemon (radvd), so that the Contiki node connects correctly to our IPv6 network.
@@ -150,10 +153,10 @@ interface usb0
 
 
 Before starting radvd we must enable forwarding for IPv6:
-$ sudo sysctl -w net.ipv6.conf.all.forwarding=1
+\$ sudo sysctl -w net.ipv6.conf.all.forwarding=1
 Now we can start the radvd - this should be done in the same way as other daemons are started on your OS.
 The path might be /etc/rc.d/radvd, /etc/init.d/radvd, /usr/local/etc/rc.d/radvd or any other helper script (service, systemctl, ...) might be used.
-$ sudo /etc/init.d/radvd start
+\$ sudo /etc/init.d/radvd start
 
 Now we have radvd running, we can use Wireshark to check if Router Advertisement packets are being sent on usb0 interface.
 
@@ -161,26 +164,26 @@ Now we have radvd running, we can use Wireshark to check if Router Advertisement
 We can now setup the Contiki project and flash it to AVR Raven.
 
 Navigate to webserver-ipv6-raven project and compile it for AVR Raven hardware:
-$ cd contiki/examples/webserver-ipv6-raven
-$ make TARGET=avr-raven
+\$ cd contiki/examples/webserver-ipv6-raven
+\$ make TARGET=avr-raven
 
 
 The last thing is flashing our compiled binary file to AVR Raven. We need to do it manually because this project does not have the upload target.
 As before we need hex and eeprom file for flashing:
-$ avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex webserver6-avr-raven.elf webserver6-avr-raven.hex
-$ avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex webserver6-avr-raven.elf webserver6-avr-raven.eeprom
+\$ avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex webserver6-avr-raven.elf webserver6-avr-raven.hex
+\$ avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex webserver6-avr-raven.elf webserver6-avr-raven.eeprom
 Now we can flash the hardware (use sudo if udev is not configured):
-$ avrdude -c dragon_jtag -P usb -p m1284p -Ueeprom:w:webserver6-avr-raven.eeprom -Uflash:w:webserver6-avr-raven.hex
+\$ avrdude -c dragon\_jtag -P usb -p m1284p -Ueeprom:w:webserver6-avr-raven.eeprom -Uflash:w:webserver6-avr-raven.hex
 
 
 If for some reason you need to specify a MAC addres of the AVR Raven, you can do it by editing file contiki/platform/avr-raven/contiki-raven-main.c,
 issuing make clean and compiling and flashing again.
 
----# /etc/avrdude.conf
+%---# /etc/avrdude.conf
 
 Finally we can ping the AVR Raven and use the webserver running on it:
-$ ping6 aaaa::0011:22ff:fe33:4455              # the actual IPv6 address can be determined from Wireshark or radvd output
-$ wget http://[aaaa::0011:22ff:fe33:4455]      # or any other web browser
+\$ ping6 aaaa::0011:22ff:fe33:4455              \# the actual IPv6 address can be determined from Wireshark or radvd output
+\$ wget http://[aaaa::0011:22ff:fe33:4455]      \# or any other web browser
 
 
 pomoci RZUSBSTICK (rzusbstick + contiki/example/ravenusbstick = jackdaw):
@@ -190,7 +193,7 @@ screen /dev/ttyACM0
 
 
 If you desire more information on working with AVR Raven please consult
-Contiki wiki page for AVR Raven - http://www.sics.se/contiki/wiki/index.php/Avr_Raven
+Contiki wiki page for AVR Raven - http://www.sics.se/contiki/wiki/index.php/Avr\_Raven
 Contiki documentation that can be generated from source code or - http://www.sics.se/~adam/contiki/docs/
 
 -- + Jackdaw + ravenusbstick example
