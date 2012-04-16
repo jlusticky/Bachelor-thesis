@@ -136,7 +136,7 @@ interface usb0
     MinRtrAdvInterval 100;
     MaxRtrAdvInterval 150;
     AdvDefaultLifetime 200;
-    prefix AAAA::/64
+    prefix aaaa::/64
     {
         AdvOnLink on;
         AdvAutonomous on;
