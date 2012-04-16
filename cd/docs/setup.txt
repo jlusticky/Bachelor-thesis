@@ -71,7 +71,7 @@ Avarice tool need a hex file from our project. The following will extract it:
 $ make hello-world.hex              # extract a .hex file for flashing with other programmers and avarice
 
 Next we lunch avarice which will also flash the project to hardware and create a port (1212) for connecting the GDB debugger.
-avarice -g -j usb -P atmega1284p --erase --program --file hello-world.hex -B 1MHz  :1212
+$ avarice -g -j usb -P atmega1284p --erase --program --file hello-world.hex -B 1MHz  :1212
 
 After then we start the GDB debugger with our compiled binary file.
 $ avr-gdb hello-wolrd.avr-raven
@@ -80,7 +80,9 @@ continue                            # run the program (we should set some brakep
 
 If we want to use a DDD frontend we start the DDD with avr-gdb debugger:
 $ ddd --debugger avr-gdb  hello-world.avr-raven
-Now we can select brakepoints and debug as usual.
+On the GDB Console connect to target using (if you can not see it, click View -> GDB Console):
+(gdb) target remote :1212
+Now we can select brakepoints and debug using continue as usual.
 
 
 4 - Network communication
@@ -168,6 +170,10 @@ $ avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex webserver6-avr-raven.elf
 $ avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex webserver6-avr-raven.elf webserver6-avr-raven.eeprom
 Now we can flash the hardware (use sudo if udev is not configured):
 $ avrdude -c dragon_jtag -P usb -p m1284p -Ueeprom:w:webserver6-avr-raven.eeprom -Uflash:w:webserver6-avr-raven.hex
+
+
+If for some reason you need to specify a MAC addres of the AVR Raven, you can do it by editing file contiki/platform/avr-raven/contiki-raven-main.c,
+issuing make clean and compiling and flashing again.
 
 ---# /etc/avrdude.conf
 
