@@ -105,6 +105,7 @@ $ make                                        # the target is already set up to 
 Flash the RZ USB stick through AVR Dragon:
 We need to do it manually because this project does not have the upload target:
 $ avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex ravenusbstick.elf ravenusbstick.flash
+$ avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex ravenusbstick.elf ravenusbstick.eeprom
 $ avrdude -u -p usb1287 -c dragon_jtag -v -P usb -Uefuse:w:0xFF:m -Uhfuse:w:0x99:m -Ulfuse:w:0xE2:m -Ueeprom:w:ravenusbstick.eeprom -Uravenusbstick.flash
 
 
