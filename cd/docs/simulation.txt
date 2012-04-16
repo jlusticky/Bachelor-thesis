@@ -1,0 +1,34 @@
+How to use AVR Studio 4 simulator with Contiki OS
+=================================================
+
+As debugging using GDB might not be sufficient for all cases of development (such as the Timer/Counter modules),
+this guide shows how to set up AVR Studio 4 for simulation with Contiki project.
+
+First of all we need a PC with Windows or Virtualbox with Windows installed on our development PC.
+The installation of Windows in Virtualbox is prefered because this way we can easily copy our compiled binaries to Windows
+without need of setting up build environment in Windows or network connection between two PCs.
+
+1. Installation
+===============
+Install Windows and the Guest addition in Windows if running under Virtualbox.
+Set up shared folder (this need the Guest additions) between your development host PC and virtual Windows PC, so you can copy files to Windows.
+Install the AVR Studio version 4 (this version is easy to get working with Contiki and provides everything needed for simulation).
+
+Copy the complete Contiki source code with your compiled project from your development PC to C:\YOUR_HOME_FOLDER_ON_DEVELOPMENT_PC\ in Windows -
+e.g. your contiki source code is located at /home/josef/contiki then you have to copy Contiki to directory C:\home\josef\contiki.
+By other words - the root directory on your development PC remains root directory on Windows.
+
+Similarly copy the avr header files usually from /usr/lib/avr/include to C:\usr\lib\avr\include.
+
+If you will not stick to this paths you might be later asked by AVR Studio to locate this files and directories manually.
+
+
+2. Simulation
+=============
+Execute the AVR Studio 4. From the Startup dialog select Open and open to your Contiki binary ELF file for AVR target.
+You will be asked where to save your newly created AVR Studio project (aps file). Choose anything you like (My Documents\AVR fits good).
+Now you will be asked to select the debug platform and the device. Choose AVR Simulator and ATmega1284P for AVR Raven.
+You may be asked if you want to load EEPROM data - click OK.
+Now you can simulate and debug you Contiki project in AVR Studio 4.
+The debug menu has all you need to step through the code. The I/O view shows current status of the hardware.
+
