@@ -103,8 +103,9 @@ $ cd contiki/examples/ravenusbstick
 $ make                                        # the target is already set up to avr-ravenusb in Makefile.target
 
 Flash the RZ USB stick through AVR Dragon:
-$ avrdude -u -p usb1287 -c dragon_jtag -v -P usb -Uefuse:w:0xFF:m -Uhfuse:w:0x99:m -Ulfuse:w:0xE2:m -Ueeprom:w:ravenusbstick-eeprom.hex -Uravenusbstick.hex
----
+We need to do it manually because this project does not have the upload target:
+$ avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex ravenusbstick.elf ravenusbstick.flash
+$ avrdude -u -p usb1287 -c dragon_jtag -v -P usb -Uefuse:w:0xFF:m -Uhfuse:w:0x99:m -Ulfuse:w:0xE2:m -Ueeprom:w:ravenusbstick.eeprom -Uravenusbstick.flash
 
 
 Connect the RZ USB stick to PC and check if the network interface establishes.
