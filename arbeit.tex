@@ -1,0 +1,209 @@
+%
+% -------------------- LaTeX-Template für Abschlussarbeiten --------------------
+%
+% Autor:    Simon Lehmann <simon.lehmann@gmx.de>
+% Version:  2.0 (2009-09-10)
+% 
+% Versionshistorie: 
+% | 2.0 | 2009-09-10 | Umbenennung FH Wiesbaden in Hochschule RheinMain
+% | 1.1 | 2008-11-15 | Layout verbessert
+% | 1.0 | 2008-06-19 | Urversion
+% 
+% Das Template verwendet die KOMA-Script Dokumentenklassen und setzt einige
+% LaTeX Pakete voraus, die unter Umständen nicht im Standardumfang der lokalen
+% LaTeX Distribution enthalten sind. Erhältlich sind diese Pakete über das CTAN
+% (http://www.ctan.org/). Zur Installation siehe die Dokumentation des jeweili-
+% gen Pakets und der LaTeX Distribution.
+%
+% Weiterhin ist das Template auf die Verwendung von UTF-8 als Zeichenkodierung
+% ausgelegt. Dadurch können Umlaute und andere Sonderzeichen direkt verwendet
+% werden.
+%
+% Es sind für die variablen Felder auf der Titelseite und den formalen Erklär-
+% ungen Befehle definiert, mit denen diese gesetzt werden können. Siehe dazu
+% weiter unten den Abschnitt 'Vorspann'.
+% 
+% Für die Glossarerstellung wird das glossaries Paket als Nachfolger von
+% glossary verwendet. Das Paket ist leider noch nicht in den meisten Distribu-
+% tionen von Haus aus verfügbar und muss eventuell manuell über das CTAN (s.o.)
+% bezogen werden. Doku siehe <http://tug.ctan.org/tex-archive/macros/latex/
+% contrib/glossaries/glossaries-manual.html>
+%
+%
+% Zum Übersetzen sind in der Regel folgende Durchläufe nötig:
+%  1. latex arbeit
+%  2. bibtex arbeit (nur wenn schon Zitate im Text vorhanden sind)
+%  3. makeglossaries arbeit
+%  4. latex arbeit
+%  5. latex arbeit (damit Referenzen und Verzeichnisse stimmen)
+%
+% --------------------------- Dokumenteneinrichtung ----------------------------
+% Einsteigern wird empfohlen direkt zum Abschnitt 'Vorspann' weiter unten zu
+% springen und die dokumentenweiten Einstellungen zunächst nicht zu verändern.
+%
+\documentclass[ngerman,a4paper,11pt,twoside,openright,cleardoubleempty,halfparskip]{scrreprt}
+
+% Erforderliche Pakete
+\usepackage[utf8]{inputenc}
+\usepackage{babel}
+%\usepackage{graphicx}
+
+%\usepackage{graphics}
+%\usepackage{epsfig}
+  
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyhdr}
+\usepackage{multirow}
+\usepackage{ifthen}
+\usepackage{calc}
+\usepackage{tabularx}
+\usepackage{url}
+\DeclareUrlCommand\url{\def\UrlLeft{<}\def\UrlRight{>} \urlstyle{tt}}
+\usepackage{listings}
+
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+language=C,                % choose the language of the code
+basicstyle=\scriptsize,       % the size of the fonts that are used for the code
+numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize\color{gray},      % the size of the fonts that are used for the line-numbers
+stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,           % adds a frame around the code
+rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+tabsize=2,          % sets default tabsize to 2 spaces
+captionpos=b,           % sets the caption-position to bottom
+breaklines=true,        % sets automatic line breaking
+breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
+%title=\lstname,                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+escapeinside={\%*}{*)},          % if you want to add a comment within your code
+keywordstyle=\color{blue},          % keyword style
+commentstyle=\color{dkgreen},       % comment style
+stringstyle=\color{mauve},         % string literal style
+morekeywords={*,...}               % if you want to add more keywords to the set
+}
+
+% Laden von weiteren, nützlichen Paketen (je nach Bedarf)
+%\usepackage{subfigure} 
+%\usepackage{varioref}
+%\usepackage{framed}
+%\usepackage{longtable}
+%\usepackage{floatflt}
+%\usepackage{amsmath}
+%\usepackage{url}
+% ...
+
+% Pakete für Verzeichnisse. Diese sind hier aufgeführt, da mindestens das
+% 'glossaries' Paket nach z.B. hyperref geladen werden muss.
+\usepackage{bibgerm}
+\usepackage[toc,acronym]{glossaries}
+
+% Glossar(e) laden und erstellen
+\makeglossaries
+\loadglsentries{glossar} % Name der Glossardatei (ohne .tex)
+
+% Befehlsdefinitionen
+\input{commands}
+
+% Globale Formatierungseinstellungen
+\renewcommand{\encodingdefault}{OT1}
+\renewcommand{\familydefault}{cmss} % Schriftfamilie auf Sans Serif
+\renewcommand{\glsdisplayfirst}[4]{\textit{#1#4}}
+\setcapindent{1em}
+
+% Anpassung der Ränder und Breitenverhältnisse
+% Der letzte Wert in oddsidemargin bestimmt die Bindekorrektur
+\setlength{\oddsidemargin}{2cm - 1in + 0.5cm}
+\setlength{\textwidth}{\paperwidth - (1in + \hoffset) - \oddsidemargin - 4cm}
+\setlength{\evensidemargin}{\paperwidth - (1in + \hoffset)*2 - \oddsidemargin - \textwidth}
+\setlength{\marginparwidth}{4cm - \marginparsep{} - 1cm}
+
+% Wenn größerer Zeilenabstand gewünscht ist, je nach Schriftgröße:
+% Abstand        10pt    11pt    12pt
+% -----------------------------------
+% anderthalb     1.25    1.21    1.24
+% doppelt        1.67    1.62    1.66
+%
+%\renewcommand{\baselinestretch}{1.21}
+
+% Kopf- und Fußzeilen einrichten
+\pagestyle{fancyplain}
+\setlength{\headwidth}{\textwidth}
+\addtolength{\headwidth}{\marginparsep}
+\addtolength{\headwidth}{\marginparwidth}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+\lhead[\fancyplain{}{\bfseries\thepage}]%
+	{\fancyplain{}{\bfseries\rightmark}}
+\rhead[\fancyplain{}{\bfseries\leftmark}]%
+	{\fancyplain{}{\bfseries\thepage}}
+\cfoot{}
+
+\begin{document}
+% ---------------------------------- Vorspann ----------------------------------
+% In den folgenden Zeilen werden die wichtigsten Informationen zur Arbeit ge-
+% setzt, die dann im Dokument an den entsprechenden Stellen eingefügt werden.
+%
+\title{Titel der Arbeit}
+\author{Name des Autoren}
+\supervisor{Name des Referenten}
+\cosupervisor{Name des Korreferenten}
+\date{Datum der Abgabe}
+\city{Ort}
+
+% Folgende Befehle steuern, welchen Verbreitungsformen zugestimmt wird. Nicht
+% gewünschte Verbreitungsformen entsprechend auskommentieren.
+%
+\publishlibrary  % Einstellung der Arbeit in die Bibliothek der FHW
+\publishtitle    % Veröffentlichung des Titels der Arbeit im Internet
+\publishdocument % Veröffentlichung der Arbeit im Internet
+
+% Ab hier sollten keine Änderungen des Vorspanns nötig sein!
+% -> Weiter zum Hauptteil
+
+\pagenumbering{roman} % Bis zum ersten Kapitel mit römischen Seitenzahlen
+
+\input{titel} % Titelseite (wird automatisch mit Werten von oben gefüllt)
+\clearemptydoublepage % Sorgt dafür, dass die nächste Seite rechts beginnt
+
+\include{vorspann} % Erklärung zur Prüfungsordnung und Verwendung der Arbeit
+\clearemptydoublepage
+
+\tableofcontents % Inhaltsverzeichnis generieren
+
+\clearemptydoublepage
+\pagenumbering{arabic}
+
+% --------------------------------- Hauptteil ----------------------------------
+% Im diesen Teil werden die einzelnen Kapitel eingefügt, die sinnvollerweise
+% im Verzeichnis 'kapitel' abgelegt werden.
+
+\include{obsah}
+
+%\include{kapitel/zweileitung}
+
+% und so weiter ...
+
+% ---------------------------------- Anhänge -----------------------------------
+% In diesem Teil werden alle Anhänge eingefügt, die auch als ganz normale Kapi-
+% tel abgelegt werden.
+\appendix
+
+\include{prilohy}
+
+% Ausgabe des Glossars (oder der Glossare, wenn mehrere definiert sind)
+\printglossaries
+
+% Ausgabe des Literaturverzeichnisses
+\bibliographystyle{geralpha}
+\bibliography{literatura}
+
+\end{document}

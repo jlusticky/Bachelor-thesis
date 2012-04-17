@@ -1,0 +1,36 @@
+\section*{Erklärung gemäß PO Teil A § 6.4.2}
+
+Ich erkläre hiermit,
+\begin{itemize}
+	\item dass ich die vorliegende Abschlussarbeit selbstständig angefertigt,
+	\item keine anderen als die angegebenen Quellen benutzt,
+	\item die wörtlich oder dem Inhalt nach aus fremden Arbeiten entnommenen Stellen, bildlichen Darstellungen und dergleichen als solche genau kenntlich gemacht und
+	\item keine unerlaubte fremde Hilfe in Anspruch genommen habe.
+\end{itemize}
+
+\vspace{3cm}
+\makebox[.45\linewidth][l]{\thecity, \thedate}\hfill\rule{.45\linewidth}{0.5pt}\\
+\makebox[.45\linewidth][l]{}\hfill\makebox[.45\linewidth][l]{\theauthor}
+
+\vfill
+
+\section*{Erklärung zur Verwendung der Diplomarbeit}
+
+Hiermit erkläre ich mein Einverständnis mit den im folgenden aufgeführten Verbreitungsformen dieser Abschlussarbeit:
+
+\newcolumntype{R}{>{\raggedright\arraybackslash}X}
+\begin{tabularx}{\linewidth}{|R|c|c|}
+	\hline
+	\textbf{Verbreitungsform} & \textbf{Ja} & \textbf{Nein}
+	\\\hline
+	Einstellung der Arbeit in die Bibliothek der Hochschule RheinMain & \ifthenelse{\boolean{publishlibrary}}{$\times$}{} & \ifthenelse{\boolean{publishlibrary}}{}{$\times$}
+	\\\hline
+	Veröffentlichung des Titels der Arbeit im Internet & \ifthenelse{\boolean{publishtitle}}{$\times$}{} & \ifthenelse{\boolean{publishtitle}}{}{$\times$}
+	\\\hline
+	Veröffentlichung der Arbeit im Internet & \ifthenelse{\boolean{publishdocument}}{$\times$}{} & \ifthenelse{\boolean{publishdocument}}{}{$\times$}
+	\\\hline
+\end{tabularx}
+
+\vspace{3cm}
+\makebox[.45\linewidth][l]{\thecity, \thedate}\hfill\rule{.45\linewidth}{0.5pt}\\
+\makebox[.45\linewidth][l]{}\hfill\makebox[.45\linewidth][l]{\theauthor}

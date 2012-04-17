@@ -1,0 +1,49 @@
+%
+% Befehlsdefinitionen für das LaTeX Template
+%
+% Autor:	Simon Lehmann <simon.lehmann@gmx.de>
+% Version:	1.0 (2008-06-19)
+%
+
+% Sorgt dafür, dass Kapitel immer auf einer rechten Seite beginnen.
+\newcommand{\clearemptydoublepage}{\newpage{\pagestyle{empty}\cleardoublepage}}
+
+% Befehle zum Setzen und Abrufen des Ortsnamen, der in der Erklärung verwendet
+% wird
+\newsavebox{\citybox}
+\newcommand{\city}[1]{\sbox{\citybox}{#1}}
+\newcommand{\thecity}{\usebox{\citybox}}
+
+% Befehle zum Setzen und Abrufen des Referenten
+\newsavebox{\supervisorbox}
+\newcommand{\supervisor}[1]{\sbox{\supervisorbox}{#1}}
+\newcommand{\thesupervisor}{\usebox{\supervisorbox}}
+
+% Befehle zum Setzen und Abrufen des Korreferenten
+\newsavebox{\cosupervisorbox}
+\newcommand{\cosupervisor}[1]{\sbox{\cosupervisorbox}{#1}}
+\newcommand{\thecosupervisor}{\usebox{\cosupervisorbox}}
+
+\makeatletter % Zugriff auf interne Befehle
+% Autorenname, der mit \author{...} gesetzt wurde
+\newcommand{\theauthor}{\@author}
+
+% Datum, das mit \date{...} gesetzt wurde
+\newcommand{\thedate}{\@date}
+
+% Titel der Arbeit, der mit \title{...} gesetzt wurde
+\newcommand{\thetitle}{\@title}
+\makeatother
+
+% Flags für Verbreitungsformen
+\newboolean{publishlibrary}
+\setboolean{publishlibrary}{false}
+\newcommand{\publishlibrary}{\setboolean{publishlibrary}{true}}
+
+\newboolean{publishtitle}
+\setboolean{publishtitle}{false}
+\newcommand{\publishtitle}{\setboolean{publishtitle}{true}}
+
+\newboolean{publishdocument}
+\setboolean{publishdocument}{false}
+\newcommand{\publishdocument}{\setboolean{publishdocument}{true}}
