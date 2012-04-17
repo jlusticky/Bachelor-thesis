@@ -1,6 +1,7 @@
-.PHONY: all clean
+.PHONY: all clean docs
 
 all: setup.pdf simulation.pdf
+docs: all
 
 setup.pdf: setup.tex
 	pdflatex setup.tex

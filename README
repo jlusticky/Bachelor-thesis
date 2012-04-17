@@ -4,5 +4,7 @@ I am using the template from http://www.fit.vutbr.cz/info/szz/sablona09.tar.gz
 The concrete task is at fig/task.jpg
 The main content is in obsah.tex which includes other files from contiki/ and ntp/
 
-fig/ - figures used in thesis
-cd/  - cd content attached to the thesis
+fig/     - figures used in thesis
+cd/      - cd content attached to the thesis
+cd/docs/ - documentation - use make docs to generate it
+cd/sw/   - software source code
