@@ -62,14 +62,14 @@ change to project directory:
 select target platform and save our choice to Makefile.target file:
 	&\textdollar& make TARGET=avr-raven savetarget
 	
-compile the project for our saved target avr-raven
+compile the project for our saved target avr-raven:
 	&\textdollar& make
 \end{lstlisting}
 Now we have the hello-world project compiled for avr-raven target.
 
 To see all avaliable target platforms issue the following command:
 \begin{lstlisting}
-&\textdollar& make targets
+	&\textdollar& make targets
 \end{lstlisting}
 
 Next we need to upload our compiled project to AVR Raven.
@@ -80,36 +80,44 @@ AVRDUDE_PROGRAMMER := -c dragon_jtag
 \end{lstlisting}
 
 This appends {\it{-c dragon\_jtag}} parameter to avrdude programmer, so it knows we are using Dragon with JTAG connected to AVR Raven.
-Now we can upload the file:
+Now we can upload the file to AVR Dragon hardware:
 \begin{lstlisting}
-&\textdollar& make hello-world.u                # upload compiled project to device using avrdude (this must be issued by root if udev was not configured as above)
+upload compiled project using avrdude (issue as root if udev was not configured as above):
+	&\textdollar& make hello-world.u
 \end{lstlisting}
 After successful upload we should have a running hello-world project on AVR Raven device.
 
 
 \section{Debugging}
 For debugging we gdb-avr and avarice software. We can also use a DDD graphical frontend for debugging.
-Avarice tool need a hex file from our project. The following will extract it:
+Avarice tool need a hex file from our project.
+If it is not present in the project directory, the following will extract it:
 \begin{lstlisting}
-&\textdollar& make hello-world.hex              # extract a .hex file for flashing with other programmers and avarice
+extract a .hex file for flashing with other programmers and avarice:
+	&\textdollar& make hello-world.hex
 \end{lstlisting}
 
 Next we lunch avarice which will also flash the project to hardware and create a port (1212) for connecting the GDB debugger.
 \begin{lstlisting}
-&\textdollar& avarice -g -j usb -P atmega1284p --erase --program --file hello-world.hex -B 1MHz  :1212
+	&\textdollar& avarice -g -j usb -P atmega1284p --erase --program --file hello-world.hex -B 1MHz :1212
 \end{lstlisting}
 After then we start the GDB debugger with our compiled binary file.
 \begin{lstlisting}
-&\textdollar& avr-gdb hello-wolrd.avr-raven
-target remote :1212                 # connect to 1212 port for communicating with the hardware, after then we can debug as usual
-continue                            # run the program (we should set some brakepoints before)
+the following will run gdb and drop us to its command line:
+	&\textdollar& avr-gdb hello-wolrd.avr-raven
+connect to 1212 port for communicating with the hardware, after then we can debug as usual:
+	target remote :1212
+run the program (we should set some brakepoints before):
+	continue
 \end{lstlisting}
 If we want to use a DDD frontend we start the DDD with avr-gdb debugger:
 \begin{lstlisting}
-&\textdollar& ddd --debugger avr-gdb  hello-world.avr-raven
+	&\textdollar& ddd --debugger avr-gdb  hello-world.avr-raven
 \end{lstlisting}
 On the GDB Console connect to target using (if you can not see it, click View -> GDB Console):
-(gdb) target remote :1212
+\begin{lstlisting}
+	(gdb) target remote :1212
+\end{lstlisting}
 Now we can select brakepoints and debug using continue as usual.
 
 
@@ -129,39 +137,41 @@ The RZ USB stick bridges 802.15.4 packets to Ethernet (The Ethernet interface is
 %----#--SETUP RZ USB stick connection + firmware + Photos -> HTML
 Compile the project to allow RZ USB stick work as ethernet interface:
 \begin{lstlisting}
-&\textdollar& cd contiki/examples/ravenusbstick
-&\textdollar& make TARGET=avr-ravenusb
+	&\textdollar& cd contiki/examples/ravenusbstick
+	&\textdollar& make TARGET=avr-ravenusb
 \end{lstlisting}
 
 Flash the RZ USB stick through AVR Dragon - We need to do it manually because this project does not have the upload target:
 For manual flashing we need a hex file and eeprom file. The hex file should be created by Contiki automatically and called ravenusbstick.hex.
 If not, we can extract it from the binary elf file:
 \begin{lstlisting}
-&\textdollar& avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex ravenusbstick.elf ravenusbstick.hex
+	&\textdollar& avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex ravenusbstick.elf ravenusbstick.hex
 \end{lstlisting}
 Next we need the eeprom file. Extract it by issuing the following:
 \begin{lstlisting}
-&\textdollar& avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex ravenusbstick.elf ravenusbstick.eeprom
+	&\textdollar& avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex ravenusbstick.elf ravenusbstick.eeprom
 \end{lstlisting}
 Assuming we have setup udev we can flash the hardware as non-root user:
 \begin{lstlisting}
-&\textdollar& avrdude -u -p usb1287 -c dragon_jtag -v -P usb -Uefuse:w:0xFF:m -Uhfuse:w:0x99:m -Ulfuse:w:0xE2:m -Ueeprom:w:ravenusbstick.eeprom -Uravenusbstick.hex
+	&\textdollar& avrdude -u -p usb1287 -c dragon_jtag -v -P usb -Uefuse:w:0xFF:m -Uhfuse:w:0x99:m -Ulfuse:w:0xE2:m -Ueeprom:w:ravenusbstick.eeprom -Uravenusbstick.hex
 \end{lstlisting}
 
 Connect the RZ USB stick to PC and check if the network interface establishes.
 \begin{lstlisting}
-&\textdollar& ifconfig
+	&\textdollar& ifconfig
 \end{lstlisting}
 
 We should see interface called usb0 and it should get automatically IPv6 link local address, i.e. fe80::0012:13ff:fe14:1516/64.
 If not add it manually:
 \begin{lstlisting}
-&\textdollar& sudo ip -6 address add fe80::0012:13ff:fe14:1516/64 scope link dev usb0
+	&\textdollar& sudo ip -6 address add fe80::0012:13ff:fe14:1516/64 scope link dev usb0
 \end{lstlisting}
 Next we assign this interface IPv6 address and route for the whole subnet.
 \begin{lstlisting}
-&\textdollar& sudo ip -6 address add aaaa::1/64 dev usb0  # our PC becomes aaaa::1 IPv6 address
-&\textdollar& sudo ip -6 route add aaaa::/64 dev usb0     # traffic to aaaa::/64 network goes through usb0 (RZ USB stick) interface
+our PC gets aaaa::1 IPv6 address:
+	&\textdollar& sudo ip -6 address add aaaa::1/64 dev usb0
+traffic to aaaa::/64 network goes through usb0 (RZ USB stick) interface:
+	&\textdollar& sudo ip -6 route add aaaa::/64 dev usb0
 \end{lstlisting}
 
 Next thing is to setup Router Advertisement Daemon (radvd), so that the Contiki node connects correctly to our IPv6 network.
@@ -187,12 +197,12 @@ interface usb0
 \end{lstlisting}
 Before starting radvd we must enable forwarding for IPv6:
 \begin{lstlisting}
-&\textdollar& sudo sysctl -w net.ipv6.conf.all.forwarding=1
+	&\textdollar& sudo sysctl -w net.ipv6.conf.all.forwarding=1
 \end{lstlisting}
 Now we can start the radvd - this should be done in the same way as other daemons are started on your OS.
 The path might be /etc/rc.d/radvd, /etc/init.d/radvd, /usr/local/etc/rc.d/radvd or any other helper script (service, systemctl, ...) might be used.
 \begin{lstlisting}
-&\textdollar& sudo /etc/init.d/radvd start
+	&\textdollar& sudo /etc/init.d/radvd start
 \end{lstlisting}
 
 Now we have radvd running, we can use Wireshark to check if Router Advertisement packets are being sent on usb0 interface.
@@ -202,20 +212,20 @@ We can now setup the Contiki project and flash it to AVR Raven.
 
 Navigate to webserver-ipv6-raven project and compile it for AVR Raven hardware:
 \begin{lstlisting}
-&\textdollar& cd contiki/examples/webserver-ipv6-raven
-&\textdollar& make TARGET=avr-raven
+	&\textdollar& cd contiki/examples/webserver-ipv6-raven
+	&\textdollar& make TARGET=avr-raven
 \end{lstlisting}
 
 
 The last thing is flashing our compiled binary file to AVR Raven. We need to do it manually because this project does not have the upload target.
 As before we need hex and eeprom file for flashing:
 \begin{lstlisting}
-&\textdollar& avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex webserver6-avr-raven.elf webserver6-avr-raven.hex
-&\textdollar& avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex webserver6-avr-raven.elf webserver6-avr-raven.eeprom
+	&\textdollar& avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex webserver6-avr-raven.elf webserver6-avr-raven.hex
+	&\textdollar& avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex webserver6-avr-raven.elf webserver6-avr-raven.eeprom
 \end{lstlisting}
 Now we can flash the hardware (use sudo if udev is not configured):
 \begin{lstlisting}
-&\textdollar& avrdude -c dragon_jtag -P usb -p m1284p -Ueeprom:w:webserver6-avr-raven.eeprom -Uflash:w:webserver6-avr-raven.hex
+	&\textdollar& avrdude -c dragon_jtag -P usb -p m1284p -Ueeprom:w:webserver6-avr-raven.eeprom -Uflash:w:webserver6-avr-raven.hex
 \end{lstlisting}
 
 
@@ -226,8 +236,10 @@ issuing make clean and compiling and flashing again.
 
 Finally we can ping the AVR Raven and use the webserver running on it:
 \begin{lstlisting}
-&\textdollar& ping6 aaaa::0011:22ff:fe33:4455  # the actual IPv6 address can be determined from Wireshark or radvd output
-&\textdollar& wget http://[aaaa::0011:22ff:fe33:4455]     # or any other web browser
+the actual IPv6 address can be determined from Wireshark or radvd output:
+	&\textdollar& ping6 aaaa::0011:22ff:fe33:4455
+use wget for http communication or any other web browser:
+	&\textdollar& wget http://[aaaa::0011:22ff:fe33:4455]     
 \end{lstlisting}
  
 
