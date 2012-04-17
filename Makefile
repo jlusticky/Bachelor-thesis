@@ -24,6 +24,9 @@ $(CO).dvi: $(CO).tex $(CO).bib
 	latex $(CO)
 	latex $(CO)
 
+docs:
+	make -C cd/docs/
+
 desky:
 #	latex desky
 #	dvips desky
@@ -34,6 +37,7 @@ clean:
 	rm -f *.dvi *.log $(CO).blg $(CO).bbl $(CO).toc *.aux $(CO).out $(CO).lof
 	rm -f $(CO).pdf
 	rm -f *~
+	make -C cd/docs/ clean
 
 pack:
 	tar czvf bp-xlusti00.tar.gz *.tex *.bib *.bst ./fig/* ./cls/* Makefile Changelog ./ntp/* ./contiki/* ./cd/*
