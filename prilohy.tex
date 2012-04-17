@@ -10,19 +10,14 @@
 %\end{tabular}
 
 \chapter{Protothreads example}\label{app:protothreads}
-%Here is
-Next page shows
+Here is
+%Next page shows
 an example of delaying text on an LCD panel using Protothreads.
 It is taken from
 Adam Dunkel's Protothreads website~\cite{adam-protothreads} and slightly modified.
 Protothreads can be used for introducing delays inside a function, without using a full threading model.
 The example shows a function writing characters to LCD panel.
 Suppose each character is shown for one second, then next character replaces previous.
-
-\newpage
-
-%\noindent
-%\begin{minipage}{\textwidth}
 \begin{lstlisting}
 #include "pt.h"
 #include "timer.h"
@@ -56,12 +51,8 @@ int main(void)
   }
   return 0;
 }
-
 \end{lstlisting}
-%\end{minipage}
-
-\newpage
-
+%\newpage
 The PT\_WAIT\_UNTIL macro actually causes the function to return.
 While the function is waiting for the timer to expire another function can be called and run.
 When the function is entered again the execution continues with the PT\_WAIT\_UNTIL macro
@@ -81,13 +72,9 @@ to the value, so that next time this function is run, it jumps to this {\it case
 The structure holding the state is defined outside of the function so its context is not lost when
 the function returns. The simplest state structure would hold just the local continuation variable.
 
-%Now follows the same sample of code after simplified preprocessing.
-Next page shows the same sample of code after simplified preprocessing.
-
-\newpage
-
-%\noindent
-%\begin{minipage}{\textwidth}
+Now follows the same sample of code after simplified preprocessing.
+%Next page shows the same sample of code after simplified preprocessing.
+%\newpage
 \begin{lstlisting}
 #include "pt.h"
 #include "timer.h"
@@ -130,9 +117,6 @@ int main(void)
 }
 
 \end{lstlisting}
-%\end{minipage
-
-
 
 \chapter{Requirements for NTP client and Contiki support}\label{app:requirements}
 \begin{tabular}{|l|l|}
