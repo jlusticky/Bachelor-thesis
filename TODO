@@ -4,15 +4,12 @@ NTP - algorithms, packet structure + popisky + bile pozadi, Round Trip Time (RTT
 Kernel - events, process are protothreads, ...
 Timers
 Use more BOOKs not only MISC in citations
-C code template and shortening
 RheinMain template
 algorithms + history
 Convert setup.txt and simulation.txt to latex + add photos
 
 Tasks
 =====
-generate documentation from source code - DOXYGEN
-
 documentation for avr atmega1284p - 3timers and their usage
 study clock interface on POSIX systems - FreeBSD paper <- citation
 study clock hardware on x86 - hpet
