@@ -27,6 +27,9 @@ $(CO).dvi: $(CO).tex $(CO).bib
 docs:
 	make -C cd/docs/
 
+text:
+	make -C cd/docs/ text
+
 desky:
 #	latex desky
 #	dvips desky

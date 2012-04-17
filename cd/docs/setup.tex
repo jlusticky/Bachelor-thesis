@@ -56,9 +56,14 @@ The udev or a whole PC might need to be restarted to apply changes.
 \section{Compiling and flashing}
 After everything from step 1 installed and connected we can navigate to a Contiki project and flash it to AVR Raven:
 \begin{lstlisting}
-&\textdollar& cd contiki/examples/hello-world
-&\textdollar& make TARGET=avr-raven savetarget  # select target platform and save our choice to Makefile.target file
-&\textdollar& make                              # this will compile the project for our saved target avr-raven
+change to project directory:
+	&\textdollar& cd contiki/examples/hello-world
+	
+select target platform and save our choice to Makefile.target file:
+	&\textdollar& make TARGET=avr-raven savetarget
+	
+compile the project for our saved target avr-raven
+	&\textdollar& make
 \end{lstlisting}
 Now we have the hello-world project compiled for avr-raven target.
 
