@@ -30,7 +30,7 @@ Suppose each character is shown for one second, then next character replaces pre
 typedef unsigned short lc_t;
 
 struct pt {
-  lc_t lc;                                      /* Local continuation */
+  lc_t lc;                                           /* Local continuation */
 }; 
 
 struct pt state;
@@ -41,7 +41,7 @@ PT_THREAD(display_text(struct pt *pt, const char *msg))
   PT_BEGIN(pt);
   for (int i = 0; i < strlen(msg); i++) {
     lcd_display_char(msg[i]);
-    timer_set(&timer, ONE_SECOND);              /* Wait for one second. */
+    timer_set(&timer, ONE_SECOND);                 /* Wait for one second. */
     PT_WAIT_UNTIL(pt, timer_expired(&timer));
   }
   PT_END(pt);
@@ -95,34 +95,33 @@ Next page shows the same sample of code after simplified preprocessing.
 typedef unsigned short lc_t;
 
 struct pt {
-  lc_t lc;                                      /* Local continuation */
+  lc_t lc;                                           /* Local continuation */
 }; 
 
 struct pt state;
 struct timer timer;
- 
-/* Expanded PT_THREAD macro */
-int display_text(struct pt *pt, const char *msg)
+
+int display_text(struct pt *pt, const char *msg)     /* Expanded PT_THREAD */
 {
-  switch(pt->lc) {  case 0:                     /* Expanded PT_BEGIN(pt); */
+  switch(pt->lc) {  case 0:                      /* Expanded PT_BEGIN(pt); */
   
     for (int i = 0; i < strlen(msg); i++) {
       lcd_display_char(msg[i]);
-      timer_set(&timer, ONE_SECOND);            /* Wait for one second. */
+      timer_set(&timer, ONE_SECOND);               /* Wait for one second. */
     
-      /* Expanded PT_WAIT_UNTIL(pt, timer_expired(&timer)); */
-      pt->lc = 31; case 31:                     
-      if(!(timer_expired(&timer))) { return PT_WAITING; }
+                                   /* The following two lines are expanded */
+      pt->lc = 31; case 31:   /* PT_WAIT_UNTIL(pt, timer_expired(&timer)); */
+      if(!(timer_expired(&timer))) { return PT_WAITING; }         /* macro */
     
     }
   
-  pt->lc = 0; return PT_ENDED; }                /* Expanded PT_END */
+  pt->lc = 0; return PT_ENDED; }                        /* Expanded PT_END */
   
 }
 
 int main(void)
 {
-  state->lc = 0;                                /* Expanded PT_INIT */
+  state->lc = 0;                                       /* Expanded PT_INIT */
   for (;;) {
     display_text(&state, "Hello world");
     /* Here can be another thread run */
