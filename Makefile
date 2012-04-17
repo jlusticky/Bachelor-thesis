@@ -4,10 +4,11 @@
 #===========================================
 # asi budete chtit prejmenovat:
 CO=projekt
+DE=arbeit
 
-all: $(CO).pdf
+all: $(CO).pdf $(DE).pdf
 
-pdf: $(CO).pdf
+pdf: $(CO).pdf $(DE).pdf
 
 $(CO).ps: $(CO).dvi
 	dvips $(CO)
@@ -17,6 +18,12 @@ $(CO).pdf: clean
 	bibtex $(CO)
 	pdflatex $(CO)
 	pdflatex $(CO)
+
+$(DE).pdf: clean
+	pdflatex $(DE)
+	bibtex $(DE)
+	pdflatex $(DE)
+	pdflatex $(DE)
 
 $(CO).dvi: $(CO).tex $(CO).bib
 	latex $(CO)
@@ -41,6 +48,8 @@ clean:
 	rm -f $(CO).pdf
 	rm -f *~
 	make -C cd/docs/ clean
+	./cleanup.sh yes
+	rm -f $(DE).pdf
 
 pack:
 	tar czvf bp-xlusti00.tar.gz *.tex *.bib *.bst ./fig/* ./cls/* Makefile Changelog ./ntp/* ./contiki/* ./cd/*
