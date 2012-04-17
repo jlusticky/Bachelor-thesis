@@ -36,4 +36,4 @@ clean:
 	rm -f *~
 
 pack:
-	tar czvf bp-xlusti00.tar.gz *.tex *.bib *.bst ./fig/* ./cls/* Makefile Changelog ./ntp/* ./contiki/*
+	tar czvf bp-xlusti00.tar.gz *.tex *.bib *.bst ./fig/* ./cls/* Makefile Changelog ./ntp/* ./contiki/* ./cd/*
