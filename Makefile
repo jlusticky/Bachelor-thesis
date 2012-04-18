@@ -48,7 +48,8 @@ clean:
 	rm -f $(CO).pdf
 	rm -f *~
 	make -C cd/docs/ clean
-	rm -f $(DE).pdf $(DE).acn $(DE).blg $(DE).bbl $(DE).toc $(DE).out $(DE).lof $(DE).glo $(DE).ist
+	rm -f $(DE).acn $(DE).blg $(DE).bbl $(DE).toc $(DE).out $(DE).lof $(DE).glo $(DE).ist
+	rm -f $(DE).pdf
 
 pack:
 	tar czvf bp-xlusti00.tar.gz *.tex *.bib *.bst ./fig/* ./cls/* Makefile Changelog ./ntp/* ./contiki/* ./cd/*
