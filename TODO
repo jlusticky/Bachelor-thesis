@@ -1,10 +1,9 @@
 Thesis
 ======
-NTP - algorithms, packet structure + popisky + bile pozadi, Round Trip Time (RTT)
+NTP - algorithms + history, Round Trip Time (RTT)
 Kernel - events, process are protothreads, ...
 Timers
 Use more BOOKs not only MISC in citations
-algorithms + history
 Convert setup.txt and simulation.txt to latex + add photos
 
 Tasks
