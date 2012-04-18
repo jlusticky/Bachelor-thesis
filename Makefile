@@ -53,4 +53,4 @@ clean:
 	rm -f desky.pdf
 
 pack:
-	tar czvf bp-xlusti00.tar.gz *.tex *.bib *.bst ./fig/* Makefile ./ntp/* ./contiki/* ./cd/*
+	tar czvf bp-xlusti00.tar.gz *.tex *.bib *.bst ./fig/* Makefile hsrm-logo.eps hsrm-logo.pdf ./ntp/* ./contiki/* ./cd/*
