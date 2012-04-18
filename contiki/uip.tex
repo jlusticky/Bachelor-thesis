@@ -6,8 +6,22 @@ The TCP/IP protocol suite is often used for communication over the Internet as w
 uIP (micro IP) is a complete TCP/IP communicating stack developed by Adam Dunkels
 for memory constrained systems such as embedded systems.
 
-%Before uIP ...TCP/IP heavyweight...
-%\! TODO
+Before uIP the TCP/IP architecture was considered to be a heavyweight
+due to its perceived need for processing power and memory~\cite{interconnecting}.
+The protocols were seen as too large to fit into the constrained environment -
+existing implementations of the IP protocol family for general purpose computers would need hundreds
+of kilobytes, whereas a typical constrained system has only a few tens of kilobytes of memory~\cite{interconnecting}.
+For this reason, several non-IP stacks were developed,
+such as Rime, which is briefly described in section~\ref{sec:contiki-rime}.
+
+In the early 2000s, however, this view was challenged by lightweight implementations of the IP
+protocol family for smart objects such as the uIP stack~\cite{interconnecting}.
+uIP showed that the IP architecture would fit nicely into the typical constrained systems,
+without removing any of the essential mechanisms from IP~\cite{interconnecting}.
+Note that these resources, which we consider constrained today, are fairly close to the
+resources of general purpose computers that were available when IP was designed~\cite{interconnecting}.
+Since its initial release, the uIP stack has become widely used in networked
+embedded systems~\cite{interconnecting, thesis-programming}.
 
 uIP provides two different application programming interfaces to programmers:
 a BSD sockets-like API called Protosockets and raw event-driven API.
@@ -19,7 +33,7 @@ discussed in this thesis further. For more information about Protosockets
 please refer to Contiki documentation~\cite{contiki-docs}.
 
 uIP contains only the absolute minimum of required features to fulfill the protocol standard.
-It can only handle a single network interface and contains the IP, ICMP, UDP and TCP protocols.
+It can only handle a single network interface and contains the IP, ICMP, UDP and TCP protocols~\cite{contiki-docs}.
 In order to reduce amount of memory requirements and code size,
 the uIP implementation uses an event-based API, which is fundamentally different
 from the most common TCP/IP API, the BSD sockets API, which is present on Unix-like systems
