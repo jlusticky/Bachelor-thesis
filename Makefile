@@ -52,4 +52,4 @@ clean:
 	rm -f $(DE).pdf
 
 pack:
-	tar czvf bp-xlusti00.tar.gz *.tex *.bib *.bst ./fig/* ./cls/* Makefile Changelog ./ntp/* ./contiki/* ./cd/*
+	tar czvf bp-xlusti00.tar.gz *.tex *.bib *.bst ./fig/* Makefile ./ntp/* ./contiki/* ./cd/*
