@@ -5,3 +5,6 @@
 *.blg
 *.toc
 *.out
+*.acn
+*.glo
+*.ist

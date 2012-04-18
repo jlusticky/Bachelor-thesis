@@ -6,20 +6,20 @@
 CO=projekt
 DE=arbeit
 
-all: $(CO).pdf $(DE).pdf
+all: clean $(CO).pdf $(DE).pdf
 
 pdf: $(CO).pdf $(DE).pdf
 
 $(CO).ps: $(CO).dvi
 	dvips $(CO)
 
-$(CO).pdf: clean
+$(CO).pdf:
 	pdflatex $(CO)
 	bibtex $(CO)
 	pdflatex $(CO)
 	pdflatex $(CO)
 
-$(DE).pdf: clean
+$(DE).pdf:
 	pdflatex $(DE)
 	bibtex $(DE)
 	pdflatex $(DE)
@@ -48,8 +48,7 @@ clean:
 	rm -f $(CO).pdf
 	rm -f *~
 	make -C cd/docs/ clean
-	./cleanup.sh yes
-	rm -f $(DE).pdf
+	rm -f $(DE).pdf $(DE).acn $(DE).blg $(DE).bbl $(DE).toc $(DE).out $(DE).lof $(DE).glo $(DE).ist
 
 pack:
 	tar czvf bp-xlusti00.tar.gz *.tex *.bib *.bst ./fig/* ./cls/* Makefile Changelog ./ntp/* ./contiki/* ./cd/*
