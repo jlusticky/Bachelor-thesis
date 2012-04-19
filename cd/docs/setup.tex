@@ -200,7 +200,8 @@ Before starting radvd we must enable forwarding for IPv6:
 	&\textdollar& sudo sysctl -w net.ipv6.conf.all.forwarding=1
 \end{lstlisting}
 Now we can start the radvd - this should be done in the same way as other daemons are started on your OS.
-The path might be /etc/rc.d/radvd, /etc/init.d/radvd, /usr/local/etc/rc.d/radvd or any other helper script (service, systemctl, ...) might be used.
+The path might be {\it{/etc/rc.d/radvd}}, {\it{/etc/init.d/radvd}}, {\it{/usr/local/etc/rc.d/radvd}}
+or any other helper script ({\it{service}}, {\it{systemctl}}, ...) might be used.
 \begin{lstlisting}
 	&\textdollar& sudo /etc/init.d/radvd start
 \end{lstlisting}

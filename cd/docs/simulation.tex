@@ -20,23 +20,27 @@ Set up shared folder (this needs the Guest additions) between your development h
 Install the AVR Studio version 4 (this version is easy to get working with Contiki and provides everything needed for simulation).
 
 Copy the complete Contiki source code with your compiled project from your development PC to
-C:\textbackslash YOUR\_HOME\_FOLDER\_ON\_DEVELOPMENT\_PC\textbackslash
-in Windows - e.g. your contiki source code is located at /home/josef/contiki
+{\it{C:\textbackslash YOUR\_HOME\_FOLDER\_ON\_DEVELOPMENT\_PC\textbackslash}}
+on Windows - e.g. your contiki source code is located at {\it{/home/josef/contiki}}
 then you have to copy Contiki to directory \\
-C:\textbackslash home\textbackslash josef\textbackslash contiki.
+{\it{C:\textbackslash home\textbackslash josef\textbackslash contiki}}.
 By other words - the root directory on your development PC remains root directory on Windows.
 
-Similarly copy the avr header files usually from /usr/lib/avr/include to
-C:\textbackslash usr\textbackslash lib\textbackslash avr\textbackslash include.
+Similarly copy the avr header files usually from {\it{/usr/lib/avr/include}} to
+{\it{C:\textbackslash usr\textbackslash lib\textbackslash avr\textbackslash include}}
+and the avr-gcc header files usually from {\it{/usr/lib/gcc/avr/}}VERSION{\it{/include}} to \\
+{\it{C:\textbackslash usr\textbackslash lib\textbackslash gcc\textbackslash VERSION\textbackslash avr\textbackslash include}}
+where VERSION can be determined from {\it{avr-gcc -v}} command.
+If the headers files are not to be found in this paths, {\it{avr-gcc -v }} command might help you to find them elsewhere.
 
-If you will not stick to this paths you might be later asked by AVR Studio to locate this files and directories manually.
+If you will not stick to this paths on Windows you might be later asked by AVR Studio to locate this files and directories manually.
 
 
 \section{Simulation}
 Execute the AVR Studio 4. From the Startup dialog select Open and open to your Contiki binary ELF file for AVR target.
 If the Startup dialog does not show, go to menu File and select Open File.
 You will be asked where to save your newly created AVR Studio project (aps file).
-Choose anything you like (My Documents\textbackslash AVR fits good).
+Choose anything you like ({\it{My Documents\textbackslash AVR}} fits good).
 Now you will be asked to select the debug platform and the device.
 Choose AVR Simulator and ATmega1284P for AVR Raven. (There seems to be a problem with the newer Simulator 2 with Timer/Counter 2 module).
 You may be asked if you want to load EEPROM data - click OK.
