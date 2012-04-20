@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage{a4wide}
 \usepackage{listings}
+\usepackage{url}
 
 \lstset{
 basicstyle=\footnotesize,       % the size of the fonts that are used for the code
@@ -20,28 +21,38 @@ escapechar=\&,
 \section{Preparation}
 In this guide we assume the following equipment:
 
-Hardware:
-PC running Linux (any other Unix-like OS should also work, but the GNU software is needed)
-AVR Raven with ATmega1284P - http://www.atmel.com/tools/RZRAVEN.aspx
-AVR Dragon programer - JTAG connected to AVR Raven - http://www.atmel.com/tools/AVRDRAGON.aspx
-USB A/B Cable for connecting PC with AVR Raven
-OPTIONAL RZ USB stick for communication between PC and AVR Raven (you won't have fun without it) - http://www.atmel.com/tools/RZUSBSTICK.aspx
-NOTE: Two AVR Raven devices and one RZ USB stick can be ordered as evaluation starter kit called RZ Raven - http://www.atmel.com/tools/RZRAVEN.aspx
+\vspace{0.2cm}
+
+{\textbf{Hardware:}}
+\begin{itemize}
+	\item PC running Linux (any other Unix-like OS should also work, but the GNU software is needed)
+	\item AVR Raven with ATmega1284P - \url{http://www.atmel.com/tools/AVRRAVEN.aspx}
+	\item AVR Dragon programer - JTAG connected to AVR Raven - \url{http://www.atmel.com/tools/AVRDRAGON.aspx}
+	\item USB A/B Cable for connecting PC with AVR Raven
+	\item Optional RZ USB stick for communication between PC and AVR Raven
+	(you won't have fun without it) - \url{http://www.atmel.com/tools/RZUSBSTICK.aspx}
+\end{itemize}
+
+NOTE: Two AVR Raven devices and one RZ USB stick can be ordered as
+evaluation starter kit called RZ Raven - \url{http://www.atmel.com/tools/RZRAVEN.aspx}
+
 
 
 %----#--SETUP AVR Raven connection + Photos -> HTML
+% As last connect AVR Raven to power.
 
+\vspace{0.5cm}
 
-Software:
-Contiki source code - version 2.5
-	from\\
-	http://sourceforge.net/projects/contiki/files/Contiki/Contiki\%202.5/contiki-2.5.zip/download
-	or after cloning git repository by issuing git checkout 2.5
-Programmer (flasher) for AVR - avrdude - http://www.nongnu.org/avrdude/
-Toolchaing for AVR - avr-libc, binutils-avr, gcc-avr
-OPTIONAL debugger (GDB) and interface between AVR JTAG and GDB - gdb-avr, avarice - http://avarice.sourceforge.net/
-+OPTIONALLY we can use DDD as a GDB frontend
-
+{\textbf{Software:}}
+\begin{itemize}
+	\item Contiki source code - zip version 2.5 from\\
+	\url{http://sourceforge.net/projects/contiki/files/Contiki/Contiki%202.5/contiki-2.5.zip/download}
+	or after cloning git repository by issuing {\it{git checkout 2.5}}
+	\item Programmer (flasher) for AVR - avrdude - http://www.nongnu.org/avrdude/
+	\item Toolchaing for AVR - avr-libc, binutils-avr, gcc-avr
+	\item Optional debugger (GDB) and interface between AVR JTAG and GDB - gdb-avr, avarice - http://avarice.sourceforge.net/
+	\item +Optionally we can use DDD as a GDB frontend
+\end{itemize}
 
 If we want to interface with the hardware as non-root user, we need to configure udev.
 Put the following line to file under {\it{/etc/udev/rules.d/99-avrdragon.rules}}:
