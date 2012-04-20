@@ -50,7 +50,7 @@
 static const char * host = "aaaa::1"; // NTP server
 static uint16_t port = NTP_PORT; // NTP port
 
-static struct ntp_msg msg = { .status = MODE_CLIENT | (NTP_VERSION << 3) | LI_NOWARNING };
+static struct ntp_msg msg;
 /*{
 	.padding = 0x23, // client
 	.rootdelay = 0,
@@ -86,9 +86,19 @@ tcpip_handler(void)
 		printf("Received malformed NTP packet\n");
 		return;
 	}
- 
-    //if (pkt->status 
-    //str[uip_datalen()] = '\0';
+
+#ifdef NTP_SERVER_SUPPORT
+    if ((pkt->status & MODEMASK) == MODE_CLIENT) // we have recieved a query from NTP client
+    {
+		// set server mode
+		msg.status = MODE_SERVER | (NTP_VERSION << 3) | LI_NOWARNING;
+		/// TODO switch IP address
+		/// ENTER THE TIME WE HAVE AND SEND
+		uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
+		return;
+	}
+#endif // NTP_SERVER_SUPPORT
+
     printf("Seconds got from server: %" PRIu32 "\n", pkt->xmttime.int_partl);
     
 	/*clocktime = clock_time(); // get the current clock time
@@ -101,9 +111,10 @@ tcpip_handler(void)
 static void
 timeout_handler(void)
 {
-  printf("Sending NTP packet to server\n");
-  //PRINT6ADDR(&udpconn->ripaddr);
-  uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
+	msg.status = MODE_CLIENT | (NTP_VERSION << 3) | LI_NOWARNING;
+	printf("Sending NTP packet to server\n");
+	//PRINT6ADDR(&udpconn->ripaddr);
+	uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
 }
 /*---------------------------------------------------------------------------*/
 PROCESS(ntpd_process, "ntpd");
