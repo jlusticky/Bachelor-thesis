@@ -86,6 +86,11 @@ struct ntp_msg {
 #define	LI_MINUSSEC	(2 << 6)	/* minus a second (59 seconds) */
 #define	LI_ALARM	(3 << 6)	/* alarm condition */
 
+/* Status Masks */
+#define	MODEMASK	(7 << 0)
+#define	VERSIONMASK	(7 << 3)
+#define LIMASK		(3 << 6)
+
 /* Mode values */
 #define	MODE_RES0	0	/* reserved */
 #define	MODE_SYM_ACT	1	/* symmetric active */
