@@ -13,3 +13,5 @@ study clock interface on POSIX systems - FreeBSD paper <- citation
 study clock hardware on x86 - hpet
 
 Study ISR clock and timer interface on AVR
+
+how to recognize that traffic belongs to this particular process
