@@ -1,7 +1,10 @@
 \documentclass{article}
+%\usepackage{fullpage}
 \usepackage{a4wide}
 \usepackage{listings}
 \usepackage{url}
+%\usepackage{color}
+\usepackage[unicode,colorlinks,hyperindex,plainpages=false,pdftex]{hyperref}
 
 \lstset{
 basicstyle=\footnotesize,       % the size of the fonts that are used for the code
@@ -48,9 +51,9 @@ evaluation starter kit called RZ Raven - \url{http://www.atmel.com/tools/RZRAVEN
 	\item Contiki source code - zip version 2.5 from\\
 	\url{http://sourceforge.net/projects/contiki/files/Contiki/Contiki%202.5/contiki-2.5.zip/download}
 	or after cloning git repository by issuing {\it{git checkout 2.5}}
-	\item Programmer (flasher) for AVR - avrdude - http://www.nongnu.org/avrdude/
+	\item Programmer (flasher) for AVR - avrdude - \url{http://www.nongnu.org/avrdude/}
 	\item Toolchaing for AVR - avr-libc, binutils-avr, gcc-avr
-	\item Optional debugger (GDB) and interface between AVR JTAG and GDB - gdb-avr, avarice - http://avarice.sourceforge.net/
+	\item Optional debugger (gdb-avr) and interface between AVR JTAG - avarice - \url{http://avarice.sourceforge.net/}
 	\item +Optionally we can use DDD as a GDB frontend
 \end{itemize}
 
@@ -263,8 +266,8 @@ screen /dev/ttyACM0
 
 
 If you desire more information on working with AVR Raven please consult
-Contiki wiki page for AVR Raven - http://www.sics.se/contiki/wiki/index.php/Avr\_Raven
-Contiki documentation that can be generated from source code or - http://www.sics.se/~adam/contiki/docs/
+Contiki wiki page for AVR Raven - \url{http://www.sics.se/contiki/wiki/index.php/Avr_Raven}
+Contiki documentation that can be generated from source code or at \url{http://www.sics.se/~adam/contiki/docs/}
 
 -- + Jackdaw + ravenusbstick example
 http://www.sics.se/~adam/contiki/docs/a01829.html
