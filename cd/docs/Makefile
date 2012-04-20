@@ -13,4 +13,4 @@ text: setup.tex
 	detex setup.tex > setup.txt
 
 clean:
-	rm -f setup.pdf simulation.pdf *.aux *.log setup.txt
+	rm -f setup.pdf simulation.pdf *.aux *.log *.out setup.txt
