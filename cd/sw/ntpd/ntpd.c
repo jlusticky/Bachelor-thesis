@@ -48,7 +48,8 @@
 
 
 static const char * host = "aaaa::1"; // NTP server
-static uint16_t port = NTP_PORT; // NTP port
+#define REMOTE_PORT NTP_PORT
+#define LOCAL_PORT NTP_PORT
 
 static struct ntp_msg msg;
 /*{
@@ -135,8 +136,8 @@ PROCESS_THREAD(ntpd_process, ev, data)
 #endif /* UIP_CONF_IPV6 */
 	
 	/* new connection with remote host */
-	udpconn = udp_new(&ipaddr, UIP_HTONS(123), NULL); // remote port
-	udp_bind(udpconn, UIP_HTONS(123)); // local port
+	udpconn = udp_new(&ipaddr, UIP_HTONS(REMOTE_PORT), NULL); // remote server port
+	udp_bind(udpconn, UIP_HTONS(LOCAL_PORT)); // local client port
 	
 	etimer_set(&et, SEND_INTERVAL);
 	for(;;) {
