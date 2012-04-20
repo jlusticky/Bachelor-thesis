@@ -72,15 +72,15 @@ static clock_time_t clockseconds;
 static void
 tcpip_handler(void)
 {
-  char *str;
+  struct ntp_msg *pkt;
 
   if(uip_newdata()) {
-    str = uip_appdata;
-    str[uip_datalen()] = '\0';
-    printf("Response from the server: '%s'\n", str);
+    pkt = uip_appdata;
+    //str[uip_datalen()] = '\0';
+    printf("Seconds got from server: %hu\n", pkt->xmttime.int_partl);
     
-	clocktime = clock_time(); // get the current clock time
-	printf("clock_time: %u\n", clocktime);
+	/*clocktime = clock_time(); // get the current clock time
+	printf("clock_time: %u\n", clocktime);*/
 	clockseconds = clock_seconds(); // get the current clock seconds
 	printf("clock_seconds: %u\n", clockseconds);
   }
