@@ -30,6 +30,7 @@ In this guide we assume the following equipment:
 \begin{itemize}
 	\item PC running Linux (any other Unix-like OS should also work, but the GNU software is needed)
 	\item AVR Raven with ATmega1284P - \url{http://www.atmel.com/tools/AVRRAVEN.aspx}
+	\item Two LR44 batteries or external power supply for AVR Raven
 	\item AVR Dragon programer - JTAG connected to AVR Raven - \url{http://www.atmel.com/tools/AVRDRAGON.aspx}
 	\item USB A/B Cable for connecting PC with AVR Raven
 	\item Optional RZ USB stick for communication between PC and AVR Raven
@@ -254,7 +255,7 @@ Finally we can ping the AVR Raven and use the webserver running on it:
 the actual IPv6 address can be determined from Wireshark or radvd output:
 	&\textdollar& ping6 aaaa::0011:22ff:fe33:4455
 use wget for http communication or any other web browser:
-	&\textdollar& wget http://[aaaa::0011:22ff:fe33:4455]     
+	&\textdollar& wget --no-proxy http://[aaaa::0011:22ff:fe33:4455]     
 \end{lstlisting}
  
 
