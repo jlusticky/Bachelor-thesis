@@ -40,6 +40,7 @@
 #include "ntpd.h"
 
 #include <string.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 #define DEBUG DEBUG_PRINT
@@ -49,7 +50,7 @@
 static const char * host = "aaaa::1"; // NTP server
 static uint16_t port = NTP_PORT; // NTP port
 
-static struct ntp_msg msg = { .status = 0x23 }; // client
+static struct ntp_msg msg = { .status = MODE_CLIENT | (NTP_VERSION << 3) | LI_NOWARNING };
 /*{
 	.padding = 0x23, // client
 	.rootdelay = 0,
@@ -73,11 +74,22 @@ static void
 tcpip_handler(void)
 {
   struct ntp_msg *pkt;
+  static struct timer t;
 
-  if(uip_newdata()) {
+  if(uip_newdata())
+  {
     pkt = uip_appdata;
+    
+    // check if received packet is complete
+    if ((uip_datalen() != NTP_MSGSIZE_NOAUTH) && (uip_datalen() != NTP_MSGSIZE))
+    {
+		printf("Received malformed NTP packet\n");
+		return;
+	}
+ 
+    //if (pkt->status 
     //str[uip_datalen()] = '\0';
-    printf("Seconds got from server: %hu\n", pkt->xmttime.int_partl);
+    printf("Seconds got from server: %" PRIu32 "\n", pkt->xmttime.int_partl);
     
 	/*clocktime = clock_time(); // get the current clock time
 	printf("clock_time: %u\n", clocktime);*/
