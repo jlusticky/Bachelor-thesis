@@ -35,8 +35,6 @@
 #ifndef __NTPD_H__
 #define __NTPD_H__
 
-//#define UDP_IP_BUF   ((struct uip_udpip_hdr *)&uip_buf[UIP_LLH_LEN])
-
 /*
  * NTP Packet sizes - borrowed from OpenNTPD 4.6
  */
@@ -61,7 +59,7 @@ struct s_fixedpt {
  * NTP Packet structure - we are not dealing with digest
  */
 struct ntp_msg {
-	uint8_t status;	/* status of local clock and leap info */
+	uint8_t status; /* status of local clock and leap info */
 	uint8_t stratum;	/* Stratum level */
 	uint8_t ppoll;		/* poll value */
 	int8_t precision;

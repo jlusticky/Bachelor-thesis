@@ -46,6 +46,9 @@
 #define DEBUG DEBUG_PRINT
 #include "net/uip-debug.h"
 
+// Pointer to a single global uIP buffer for packets
+// UIP_LLH_LEN is Lower-Layer-Header Length (14 for ethernet)
+#define UIP_IP_BUF   ((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])
 
 static const char * host = "aaaa::1"; // NTP server
 #define REMOTE_PORT NTP_PORT
@@ -93,7 +96,8 @@ tcpip_handler(void)
     {
 		// set server mode
 		msg.status = MODE_SERVER | (NTP_VERSION << 3) | LI_NOWARNING;
-		/// TODO switch IP address
+		// switch IP address
+		uip_ipaddr_copy(&udp_conn->ripaddr, &UIP_IP_BUF->srcipaddr);
 		/// ENTER THE TIME WE HAVE AND SEND
 		uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
 		return;
