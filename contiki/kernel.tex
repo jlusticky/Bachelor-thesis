@@ -2,10 +2,10 @@
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \section{The kernel and processes}
-The kernel in Contiki is event-driven but the system supports pre-emptive
+The kernel in Contiki is event-driven but the system supports preemptive
 multi-threading that can be applied on a per-process basis~\cite{video}.
-The pre-emption is not implemented in the kernel, but
-pre-emptive multi-threading is implemented as a library that is linked only with programs that
+The preemption is not implemented in the kernel, but
+preemptive multi-threading is implemented as a library that is linked only with programs that
 explicitly require multi-threading~\cite{paper-contiki}.
 The kernel itself contains no platform specific code, it implements only CPU multiplexing and
 lets device drivers and applications communicate directly with hardware~\cite{video}.
@@ -24,11 +24,11 @@ that means processes are running quasi-paralelly with the help of state of execu
 Just like Protothreads, processes are also implemented using macros, making them fully ANSI C compatible.
 %% continue here
 In Contiki, code run in either of two execution contexts:
-cooperative, in which code never pre-empts other code, and pre-emptive,
-which pre-empts the execution of the cooperative code and returns control
-when the pre-emptive code is finished.
-Processes always run in cooperative mode, where as interrupts run in pre-emptive mode.
-The only process control function that can be called from pre-emptive mode is process\_poll(). 
+cooperative, in which code never preempts other code, and preemptive,
+which preempts the execution of the cooperative code and returns control
+when the preemptive code is finished.
+Processes always run in cooperative mode, where as interrupts run in preemptive mode.
+The only process control function that can be called from preemptive mode is process\_poll(). 
 Processes communicate with each other by posting events to each other.
 Events are also posted when a process starts and exits.
 % https://www.sics.se/contiki/wiki/index.php/Processes
