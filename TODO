@@ -15,3 +15,5 @@ study clock hardware on x86 - hpet
 Study ISR clock and timer interface on AVR
 
 how to recognize that traffic belongs to this particular process
+
+core/net/uip.h - The iIP packet buffer.
