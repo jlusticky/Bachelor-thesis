@@ -1,6 +1,7 @@
 *.aux
 *.log
-*.pdf
+projekt.pdf
+arbeit.pdf
 *.bbl
 *.blg
 *.toc
