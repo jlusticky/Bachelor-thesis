@@ -3,6 +3,7 @@ Thesis
 NTP - algorithms + history, Round Trip Time (RTT)
 Kernel - events, process are protothreads, ...
 Timers
+Clock - figures
 Use more BOOKs not only MISC in citations
 Convert setup.txt and simulation.txt to latex + add photos
 
@@ -17,3 +18,5 @@ Study ISR clock and timer interface on AVR
 how to recognize that traffic belongs to this particular process
 
 try NTP server
+read RFCs
+implement
