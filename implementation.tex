@@ -52,3 +52,7 @@ This is however enough for implementing a reasonable time interface and later us
 \section{NTP client implementation}
 The structures representing NTP message were borrowed from OpenNTPD NTP Unix daemon.
 %They are not using the GCC extension for representing a bit field.
+
+A client sends messages to each server with a poll interval of $2^{tau}$
+seconds, as determined by the poll exponent tau.
+In NTPv4, $\tau$ ranges from 4 (16 s) to 17 (36 h).
