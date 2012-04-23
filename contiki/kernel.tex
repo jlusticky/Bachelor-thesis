@@ -1,7 +1,7 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
-\section{The kernel and processes}
+\section{Kernel and processes}
 The kernel in Contiki is event-driven but the system supports preemptive
 multi-threading that can be applied on a per-process basis~\cite{video}.
 The preemption is not implemented in the kernel, but
@@ -11,16 +11,23 @@ The kernel itself contains no platform specific code, it implements only CPU mul
 lets device drivers and applications communicate directly with hardware~\cite{video}.
 
 %! todo - process
-Applications in Contiki OS are implemented and run as processes.
+From high level of abstraction
+applications in Contiki OS are implemented and run as processes.
 Every Contiki process consists of a process control block and a process thread~\cite{contiki-wiki-processes}.
 The process control block contains run-time information about the process and
 the process thread contains the code of the process.
-
-The process control block particularly contains
+The process control block contains
 textual name of the process, pointer to the process thread and state of the process.
-The process thread is implemented as a protothread,
+The process thread is implemented as a single protothread,
+that is invoked from the process scheduler~\cite{contiki-wiki-processes}.
+
+From low level of abstraction that means
+all applications are implemented as C functions
+and all code execution is initiated by the Contiki kernel,
+that acts like a simple dispatcher calling these functions~\cite{contiki-docs}.
+
 %% review
-that means processes are running quasi-paralelly with the help of state of execution variable.
+That means processes are running quasi-paralelly with the help of state of execution variable.
 Just like Protothreads, processes are also implemented using macros, making them fully ANSI C compatible.
 %% continue here
 In Contiki, code run in either of two execution contexts:
@@ -32,11 +39,30 @@ The only process control function that can be called from preemptive mode is pro
 Processes communicate with each other by posting events to each other.
 Events are also posted when a process starts and exits.
 % https://www.sics.se/contiki/wiki/index.php/Processes
+In the ... execution context processes cannot be blocked,
+instead they run complete~\cite{video, paper-contiki}.
+
+Interprocess communication is done by posting events~\cite{paper-contiki}.
 %! todo - process
 
 The Contiki kernel does not provide support for timed events,
 instead an application that wants to use timers needs to explicitly use the timer library~\cite{contiki-docs}.
 The Contiki timer library is further discussed in section~\ref{sec:contiki-timers}.
+
+%! paper-contiki
+In sensor networks, being able to power down the node
+when the network is inactive is an often required way to reduce energy consumption.
+Power conservation mechanisms
+depend on both the applications and the network protocols.
+The Contiki kernel contains no explicit power
+save abstractions, but lets the the application specific parts
+of the system implement such mechanisms.
+To help the application decide when to power down the system, the event
+scheduler exposes the size of the event queue.
+This information can be used to power down the processor when there
+are no events scheduled. When the processor wakes up in
+response to an interrupt, the poll handlers are run to handle the external event.
+%! paper-contiki
 
 As stated before, Contiki is well documented and you can find out more about
 the kernel as well as the system in the documentation~\cite{contiki-docs}.
