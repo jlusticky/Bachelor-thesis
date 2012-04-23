@@ -2,6 +2,7 @@ all: ntpd
 
 UIP_CONF_IPV6=1
 #CFLAGS += -DNTP_SERVER_SUPPORT
+#CFLAGS+=-DRAVEN_LCD_INTERFACE=1
 
 CONTIKI=${HOME}/contiki
 include $(CONTIKI)/Makefile.include
