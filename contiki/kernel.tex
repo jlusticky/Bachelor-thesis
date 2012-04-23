@@ -23,7 +23,7 @@ cooperative, in which code never preempts other code, and preemptive,
 which preempts the execution of the cooperative code and returns control
 when the preemptive code is finished.
 Processes always run in cooperative mode, where as interrupts run in preemptive mode.
-The only process control function that can be called from preemptive mode is process_poll(). 
+The only process control function that can be called from preemptive mode is process\_poll(). 
 Processes communicate with each other by posting events to each other.
 Events are also posted when a process starts and exits.
 % https://www.sics.se/contiki/wiki/index.php/Processes
