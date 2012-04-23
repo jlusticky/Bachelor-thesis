@@ -64,7 +64,16 @@ static struct ntp_msg msg;
 	.xmttime = 0
 };*/
 
-#define SEND_INTERVAL 5*CLOCK_SECOND
+// NTP Poll interval in seconds = 2^TAU
+/// TAU ranges from 4 (Poll interval 16 s) to 17 ( Poll interval 36 h)
+/// - timer is limited in Contiki to xx s - use etimer vs. stimer
+///#ifndef NTP_TAU
+	#define TAU 3
+	#define POLL_INTERVAL (1 << TAU)
+///#endif // TAU
+
+// Send interval in clock ticks
+#define SEND_INTERVAL POLL_INTERVAL * CLOCK_SECOND
 
 static struct uip_udp_conn *udpconn;
 static clock_time_t clocktime;
@@ -113,6 +122,7 @@ static void
 timeout_handler(void)
 {
 	msg.status = MODE_CLIENT | (NTP_VERSION << 3) | LI_NOWARNING;
+	msg.ppoll = TAU;
 	printf("Sending NTP packet to server\n");
 	//PRINT6ADDR(&udpconn->ripaddr);
 	uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
