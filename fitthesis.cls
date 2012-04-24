@@ -347,6 +347,15 @@ Práce je chráněna autorským zákonem a její užití bez udělení oprávně
 
 \mktxt{11}{BRNO \@year}
 
+% zadani
+\newpage
+\thispagestyle{empty}
+\pagestyle{empty}
+\begin{textblock*}{\paperwidth}(5mm,0mm)
+   \noindent\includegraphics[keepaspectratio,width=\paperwidth]{fig/task.jpg} %height=\paperheight
+\end{textblock*}
+\mbox{}\newpage
+
 \newpage\fontfamily{\familydefault}\selectfont%
 %=================================================================================
 \makeabstract\makedeclaration
