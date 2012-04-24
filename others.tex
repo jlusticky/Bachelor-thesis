@@ -1,1 +1,42 @@
+%=========================================================================
+% (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
+\chapter{NTP on other systems}
+
+\section{POSIX-compliant systems}
+POSIX standard
+\begin{lstlisting}[morekeywords={clockid_t,time_t},numbers=none]
+clock_gettime(clockid_t clock_id, struct timespec *res);
+clock_settime(clockid_t clock_id, const struct timespec *res);
+clock_getres(clockid_t clock_id, struct timespec *res);
+
+struct timespec
+time_t  tv_sec    Seconds
+long    tv_nsec   Nanoseconds
+\end{lstlisting}
+A clock may be system-wide (that is, visible to all processes)
+or per-process (measuring time that is meaningful only within a process).
+All implementations shall support a clock\_id of CLOCK\_REALTIME as
+defined in <time.h>.
+This clock represents the clock measuring real time for the system.
+For this clock, the values returned by clock\_gettime() and specified
+by clock\_settime() represent the amount
+of time (in seconds and nanoseconds) since the Epoch.
+
+
+Operating systems
+Linux
+OpenBSD
+DragonflyBSD
+
+NTP implementations
+NTP from ntp.org project - reference implementation
+Chrony
+OpenNTPD - OpenBSD - secure, less robust, easy to configure
+dntpd - DragonflyBSD
+clockspeed
+
+\section{Embedded systems}
+Operating systems targeted at embedded devices
+TinyOS
+...
