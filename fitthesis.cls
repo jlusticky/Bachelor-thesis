@@ -146,6 +146,7 @@ Práce je chráněna autorským zákonem a její užití bez udělení oprávně
 \define@key{projinfo}{author}{\def\@author{#1}}
 \define@key{projinfo}{author.title.a}{\def\@author@ta{#1}}
 \define@key{projinfo}{author.title.p}{\def\@author@tp{#1}}
+\define@key{projinfo}{task}{\def\@task{#1}}
 \define@key{projinfo}{supervisor}{\def\@supervisor{#1}}
 \define@key{projinfo}{supervisor.title.a}{\def\@supervisor@ta{#1}}
 \define@key{projinfo}{supervisor.title.p}{\def\@supervisor@tp{#1}}
@@ -347,14 +348,27 @@ Práce je chráněna autorským zákonem a její užití bez udělení oprávně
 
 \mktxt{11}{BRNO \@year}
 
-% zadani
+\ifPrint
+  % empty page for print
+  \newpage
+  \thispagestyle{empty}
+  \mbox{}
+\fi
+
+% original task
 \newpage
 \thispagestyle{empty}
-\pagestyle{empty}
 \begin{textblock*}{\paperwidth}(5mm,0mm)
-   \noindent\includegraphics[keepaspectratio,width=\paperwidth]{fig/task.jpg} %height=\paperheight
+   \noindent\includegraphics[keepaspectratio,width=\paperwidth]{\@task} %height=\paperheight
 \end{textblock*}
 \mbox{}\newpage
+
+\ifPrint
+  % empty page for print
+  \newpage
+  \thispagestyle{empty}
+  \mbox{}
+\fi
 
 \newpage\fontfamily{\familydefault}\selectfont%
 %=================================================================================
