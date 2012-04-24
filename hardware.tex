@@ -1,0 +1,60 @@
+%=========================================================================
+% (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
+
+\chapter{Hardware concerns for implementing real-time support}
+%! review
+A typical desktop computer today includes CPU based on Intel x86 architecture.
+Real-Time Clock (RTC) in CMOS memory that is battery powered
+
+Unfortunately Intel x86 architecture is heavily influenced by backwards compatibility,
+e.g. the time value can also be stored in Binary Code Digit (BCD) encoding in RTC.
+
+In year 19xx / Starting with Intel 386
+Intel introduced
+Programmable Interrupt Controller (PIT) Intel 8253 and 8254 - 3 counters (counter 0 interrupt to OS)
+
+
+Used by historic versions of Linux
+=> read initial time from RTC, setup PIT and interrupts (IRQ 0, INT 8), increment jiffies on every interrupt, provide app resolution of jiffies
+
+init/main.c - time\_init() - read from RTC and save to startup\_time
+kernel/sched.c - sched\_init() = PTI setup for interrupts - LATCH (1193180/HZ)
+kernel/system\_call.s - timer\_interrupt() in assembly - increments jiffies
+
+The current real time is provided by CURRENT\_TIME (startup\_time+jiffies/HZ) => since jiffies is integer and HZ is 100 => resolution of 10ms.
+kernel/sys.c - sys\_time() - CURRENT\_TIME returned
+
+
+\section{NTP on POSIX-compliant systems}
+
+POSIX standard
+\begin{lstlisting}[morekeywords={clockid_t,time_t},numbers=none]
+clock_gettime(clockid_t clock_id, struct timespec *res);
+clock_settime(clockid_t clock_id, const struct timespec *res);
+clock_getres(clockid_t clock_id, struct timespec *res);
+
+struct timespec
+time_t  tv_sec    Seconds
+long    tv_nsec   Nanoseconds
+\end{lstlisting}
+A clock may be system-wide (that is, visible to all processes)
+or per-process (measuring time that is meaningful only within a process).
+All implementations shall support a clock\_id of CLOCK\_REALTIME as
+defined in <time.h>.
+This clock represents the clock measuring real time for the system.
+For this clock, the values returned by clock\_gettime() and specified
+by clock\_settime() represent the amount
+of time (in seconds and nanoseconds) since the Epoch.
+
+
+Operating systems
+Linux
+OpenBSD
+DragonflyBSD
+
+NTP implementations
+NTP from ntp.org project - reference implementation
+Chrony
+OpenNTPD - OpenBSD
+dntpd - DragonflyBSD
+clockspeed
