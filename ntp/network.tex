@@ -21,11 +21,16 @@ $2^{-32}$ seconds (aprox. 232 picoseconds)~\cite{rfc5905}.
 The short 32-bit timestamp includes a 16-bit unsigned seconds field
 and 16-bit fraction field.
 
-There is one more NTP time format - 128-bit date format.
-This format is however not transmitted over the network
+There is one more NTP time format - 128-bit NTP Date format.
+It includes a 64-bit signed seconds field and 64-bit fraction field.
+For convenience in mapping between formats,
+the seconds field is divided into a 32-bit Era Number field
+and a 32-bit Era Offset field.
+This 128-bit NTP Date format is however not transmitted over the network
 and since this 128-bit date format is used where sufficient storage and word
-size are available~\cite{rfc5905},
-there is practically no need of knowing about this format for embedded systems.
+size are available~\cite{rfc5905}.
+So there is practically no need of knowing about this format for embedded systems
+at least until year 2036, when the Era Number will be incremented from zero to one.
 But strictly speaking an NTP timestamp is a truncated NTP date format~\cite{rfc5905}.
 
 \begin{figure}
@@ -57,4 +62,3 @@ and Root Delay express accumulated roundtrip delay via primary server~\cite{ntp-
 Because of network latency the timestamp recieved will never be exactly corresponding to
 the current time.
 One of the main goals of NTP is to deal with the network latency~\cite{ntp-overview}.
-
