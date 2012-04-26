@@ -193,8 +193,8 @@ PROCESS_THREAD(ntpd_process, ev, data)
 
 
 #ifdef NTP_SERVER_SUPPORT
-	// set NULL and 0 as IP address and port to accept packet from any node and any srcport.
-	udpconn = udp_new(NULL, 0, NULL);
+	// set NULL as IP address and port to accept packet from any node and srcport LOCAL_PORT
+	udpconn = udp_new(NULL, UIP_HTONS(LOCAL_PORT), NULL);
 #else
 	/* new connection with remote host */
 	udpconn = udp_new(&ipaddr, UIP_HTONS(REMOTE_PORT), NULL); // remote server port
