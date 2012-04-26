@@ -50,7 +50,7 @@
 // UIP_LLH_LEN is Lower-Layer-Header Length (14 for ethernet)
 #define UIP_IP_BUF   ((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])
 
-static const char * host = "aaaa::1"; // NTP server
+//static const char * host = "aaaa::1"; // NTP server
 #define REMOTE_PORT NTP_PORT
 #define LOCAL_PORT NTP_PORT
 
@@ -185,8 +185,8 @@ PROCESS_THREAD(ntpd_process, ev, data)
 
 	// set the NTP server address
 #ifdef UIP_CONF_IPV6	
-	//uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,0x0001);
-	uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0x11,0x22ff,0xfe33,0x4455);
+	uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,0x0001);
+	//uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0x11,0x22ff,0xfe33,0x4455);
 #else
 	uip_ipaddr(&ipaddr, 10, 18, 48, 75);
 #endif /* UIP_CONF_IPV6 */
