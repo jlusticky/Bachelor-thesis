@@ -126,12 +126,12 @@ tcpip_handler(void)
     
     clock_gettime(&tmpts);
     
-    if (abs(ts.tv_sec - tmpts.tv_sec) > 1)
+    if (abs(ts.tv_sec - tmpts.tv_sec) > 1) // uint vs. int
     {
 	/// do this only IF difference > 36min use settime
 		clock_settime(&ts);
 		
-		printf("setting the time\n");
+		PRINTF("Setting the time\n");
 		
 		msg.xmttime.int_partl = uip_htonl(0x534554);
 		uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
