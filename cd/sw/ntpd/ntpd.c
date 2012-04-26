@@ -116,19 +116,6 @@ tcpip_handler(void)
 	
     pkt = uip_appdata;
 
-#ifdef NTP_SERVER_SUPPORT
-    if ((pkt->status & MODEMASK) == MODE_CLIENT) // we have recieved a query from NTP client
-    {
-		// set server mode
-		msg.status = MODE_SERVER | (NTP_VERSION << 3) | LI_NOWARNING;
-		// switch IP address
-		uip_ipaddr_copy(&udpconn->ripaddr, &UIP_IP_BUF->srcipaddr);
-		/// ENTER THE TIME WE HAVE AND SEND
-		uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
-		return;
-	}
-#endif // NTP_SERVER_SUPPORT
-
     printf("Seconds got from server: %" PRIu32 "\n", pkt->xmttime.int_partl);
     
 	/*clocktime = clock_time(); // get the current clock time
@@ -191,14 +178,8 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	uip_ipaddr(&ipaddr, 10, 18, 48, 75);
 #endif /* UIP_CONF_IPV6 */
 
-
-#ifdef NTP_SERVER_SUPPORT
-	// set NULL as IP address and port to accept packet from any node and srcport LOCAL_PORT
-	udpconn = udp_new(NULL, UIP_HTONS(LOCAL_PORT), NULL);
-#else
 	/* new connection with remote host */
 	udpconn = udp_new(&ipaddr, UIP_HTONS(REMOTE_PORT), NULL); // remote server port
-#endif // NTP_SERVER_SUPPORT
 
 	udp_bind(udpconn, UIP_HTONS(LOCAL_PORT)); // local client port
 	
