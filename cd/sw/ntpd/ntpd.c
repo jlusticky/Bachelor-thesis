@@ -59,7 +59,7 @@ static struct ntp_msg msg;
 	.padding = 0x23, // client
 	.rootdelay = 0,
 	.dispersion = 0,
-	.refid = 0,
+	.refid = 0, "INIT"
 	.reftime.int_partl = 0xEEEE,
 	.reftime.fractionl = 0xFFFF,
 	.orgtime = 0,
@@ -99,11 +99,14 @@ ntp_hton(struct ntp_msg *msg)
 }
 **/
 
+static void timeout_handler(void);
+
 /*---------------------------------------------------------------------------*/
 static void
 tcpip_handler(void)
 {
   struct ntp_msg *pkt;
+  struct timespec tmpts;
 
   if(uip_newdata())
   {    
@@ -116,8 +119,24 @@ tcpip_handler(void)
 	
     pkt = uip_appdata;
 
-    printf("Seconds got from server: %" PRIu32 "\n", pkt->xmttime.int_partl);
+    //printf("Seconds got from server: %" PRIu32 "\n", uip_htonl(pkt->xmttime.int_partl) - JAN_1970);
     
+    ts.tv_sec = uip_htonl(pkt->xmttime.int_partl) - JAN_1970;
+    //ts.tv_nsec;
+    
+    clock_gettime(&tmpts);
+    
+    if (abs(ts.tv_sec - tmpts.tv_sec) > 1)
+    {
+	/// do this only IF difference > 36min use settime
+		clock_settime(&ts);
+		
+		printf("setting the time\n");
+		
+		msg.xmttime.int_partl = uip_htonl(0x534554);
+		uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
+	}
+        
 	/*clocktime = clock_time(); // get the current clock time
 	printf("clock_time: %u\n", clocktime);*/
 	clockseconds = clock_seconds(); // get the current clock seconds
