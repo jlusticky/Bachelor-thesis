@@ -27,11 +27,13 @@ For convenience in mapping between formats,
 the seconds field is divided into a 32-bit Era Number field
 and a 32-bit Era Offset field.
 This 128-bit NTP Date format is however not transmitted over the network
-and since this 128-bit date format is used where sufficient storage and word
-size are available~\cite{rfc5905}.
+and is used where sufficient storage and word
+size is available~\cite{rfc5905}.
 So there is practically no need of knowing about this format for embedded systems
 at least until year 2036, when the Era Number will be incremented from zero to one.
-But strictly speaking an NTP timestamp is a truncated NTP date format~\cite{rfc5905}.
+But strictly speaking an NTP timestamp is a truncated NTP Date format~\cite{rfc5905}.
+Refer to apendix~\ref{app:dates} for a short list of some dates
+requiring usage of NTP Date format.
 
 \begin{figure}
 	\centering

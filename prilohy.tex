@@ -119,7 +119,7 @@ int main(void)
 
 \end{lstlisting}
 
-\chapter{Interesting NTP Dates}
+\chapter{Interesting NTP Dates}\label{app:dates}
 NTP timestamps are unsigned values, and operations on them produce a
 result in the same or adjacent eras.
 Era 0 includes dates from the prime epoch to some time in 2036,
@@ -131,13 +131,15 @@ This table shows a number of interesting NTP dates
 together with their corresponding NTP Era and NTP timestamp.
 The table is taken from RFC 5905~\cite{rfc5905}.
 
+\vspace{1cm}
+
 \begin{tabular}{|l|l|l|l|}
 	\hline
 	Date & NTP Era & NTP Timestamp & Epoch \\ \hline
 	1 Jan -4712 & -49 & 1 795 583 104 & 1st day Julian \\
 	1 Jan 0 & -14 & 171 311 744 & 1 BCE \\
-	1 Jan 1 & -14 & 202,939,144 & 1 CE \\
-	31 Dec 1899 & -1  & 4 294 880 896 & Last day NTP Era -1 \\
+	1 Jan 1 & -14 & 202 939 144 & 1 CE \\
+	31 Dec 1899 & -1 & 4 294 880 896 & Last day NTP Era -1 \\
 	1 Jan 1900 & 0 & 0 & First day NTP \\
 	1 Jan 1970 & 0 & 2 208 988 800 & First day UNIX \\
 	31 Dec 1999 & 0 & 3 155 587 200 & Last day 20th Century \\
