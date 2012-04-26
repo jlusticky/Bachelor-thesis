@@ -67,6 +67,8 @@ static struct ntp_msg msg;
 	.xmttime = 0
 };*/
 
+struct timespec ts;
+
 // NTP Poll interval in seconds = 2^TAU
 /// TAU ranges from 4 (Poll interval 16 s) to 17 ( Poll interval 36 h)
 /// - timer is limited in Contiki to xx s - use etimer vs. stimer
@@ -81,24 +83,38 @@ static struct ntp_msg msg;
 static struct uip_udp_conn *udpconn;
 static clock_time_t clocktime;
 static clock_time_t clockseconds;
-		
+
+/**
+static void
+ntp_hton(struct ntp_msg *msg)
+{
+    msg->refid = htonl(msg->refid);
+    s_fixedpt_hton(&msg->rootdelay);
+    s_fixedpt_hton(&msg->dispersion);
+    l_fixedpt_hton(&msg->reftime);
+    l_fixedpt_hton(&msg->orgtime);
+    l_fixedpt_hton(&msg->rectime);
+    l_fixedpt_hton(&msg->xmttime);
+    msg->keyid = htonl(msg->keyid);
+}
+**/
+
 /*---------------------------------------------------------------------------*/
 static void
 tcpip_handler(void)
 {
   struct ntp_msg *pkt;
-  static struct timer t;
 
   if(uip_newdata())
-  {
-    pkt = uip_appdata;
-    
+  {    
     // check if received packet is complete
     if ((uip_datalen() != NTP_MSGSIZE_NOAUTH) && (uip_datalen() != NTP_MSGSIZE))
     {
-		printf("Received malformed NTP packet\n");
+		PRINTF("Received malformed NTP packet\n");
 		return;
 	}
+	
+    pkt = uip_appdata;
 
 #ifdef NTP_SERVER_SUPPORT
     if ((pkt->status & MODEMASK) == MODE_CLIENT) // we have recieved a query from NTP client
@@ -106,7 +122,7 @@ tcpip_handler(void)
 		// set server mode
 		msg.status = MODE_SERVER | (NTP_VERSION << 3) | LI_NOWARNING;
 		// switch IP address
-		uip_ipaddr_copy(&udp_conn->ripaddr, &UIP_IP_BUF->srcipaddr);
+		uip_ipaddr_copy(&udpconn->ripaddr, &UIP_IP_BUF->srcipaddr);
 		/// ENTER THE TIME WE HAVE AND SEND
 		uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
 		return;
@@ -127,9 +143,32 @@ timeout_handler(void)
 {
 	msg.status = MODE_CLIENT | (NTP_VERSION << 3) | LI_NOWARNING;
 	msg.ppoll = TAU;
-	printf("Sending NTP packet to server\n");
-	//PRINT6ADDR(&udpconn->ripaddr);
+	
+	clock_gettime(&ts);
+	msg.xmttime.int_partl = uip_htonl(ts.tv_sec + JAN_1970);
+	
+	PRINTF("Sending NTP packet to server ");
+	PRINT6ADDR(&udpconn->ripaddr);
+	PRINTF("\n");
+	
 	uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
+}
+/*---------------------------------------------------------------------------*/
+static void
+print_local_addresses(void)
+{
+  int i;
+  uint8_t state;
+
+  PRINTF("NTP Client IPv6 addresses: ");
+  for(i = 0; i < UIP_DS6_ADDR_NB; i++) {
+    state = uip_ds6_if.addr_list[i].state;
+    if(uip_ds6_if.addr_list[i].isused &&
+       (state == ADDR_TENTATIVE || state == ADDR_PREFERRED)) {
+      PRINT6ADDR(&uip_ds6_if.addr_list[i].ipaddr);
+      PRINTF("\n");
+    }
+  }
 }
 /*---------------------------------------------------------------------------*/
 PROCESS(ntpd_process, "ntpd");
@@ -142,15 +181,25 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	
 	PROCESS_BEGIN();
 
+	print_local_addresses();
+
 	// set the NTP server address
 #ifdef UIP_CONF_IPV6	
-	uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,0x0001);
+	//uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,0x0001);
+	uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0x11,0x22ff,0xfe33,0x4455);
 #else
 	uip_ipaddr(&ipaddr, 10, 18, 48, 75);
 #endif /* UIP_CONF_IPV6 */
-	
+
+
+#ifdef NTP_SERVER_SUPPORT
+	// set NULL and 0 as IP address and port to accept packet from any node and any srcport.
+	udpconn = udp_new(NULL, HTONS(0), NULL);
+#else
 	/* new connection with remote host */
 	udpconn = udp_new(&ipaddr, UIP_HTONS(REMOTE_PORT), NULL); // remote server port
+#endif // NTP_SERVER_SUPPORT
+
 	udp_bind(udpconn, UIP_HTONS(LOCAL_PORT)); // local client port
 	
 	etimer_set(&et, SEND_INTERVAL);
