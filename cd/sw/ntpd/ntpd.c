@@ -42,6 +42,7 @@
 #include <string.h>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
+#include <stdlib.h>
 
 #define DEBUG DEBUG_PRINT
 #include "net/uip-debug.h"
@@ -126,15 +127,15 @@ tcpip_handler(void)
     
     clock_gettime(&tmpts);
     
-    if (abs(ts.tv_sec - tmpts.tv_sec) > 1)
+    if (abs(ts.tv_sec - tmpts.tv_sec) > 1) // uint vs. int
     {
 	/// do this only IF difference > 36min use settime
 		clock_settime(&ts);
 		
-		printf("setting the time\n");
+		PRINTF("Setting the time\n");
 		
-		msg.xmttime.int_partl = uip_htonl(0x534554);
-		uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
+		///msg.xmttime.int_partl = uip_htonl(0x534554);
+		///uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
 	}
         
 	/*clocktime = clock_time(); // get the current clock time
@@ -147,8 +148,10 @@ tcpip_handler(void)
 static void
 timeout_handler(void)
 {
-	msg.status = MODE_CLIENT | (NTP_VERSION << 3) | LI_NOWARNING;
-	msg.ppoll = TAU;
+	msg.status = MODE_CLIENT | (NTP_VERSION << 3) | LI_ALARM; ///LI_NOWARNING; - NOT SYNCHRONISED
+	msg.ppoll = 6; /// TAU
+	msg.precision = 0xec; /// %! TODO
+	msg.refid = UIP_HTONL(0x494e4954); // INIT
 	
 	clock_gettime(&ts);
 	msg.xmttime.int_partl = uip_htonl(ts.tv_sec + JAN_1970);
@@ -191,7 +194,7 @@ PROCESS_THREAD(ntpd_process, ev, data)
 
 	// set the NTP server address
 #ifdef UIP_CONF_IPV6	
-	uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,0x0001);
+	uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,2);
 	//uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0x11,0x22ff,0xfe33,0x4455);
 #else
 	uip_ipaddr(&ipaddr, 10, 18, 48, 75);
