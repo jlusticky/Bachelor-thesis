@@ -11,8 +11,12 @@ The memory constraints make programming for embedded systems a challange.
 Operating system Contiki is targeted at embedded systems supporting MSP430, AVR, ARM, x86
 architecture and many others~\cite{contiki-docs}.
 Contiki aims for maximum portability and therefore is written in C.
-Protothreads are a new concept brought by Contiki to the embedded world~\cite{paper-protothreads}.
-Protothreads are very lightweight and compatible with standard C.
+It is a feature-rich operating system and it
+is possible to describe only some of its features in this thesis.
+
+Contiki OS features lightweight stackless threads called Protothreads.
+Protothreads are a new concept brought by Contiki to the embedded world,
+they are extremely lightweight and compatible with standard C~\cite{paper-protothreads}.
 Each Protothread does not require a separate stack which makes them perfectly
 fit for usage in programming memory constrained embedded systems.
 Protothreads are more detailed discussed in section~\ref{sec:contiki-protothreads}.
@@ -44,6 +48,7 @@ Contiki is developed by a group of developers from industry and academia
 lead by Adam Dunkels from the Swedish Institute of Computer Science.
 The Contiki team currently consists of sixteen developers from SICS,
 SAP AG, Cisco, Atmel, NewAE and TU Munich~\cite{contiki-docs}.
+Contiki is also deployed at RheinMain University in Wiesbaden.
 The 3-clause BSD license is placing minimal restrictions on how Contiki can be redistributed.
 Contiki version 1.0 was released in 2002, version 2.0 in 2007 and the latest version
 at the time of writing was 2.5 released in 2011.
