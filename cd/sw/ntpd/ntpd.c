@@ -110,7 +110,8 @@ tcpip_handler(void)
     pkt = uip_appdata;
     
     // check if the server is synchronised
-    if (((pkt->status & LI_ALARM) == LI_ALARM) || (pkt->stratum > NTP_MAXSTRATUM) || (pkt->stratum == 0))
+    ///if (((pkt->status & LI_ALARM) == LI_ALARM) || (pkt->stratum > NTP_MAXSTRATUM)) /// || (pkt->stratum == 0))
+    if (pkt->stratum > NTP_MAXSTRATUM)
     {
 		PRINTF("Received NTP packet from unsynchronised server\n");
 		return;
@@ -145,7 +146,7 @@ timeout_handler(void)
 	msg.status = MODE_CLIENT | (NTP_VERSION << 3) | LI_ALARM; ///LI_NOWARNING; - NOT SYNCHRONISED
 	msg.ppoll = TAU; // log2(poll_interval)
 	msg.precision = -7; /// %! 2 na precision = rozliseni hodin // 2**-7 => 1/128 = 1/CLOCK_SECOND
-	msg.refid = UIP_HTONL(0x494e4954); // INIT string in ASCII - only for the first time - delete?
+	//msg.refid = UIP_HTONL(0x494e4954); // INIT string in ASCII - only for the first time - delete?
 	
 	clock_gettime(&ts);
 	msg.xmttime.int_partl = uip_htonl(ts.tv_sec + JAN_1970);
@@ -188,8 +189,8 @@ PROCESS_THREAD(ntpd_process, ev, data)
 
 	// set the NTP server address
 #ifdef UIP_CONF_IPV6	
-	uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0x0260,0x6eff,0xfe7a,0xd4b8);
-	//uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0x11,0x22ff,0xfe33,0x4455);
+	//uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0x0260,0x6eff,0xfe7a,0xd4b8);
+	uip_ip6addr(&ipaddr,0xbbbb,0,0,0,0,0,0,0x1);
 #else
 	uip_ipaddr(&ipaddr, 10, 18, 48, 75);
 #endif /* UIP_CONF_IPV6 */
