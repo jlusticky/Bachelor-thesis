@@ -150,7 +150,7 @@ timeout_handler(void)
 {
 	msg.status = MODE_CLIENT | (NTP_VERSION << 3) | LI_ALARM; ///LI_NOWARNING; - NOT SYNCHRONISED
 	msg.ppoll = TAU; // log2(poll_interval)
-	msg.precision = 0xec; /// %! TODO
+	msg.precision = -7; /// %! 2 na precision = rozliseni hodin // 2**-7 => 1/128 = 1/CLOCK_SECOND
 	msg.refid = UIP_HTONL(0x494e4954); // INIT string in ASCII
 	
 	clock_gettime(&ts);
