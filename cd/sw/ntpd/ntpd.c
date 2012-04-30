@@ -56,17 +56,6 @@
 #define LOCAL_PORT NTP_PORT
 
 static struct ntp_msg msg;
-/*{
-	.padding = 0x23, // client
-	.rootdelay = 0,
-	.dispersion = 0,
-	.refid = 0, "INIT"
-	.reftime.int_partl = 0xEEEE,
-	.reftime.fractionl = 0xFFFF,
-	.orgtime = 0,
-	.rectime = 0,
-	.xmttime = 0
-};*/
 
 struct timespec ts;
 
@@ -110,7 +99,7 @@ tcpip_handler(void)
   struct timespec tmpts;
 
   if(uip_newdata())
-  {    
+  {
     // check if received packet is complete
     if ((uip_datalen() != NTP_MSGSIZE_NOAUTH) && (uip_datalen() != NTP_MSGSIZE))
     {
@@ -119,8 +108,13 @@ tcpip_handler(void)
 	}
 	
     pkt = uip_appdata;
-
-    //printf("Seconds got from server: %" PRIu32 "\n", uip_htonl(pkt->xmttime.int_partl) - JAN_1970);
+    
+    // check if the server is synchronised
+    if (((pkt->status & LI_ALARM) == LI_ALARM) || (pkt->stratum > NTP_MAXSTRATUM) || (pkt->stratum == 0))
+    {
+		PRINTF("Received NTP packet from unsynchronised server\n");
+		return;
+	}
     
     ts.tv_sec = uip_htonl(pkt->xmttime.int_partl) - JAN_1970;
     //ts.tv_nsec;
@@ -151,7 +145,7 @@ timeout_handler(void)
 	msg.status = MODE_CLIENT | (NTP_VERSION << 3) | LI_ALARM; ///LI_NOWARNING; - NOT SYNCHRONISED
 	msg.ppoll = TAU; // log2(poll_interval)
 	msg.precision = -7; /// %! 2 na precision = rozliseni hodin // 2**-7 => 1/128 = 1/CLOCK_SECOND
-	msg.refid = UIP_HTONL(0x494e4954); // INIT string in ASCII
+	msg.refid = UIP_HTONL(0x494e4954); // INIT string in ASCII - only for the first time - delete?
 	
 	clock_gettime(&ts);
 	msg.xmttime.int_partl = uip_htonl(ts.tv_sec + JAN_1970);

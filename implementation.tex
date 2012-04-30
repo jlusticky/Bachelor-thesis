@@ -56,6 +56,8 @@ Unlike the RFC shows, there are no 64 bit values. %! RFC - A.4. Kernel System Cl
 The structures representing NTP message were borrowed from OpenNTPD NTP Unix daemon.
 %They are not using the GCC extension for representing a bit field.
 
+Packet sanity tests~\cite{ntp-arch}.
+
 A client sends messages to each server with a poll interval of $2^{tau}$
 seconds, as determined by the poll exponent tau.
 In NTPv4, $\tau$ ranges from 4 (16 s) to 17 (36 h).
