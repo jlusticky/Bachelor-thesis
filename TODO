@@ -8,8 +8,6 @@ Use more BOOKs not only MISC in citations
 Convert setup.txt and simulation.txt to latex + add photos
 core/net/uip.h - The iIP packet buffer.
 
-wrap URLs in german template
-
 Tasks
 =====
 documentation for avr atmega1284p - 3timers and their usage
