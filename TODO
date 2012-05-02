@@ -34,3 +34,5 @@ ntpd - NTP_SERVER_SUPPORT pomala odezva
 RFC NTP - page 20 = packet description
 
 COOJA?
+
+NTOHL, HTONL?
