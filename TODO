@@ -6,7 +6,17 @@ Timers
 Clock - figures
 Use more BOOKs not only MISC in citations
 Convert setup.txt and simulation.txt to latex + add photos
-core/net/uip.h - The iIP packet buffer.
+core/net/uip.h - The uIP packet buffer.
+
+Content
+=======
+obsah.tex - conclusion
+contiki.tex - DONE
+contiki/protothreads.tex - DONE
+contiki/uip.tex - DONE
+contiki/rime.tex - DONE
+contiki/kernel.tex - show code or struct, work in progress
+contiki/timers.tex -
 
 Tasks
 =====
