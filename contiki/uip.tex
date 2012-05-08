@@ -18,7 +18,7 @@ In the early 2000s, however, this view was challenged by lightweight implementat
 protocol family for smart objects such as the uIP stack~\cite{interconnecting}.
 uIP showed that the IP architecture would fit nicely into the typical constrained systems,
 without removing any of the essential mechanisms from IP.
-Note that these resources, which we consider constrained today, are fairly close to the
+Note that these resources, which are consider constrained today, are fairly close to the
 resources of general purpose computers that were available when IP was designed~\cite{interconnecting}.
 Since its initial release, the uIP stack has become widely used in networked
 embedded systems~\cite{interconnecting, thesis-programming}.
@@ -36,7 +36,7 @@ uIP contains only the absolute minimum of required features to fulfill the proto
 It can only handle a single network interface and contains the IP, ICMP, UDP and TCP protocols~\cite{contiki-docs}.
 In order to reduce amount of memory requirements and code size,
 the uIP implementation uses an event-based API, which is fundamentally different
-from the most common TCP/IP API, the BSD sockets API, which is present on Unix-like systems
+from the most common TCP/IP API, the BSD sockets API present on Unix-like systems
 and defined by POSIX standard~\cite{thesis-programming,posix}.
 The application is invoked in response to certain events and
 it is up to application that is receiving events from uIP to handle all
@@ -45,7 +45,7 @@ the application will be invoked and then has to resend the data.
 This approach is based on the fact that it should be an easy work for application
 to rebuild the same data.
 This way uIP stack does not need to use explicit dynamic memory allocation.
-Instead, it uses a single global buffer for holding packets and has a fixed
+Instead it uses a single global buffer for holding packets and has a fixed
 table for holding connection state.
 The global packet buffer is large enough to contain one packet of maximum size~\cite{contiki-docs}.
 
