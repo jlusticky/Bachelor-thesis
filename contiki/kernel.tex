@@ -10,26 +10,33 @@ explicitly require multi-threading~\cite{paper-contiki}.
 The kernel itself contains no platform specific code, it implements only CPU multiplexing and
 lets device drivers and applications communicate directly with hardware~\cite{video}.
 
-%! todo - process
 From high level of abstraction
 applications in Contiki OS are implemented and run as processes.
+Protothreads, the lightweight threads described in section~\ref{sec:protothreads},
+are used in Contiki to implement processes.
+Both the Contiki kernel and Contiki applications use
+Protothreads extensively to achieve cooperative multitasking~\cite{contiki-wiki-faq}.
 Every Contiki process consists of a process control block and a process thread~\cite{contiki-wiki-processes}.
 The process control block contains run-time information about the process and
 the process thread contains the code of the process.
 The process control block contains
 textual name of the process, pointer to the process thread and state of the process.
-The process thread is implemented as a single protothread,
-that is invoked from the process scheduler~\cite{contiki-wiki-processes}.
+The process thread is implemented as a single Protothread,
+that is invoked from the process scheduler in the Contiki kernel~\cite{contiki-wiki-processes}.
 
 From low level of abstraction that means
-all applications are implemented as C functions
-and all code execution is initiated by the Contiki kernel,
-that acts like a simple dispatcher calling these functions~\cite{contiki-docs}.
+every application is implemented as a simple C function
+and the process control block remembers the actual state of execution of this function
+in the same way as the local continuation works by Protothreads.
+Processes are therefore running quasi-paralelly in Contiki.
 
-%% review
-That means processes are running quasi-paralelly with the help of state of execution variable.
-Just like Protothreads, processes are also implemented using macros, making them fully ANSI C compatible.
-%% continue here
+All code execution is initiated by the Contiki kernel
+that acts like a simple dispatcher calling these functions~\cite{contiki-docs}.
+Just like Protothreads, processes are also implemented using macros,
+making them fully standard C compatible.
+%% SHOW CODE or STRUCT?
+
+%% continue here - UP HERE DONE
 In Contiki, code run in either of two execution contexts:
 cooperative, in which code never preempts other code, and preemptive,
 which preempts the execution of the cooperative code and returns control
