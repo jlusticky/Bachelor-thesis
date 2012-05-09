@@ -24,13 +24,18 @@ by clock\_settime() represent the amount
 of time (in seconds and nanoseconds) since the Epoch.
 
 
-Operating systems
+Operating systems:
+
 Linux
 OpenBSD
 DragonflyBSD
 
-NTP implementations
+NTP implementations:
+
 NTP from ntp.org project - reference implementation
+Uses array for converting between Unix and NTP timestamp.
+This approach does not fit for use with memory constrained systems.
+
 Chrony
 
 OpenNTPD - OpenBSD - secure, less robust, easy to configure
@@ -50,8 +55,8 @@ OpenNTPD - OpenBSD - secure, less robust, easy to configure
 
 dntpd - DragonflyBSD
 only sends seconds
-    wmsg.xmttime.int_partl = time(NULL) + JAN_1970;
-    wmsg.xmttime.fractionl = random();
+%wmsg.xmttime.int_partl = time(NULL) + JAN_1970;
+%wmsg.xmttime.fractionl = random();
 
 
 clockspeed
