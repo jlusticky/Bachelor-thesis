@@ -57,7 +57,7 @@
 
 static struct ntp_msg msg;
 
-struct timespec ts;
+struct time_spec ts;
 
 // NTP Poll interval in seconds = 2^TAU
 /// TAU ranges from 4 (Poll interval 16 s) to 17 ( Poll interval 36 h)
@@ -96,7 +96,7 @@ static void
 tcpip_handler(void)
 {
   struct ntp_msg *pkt;
-  struct timespec tmpts;
+  struct time_spec tmpts;
 
   if(uip_newdata())
   {
@@ -117,15 +117,15 @@ tcpip_handler(void)
 		return;
 	}
     
-    ts.tv_sec = uip_htonl(pkt->xmttime.int_partl) - JAN_1970;
-    //ts.tv_nsec;
+    ts.sec = uip_htonl(pkt->xmttime.int_partl) - JAN_1970;
+    //ts.nsec;
     
-    clock_gettime(&tmpts);
+    clock_get_time(&tmpts);
     
-    if (abs(ts.tv_sec - tmpts.tv_sec) > 1) // uint vs. int
+    if (abs(ts.sec - tmpts.sec) > 1) // uint vs. int
     {
 	/// do this only IF difference > 36min use settime
-		clock_settime(&ts);
+		clock_set_time(ts.sec);
 		
 		PRINTF("Setting the time\n");
 		
@@ -148,8 +148,8 @@ timeout_handler(void)
 	msg.precision = -7; /// %! 2 na precision = rozliseni hodin // 2**-7 => 1/128 = 1/CLOCK_SECOND
 	//msg.refid = UIP_HTONL(0x494e4954); // INIT string in ASCII - only for the first time - delete?
 	
-	clock_gettime(&ts);
-	msg.xmttime.int_partl = uip_htonl(ts.tv_sec + JAN_1970);
+	clock_get_time(&ts);
+	msg.xmttime.int_partl = uip_htonl(ts.sec + JAN_1970);
 	
 	PRINTF("Sending NTP packet to server ");
 	PRINT6ADDR(&udpconn->ripaddr);
@@ -190,7 +190,7 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	// set the NTP server address
 #ifdef UIP_CONF_IPV6	
 	//uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0x0260,0x6eff,0xfe7a,0xd4b8);
-	uip_ip6addr(&ipaddr,0xbbbb,0,0,0,0,0,0,0x1);
+	uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,0x1);
 #else
 	uip_ipaddr(&ipaddr, 10, 18, 48, 75);
 #endif /* UIP_CONF_IPV6 */
