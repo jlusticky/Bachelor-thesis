@@ -2,12 +2,12 @@
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \section{Kernel and processes}
-The kernel in Contiki is event-driven providing cooperative multi-tasking
+The kernel in Contiki is event-driven providing cooperative multitasking
 environment, but the system supports preemptive
-multi-threading that can be applied on a per-process basis~\cite{video}.
+multithreading that can be applied on a per-process basis~\cite{video}.
 The preemption is not implemented in the kernel, but
-preemptive multi-threading is implemented as a library that is linked only with programs that
-explicitly require multi-threading~\cite{paper-contiki}.
+preemptive multithreading is implemented as a library that is linked only with programs that
+explicitly require multithreading~\cite{paper-contiki}.
 The kernel itself contains no platform specific code, it implements only CPU multiplexing and
 lets device drivers and applications communicate directly with hardware~\cite{video}.
 
@@ -16,7 +16,7 @@ applications in Contiki OS are implemented and run as processes.
 Protothreads, the lightweight threads described in section~\ref{sec:protothreads},
 are used in Contiki to implement processes.
 Both the Contiki kernel and Contiki applications use
-Protothreads extensively to achieve cooperative multi-tasking~\cite{contiki-wiki-faq}.
+Protothreads extensively to achieve cooperative multitasking~\cite{contiki-wiki-faq}.
 Every Contiki process consists of a process control block and a process thread~\cite{contiki-wiki-processes}.
 The process control block contains run-time information about the process and
 the process thread contains the code of the process.
