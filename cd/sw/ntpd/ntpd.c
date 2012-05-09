@@ -173,8 +173,8 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	print_local_addresses();
 
 	// set the NTP server address
-#ifdef UIP_CONF_IPV6	
-	//uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0x0260,0x6eff,0xfe7a,0xd4b8);
+#ifdef UIP_CONF_IPV6
+	// uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0x0260,0x6eff,0xfe7a,0xd4b8);
 	uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,0x1);
 #else
 	uip_ipaddr(&ipaddr, 10, 18, 48, 75);

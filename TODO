@@ -1,14 +1,12 @@
 Thesis
 ======
 NTP - algorithms + history, Round Trip Time (RTT)
-Kernel - events, process are protothreads, ...
+Kernel - events, describe PCB
 Timers
 Clock - figures
 Use more BOOKs not only MISC in citations
 Convert setup.txt and simulation.txt to latex + add photos
 core/net/uip.h - The uIP packet buffer.
-
-Citation contiki wiki FAQ - cooperative multitasking + event-driven
 
 Content
 =======

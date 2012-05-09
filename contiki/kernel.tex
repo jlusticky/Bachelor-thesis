@@ -35,7 +35,15 @@ All code execution is initiated by the Contiki kernel
 that acts like a simple dispatcher calling these functions~\cite{contiki-docs}.
 Just like Protothreads, processes are also implemented using macros,
 making them fully standard C compatible.
-%% SHOW CODE or STRUCT?
+\begin{lstlisting}[numbers=none]
+struct process {
+	struct process *next;
+	const char *name;
+	int (*thread)(struct pt*, process_event_t, process_data_t);
+	struct pt pt;
+	unsigned char state, needspoll;
+	};
+\end{lstlisting}
 
 %% continue here - UP HERE DONE
 In Contiki, code run in either of two execution contexts:
