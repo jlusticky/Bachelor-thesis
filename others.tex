@@ -32,8 +32,28 @@ DragonflyBSD
 NTP implementations
 NTP from ntp.org project - reference implementation
 Chrony
+
 OpenNTPD - OpenBSD - secure, less robust, easy to configure
+	/*
+	 * Send out a random 64-bit number as our transmit time.  The NTP
+	 * server will copy said number into the originate field on the
+	 * response that it sends us.  This is totally legal per the SNTP spec.
+	 *
+	 * The impact of this is two fold: we no longer send out the current
+	 * system time for the world to see (which may aid an attacker), and
+	 * it gives us a (not very secure) way of knowing that we're not
+	 * getting spoofed by an attacker that can't capture our traffic
+	 * but can spoof packets from the NTP server we're communicating with.
+	 *
+	 * Save the real transmit timestamp locally.
+	 */
+
 dntpd - DragonflyBSD
+only sends seconds
+    wmsg.xmttime.int_partl = time(NULL) + JAN_1970;
+    wmsg.xmttime.fractionl = random();
+
+
 clockspeed
 
 \section{Embedded systems}
