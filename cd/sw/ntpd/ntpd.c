@@ -74,21 +74,6 @@ static struct uip_udp_conn *udpconn;
 static clock_time_t clocktime;
 static clock_time_t clockseconds;
 
-/**
-static void
-ntp_hton(struct ntp_msg *msg)
-{
-    msg->refid = htonl(msg->refid);
-    s_fixedpt_hton(&msg->rootdelay);
-    s_fixedpt_hton(&msg->dispersion);
-    l_fixedpt_hton(&msg->reftime);
-    l_fixedpt_hton(&msg->orgtime);
-    l_fixedpt_hton(&msg->rectime);
-    l_fixedpt_hton(&msg->xmttime);
-    msg->keyid = htonl(msg->keyid);
-}
-**/
-
 static void timeout_handler(void);
 
 /*---------------------------------------------------------------------------*/
@@ -122,7 +107,7 @@ tcpip_handler(void)
     
     clock_get_time(&tmpts);
     
-    if (abs(ts.sec - tmpts.sec) > 1) // uint vs. int
+    if (abs(ts.sec - tmpts.sec) > 1) /// uint vs. int
     {
 	/// do this only IF difference > 36min use settime
 		clock_set_time(ts.sec);
