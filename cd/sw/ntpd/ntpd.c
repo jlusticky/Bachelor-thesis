@@ -185,6 +185,17 @@ PROCESS_THREAD(ntpd_process, ev, data)
 
 	udp_bind(udpconn, UIP_HTONS(LOCAL_PORT)); // local client port
 	
+	/*
+	// ask for time and wait for response
+	msg.refid = UIP_HTONL(0x494e4954); // INIT string in ASCII
+	timeout_handler();
+	PROCESS_YIELD();
+	if (ev == tcpip_event)
+	{
+		tcpip_handler();
+	}
+	*/
+	
 	etimer_set(&et, SEND_INTERVAL);
 	for(;;) {
 		PROCESS_YIELD();
