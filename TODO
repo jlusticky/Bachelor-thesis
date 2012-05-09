@@ -18,6 +18,9 @@ contiki/rime.tex - DONE
 contiki/kernel.tex - show code or struct, work in progress
 contiki/timers.tex -
 
+ntp.tex - DONE
+ntp/topology.tex - DONE
+
 Tasks
 =====
 documentation for avr atmega1284p - 3timers and their usage
