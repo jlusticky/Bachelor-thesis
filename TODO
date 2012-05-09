@@ -15,7 +15,7 @@ contiki.tex - DONE
 contiki/protothreads.tex - DONE
 contiki/uip.tex - DONE
 contiki/rime.tex - DONE
-contiki/kernel.tex - show code or struct, work in progress
+contiki/kernel.tex - return type of process, work in progress
 contiki/timers.tex -
 
 ntp.tex - DONE

@@ -39,7 +39,7 @@ making them fully standard C compatible.
 struct process {
 	struct process *next;
 	const char *name;
-	int (*thread)(struct pt*, process_event_t, process_data_t);
+	int/char (* thread)(struct pt *, process_event_t, process_data_t);
 	struct pt pt;
 	unsigned char state, needspoll;
 	};
