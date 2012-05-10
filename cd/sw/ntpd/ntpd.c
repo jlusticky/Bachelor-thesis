@@ -71,8 +71,6 @@ struct time_spec ts;
 #define SEND_INTERVAL POLL_INTERVAL * CLOCK_SECOND
 
 static struct uip_udp_conn *udpconn;
-static clock_time_t clocktime;
-static clock_time_t clockseconds;
 
 static void timeout_handler(void);
 
@@ -102,14 +100,14 @@ tcpip_handler(void)
 		return;
 	}
     
-    ts.sec = uip_htonl(pkt->xmttime.int_partl) - JAN_1970;
+    ts.sec = uip_ntohl(pkt->xmttime.int_partl) - JAN_1970;
     //ts.nsec;
     
     clock_get_time(&tmpts);
     
     if (abs(ts.sec - tmpts.sec) > 1) /// uint vs. int
     {
-	/// do this only IF difference > 36min use settime
+	/// do this only IF difference > 36min use settime, otherwise adjtime
 		clock_set_time(ts.sec);
 		
 		PRINTF("Setting the time\n");
@@ -117,11 +115,6 @@ tcpip_handler(void)
 		///msg.xmttime.int_partl = uip_htonl(0x534554);
 		///uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
 	}
-        
-	/*clocktime = clock_time(); // get the current clock time
-	printf("clock_time: %u\n", clocktime);*/
-	clockseconds = clock_seconds(); // get the current clock seconds
-	printf("clock_seconds: %u\n", clockseconds);
   }
 }
 /*---------------------------------------------------------------------------*/
