@@ -35,7 +35,7 @@ All code execution is initiated by the Contiki kernel
 that acts like a simple dispatcher calling these functions~\cite{contiki-docs}.
 Just like Protothreads, processes are also implemented using macros,
 making them fully standard C compatible.
-\begin{lstlisting}[numbers=none]
+\begin{lstlisting}
 struct process {
 	struct process *next;
 	const char *name;
