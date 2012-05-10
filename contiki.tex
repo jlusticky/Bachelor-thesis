@@ -38,6 +38,13 @@ Rime is designed to simplify the implementation of communication
 protocols on low-power radios.
 Rime is shortly discussed in section~\ref{sec:contiki-rime}.
 
+Beside Protothreads and communication stacks uIP and Rime,
+Contiki contains very simple, relatively small and easy to use filesystem
+called Coffee Filesystem (CFS),
+graphical user interface called Contiki Toolkit (CTK),
+Executable Linkable Format (ELF) loader for loading object files into a running Contiki system
+and much more.
+
 Operating system Contiki, uIP and Protothreads are used by hundreds of companies in embedded devices in
 such diverse systems as car engines, oil boring equipment, satellites, and container security systems~\cite{thesis-programming}.
 The software is also used both in academic research
@@ -54,6 +61,14 @@ Contiki version 1.0 was released in 2002, version 2.0 in 2007 and the latest ver
 at the time of writing was 2.5 released in 2011.
 The actual development happens in a repository online using the Git version control system
 accessible on Contiki homepage at \url{http://www.contiki-os.org/}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=9cm,keepaspectratio]{fig/contiki-vnc.png}
+  \caption{Screenshot of running Contiki OS with CTK}
+  \label{fig:contiki}
+  \bigskip
+\end{figure}
 
 
 \input{contiki/protothreads.tex}
