@@ -14,7 +14,7 @@ The timer libraries are implemented with the functionality of the clock module a
 
 The timer and stimer libraries provides the simplest form of timers and are used to check if a time period has passed.
 The applications need to ask the timers if they have expired.
-The difference between these is the resolution of time -
+The difference between these two is the resolution of time -
 timers use system clock ticks, whose value is incremented when interrupt from hardware clock occurs,
 while stimers use seconds to allow much longer time periods~\cite{contiki-wiki-timers}.
 The value expressing seconds is also incremented in interrupt service routine (ISR),
@@ -22,7 +22,7 @@ but only when enough clock ticks since last increment occured.
 The number of clock ticks within one second is in Contiki expressed by the {\it{CLOCK\_SECOND}} macro.
 That means there are {\it{CLOCK\_SECOND}} interrupts from hardware clock pre second.
 
-%! TODO FROM HERE
+%! TODO FROM HERE - usage in appendix A + clock_second
 The bare timers in Contiki are implemented in the timer module.
 The timer library is not able to post events when a timer
 expires. The etimer "Event timers" should be used for this
