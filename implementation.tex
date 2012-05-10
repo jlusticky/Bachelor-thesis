@@ -64,7 +64,16 @@ In NTPv4, $\tau$ ranges from 4 (16 s) to 17 (36 h).
 
 
 % filling the packet
-Precision: elapsed time to read the system clock from userland~\cite{ntp-arch}.
+Precision express strictly speaking elapsed time to read the system clock from userland~\cite{ntp-arch}.
+However most implementation supply clock precision.
+\begin{lstlisting}
+// set clock precision - convert Hz to log2 - borrowed from OpenNTPD
+int b = CLOCK_SECOND; // CLOCK_SECOND * OCR2A
+int a;
+for (a = 0; b > 1; a--, b >>= 1)
+{}
+msg.precision = a;
+\end{lstlisting}
 
 
 %! TODO

@@ -120,5 +120,8 @@ struct ntp_msg {
                        ((a).tv_sec + JAN_1970) << 32) + \
                        (unsigned long long) \
                        ((a).tv_usec / 1e6 * FRAC))
+#define LOG2D(a)   ((a) < 0 ? 1. / (1L << -(a)) : \
+                       1L << (a))          /* poll, etc. */
+
 
 #endif /* __NTPD_H__ */
