@@ -16,7 +16,7 @@ contiki/protothreads.tex - DONE
 contiki/uip.tex - DONE
 contiki/rime.tex - DONE
 contiki/kernel.tex - return type of process, work in progress
-contiki/timers.tex -
+contiki/timers.tex - work in progress
 
 ntp.tex - DONE
 ntp/topology.tex - DONE
@@ -33,7 +33,6 @@ how to recognize that traffic belongs to this particular process
 
 try NTP server - udp_new(NULL,... - port 123-123
 read RFCs
-implement
 generate and read pdf docs
 citation for embedded systems - one binary
 contiki virtual - cooja
