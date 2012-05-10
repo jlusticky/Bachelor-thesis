@@ -23,7 +23,7 @@ How to get a working setup with Contiki on this platform is described in
 docs/setup.pdf file on the CD enclosed to this thesis.
 %%% CHECK THIS %%%
 
-\section{Clock interface}
+\section{Hradware clock interface}
 Contiki feature a basic clock interface with a simple goal - measuring time.
 This interface provides needed calls for timers and its defintion is to be found in /core/sys/clock.h file.
 Specific implementations of this common interface are localed in /cpu direcory of Contiki source code.
@@ -47,6 +47,35 @@ This is however enough for implementing a reasonable time interface and later us
 % ntp interface extending the clock library, similiar to posix calls
 
 %!!AVR
+
+\section{Operating system clock interface}
+There is no way of setting the time in Contiki OS.
+The interface for setting, getting and adjusting time was developed.
+
+The structure similiar to POSIX {\it{timespec}} structure (described in section~\ref{sec:posix})
+was implemented for expressing exact time value.
+However name was changed to {\it{time\_spec}} to avoid collision with existing POSIX-compliant systems.
+\begin{lstlisting}
+struct time_spec {
+  unsigned long sec;
+  unsigned long nsec;
+};
+\end{lstlisting}
+The structure representing time specification uses unsigned long values.
+The value 0 seconds and 0 nanoseconds is equal to Unix prime epoch (1st January 1970).
+In case of second part, the 32-bit unsigned long value was choosen because the existing value
+representing uptime in Contiki is of the same type.
+Such time representation will wrap around in year 2106.
+In case of nanosecond part, the 32-bit unsigned long value was choosen because there is no need
+for negative values.
+As the 32-bit unsigned long type can express values from 0 to $2^{32}$ (4~294~967~296),
+and one second has 1~000~000~000 nanoseconds, this will never wrap around.
+Even negative results of substraction work after casting the result to singed type
+because 1~000~000~000 is still less then maximum expressible value of signed long type $2^{31}$-1 (2~147~483~647).
+The nanosecond precision was choosen as modern systems also aim towards this precision~\cite{posix,ntp-precision} and
+the microsecond precision would also require at least 32-bit data type -
+one second has 1~000~000 microseconds, which is more that maximum expressible value of signed 16-bit
+type $2^{16}$ (65~536).
 
 \section{NTP values}
 Unlike the RFC shows, there are no 64 bit values. %! RFC - A.4. Kernel System Clock Interface
