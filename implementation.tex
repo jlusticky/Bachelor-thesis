@@ -2,7 +2,7 @@
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \chapter{NTP client in Contiki OS}
-%\!Distinguish between TIME and CLOCK
+%!Distinguish between TIME and CLOCK
 
 For implementation of a reasonably useful NTP client
 operating system must meet conditions listed in appendix~\ref{app:requirements}.
@@ -19,7 +19,7 @@ The reason while this can often happen is explained in section~\ref{sec:contiki-
 
 For developing and testing Contiki NTP client the AVR Raven platform with CPU ATmega1284P was used.
 How to get a working setup with Contiki on this platform is described in
-%%% CHECK THIS %%%
+%!%% CHECK THIS %%%
 docs/setup.pdf file on the CD enclosed to this thesis.
 %%% CHECK THIS %%%
 
@@ -46,7 +46,7 @@ This is however enough for implementing a reasonable time interface and later us
 
 % ntp interface extending the clock library, similiar to posix calls
 
-%\!!AVR
+%!!AVR
 
 \section{NTP values}
 Unlike the RFC shows, there are no 64 bit values. %! RFC - A.4. Kernel System Clock Interface
@@ -74,7 +74,8 @@ for (a = 0; b > 1; a--, b >>= 1)
 {}
 msg.precision = a;
 \end{lstlisting}
-
+This will work for clock precision greater or equal 1s, i.e. CLOCK\_SECOND must be greater or equal 1.
+%refer to CLOCK\_SECOND - is always greater or equal 1
 
 %! TODO
 \section{Communication}
