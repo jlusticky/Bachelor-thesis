@@ -113,7 +113,11 @@ tcpip_handler(void)
     
     clock_get_time(&tmpts);
     
-    if (abs(ts.sec - tmpts.sec) > 1) /// uint vs. int
+    /* Substract and cast to signed type.
+     * This will work until 2038 when wrap around can occur,
+     * but as NTP Era 0 ends 2036 this code must be in the future changed anyway.
+     */
+    if (labs((signed long) (ts.sec - tmpts.sec)) > 2)
     {
 	/// do this only IF difference > 36min use settime, otherwise adjtime
 		clock_set_time(ts.sec);
@@ -183,6 +187,8 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	udpconn = udp_new(&ipaddr, UIP_HTONS(REMOTE_PORT), NULL); // remote server port
 
 	udp_bind(udpconn, UIP_HTONS(LOCAL_PORT)); // local client port
+
+	msg.ppoll = TAU; // log2(poll_interval)
 	
 	// set clock precision - convert Hz to log2 - borrowed from OpenNTPD
 	int b = CLOCK_SECOND; // CLOCK_SECOND * OCR2A
@@ -190,8 +196,6 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	for (a = 0; b > 1; a--, b >>= 1)
 	{}
 	msg.precision = a;
-	
-	msg.ppoll = TAU; // log2(poll_interval)
 	
 	/*
 	// ask for time and wait for response
