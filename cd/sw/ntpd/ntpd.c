@@ -122,8 +122,6 @@ static void
 timeout_handler(void)
 {
 	msg.status = MODE_CLIENT | (NTP_VERSION << 3) | LI_ALARM; ///LI_NOWARNING; - NOT SYNCHRONISED
-	msg.ppoll = TAU; // log2(poll_interval)
-	//msg.precision = -7; /// %! 2 na precision = rozliseni hodin // 2**-7 => 1/128 = 1/CLOCK_SECOND
 	//msg.refid = UIP_HTONL(0x494e4954); // INIT string in ASCII - only for the first time - delete?
 	
 	clock_get_time(&ts);
@@ -178,6 +176,15 @@ PROCESS_THREAD(ntpd_process, ev, data)
 
 	udp_bind(udpconn, UIP_HTONS(LOCAL_PORT)); // local client port
 	
+	// set clock precision - convert Hz to log2 - borrowed from OpenNTPD
+	int b = CLOCK_SECOND; // CLOCK_SECOND * OCR2A
+	int a;
+	for (a = 0; b > 1; a--, b >>= 1)
+	{}
+	msg.precision = a;
+	
+	msg.ppoll = TAU; // log2(poll_interval)
+	
 	/*
 	// ask for time and wait for response
 	msg.refid = UIP_HTONL(0x494e4954); // INIT string in ASCII
@@ -188,13 +195,6 @@ PROCESS_THREAD(ntpd_process, ev, data)
 		tcpip_handler();
 	}
 	*/
-	
-	// set clock precision - convert Hz to log2 - borrowed from OpenNTPD
-	int b = CLOCK_SECOND; // CLOCK_SECOND * OCR2A
-	int a;
-	for (a = 0; b > 1; a--, b >>= 1)
-	{}
-	msg.precision = a;
 	
 	etimer_set(&et, SEND_INTERVAL);
 	for(;;) {
