@@ -1,7 +1,7 @@
 Thesis
 ======
 NTP - algorithms + history, Round Trip Time (RTT)
-Kernel - events, describe PCB
+Kernel - events
 Timers
 Clock - figures
 Use more BOOKs not only MISC in citations
@@ -47,4 +47,4 @@ RFC NTP - page 20 = packet description
 
 COOJA?
 
-packing structure
+ipv4 - minimal-net platform and native
