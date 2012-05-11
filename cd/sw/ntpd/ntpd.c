@@ -91,7 +91,7 @@ tcpip_handler(void)
 	}
 	
     pkt = uip_appdata;
-#if 1 // NTP_SERVER_SUPPORT
+#if 0 // NTP_SERVER_SUPPORT
 	if ((pkt->status & MODEMASK) == MODE_CLIENT)
 	{
 		pkt->status = MODE_SERVER | (NTP_VERSION << 3) | LI_ALARM;
