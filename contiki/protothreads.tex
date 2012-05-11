@@ -4,9 +4,9 @@
 \section{Protothreads}\label{sec:contiki-protothreads}
 Protothreads provide a way to run C functions quasi-paralelly,
 that is, a C functions work in a way similiar to thread~\cite{paper-protothreads}.
-In Contiki Protothreads allow process to wait for incoming events.
-While waiting for an event to occur another function
-can be run. The core of this solution is C {\it switch} statement used in conjuction with variable (called local continuation)
+In Contiki Protothreads allow process to wait for incoming events and
+while waiting for an event to occur, another function can be run.
+The core of this solution is C {\it switch} statement used in conjuction with variable (called local continuation)
 containing the position where the function was interrupted~\cite{paper-protothreads}.
 Next time function continues from this point.
 
@@ -27,7 +27,7 @@ the importance of an unconditional blocking wait {\it{PT\_YIELD()}}~\cite{thesis
 which temporarily blocks the Protothread until the next time the Protothread is invoked.
 After invoked the Protothread continues executing the code following the {\it{PT\_YIELD()}} statement.
 To understand how are Protothreads implemented and how do they actually work please refer
-to appendix~\ref{app:protothreads} where an example of usage is shown.
+to appendix~\ref{app:protothreads}, where an example of usage is shown.
 
 Since Protothreads are implemented using standard C, library providing Protothreads can be used everywhere C toolchain is available.
 But there are some cons to consider. Because Protothreads are stackless, a Protothread can only run within a single C function.
