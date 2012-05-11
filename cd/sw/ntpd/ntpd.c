@@ -47,13 +47,15 @@
 #define DEBUG DEBUG_PRINT
 #include "net/uip-debug.h"
 
+
+// change ports to non-standard values - NTP_PORT is defined in ntpd.h
+#define REMOTE_PORT NTP_PORT
+#define LOCAL_PORT NTP_PORT
+
+
 // Pointer to a single global uIP buffer for packets
 // UIP_LLH_LEN is Lower-Layer-Header Length (14 for ethernet)
 #define UIP_IP_BUF   ((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])
-
-//static const char * host = "aaaa::1"; // NTP server
-#define REMOTE_PORT NTP_PORT
-#define LOCAL_PORT NTP_PORT
 
 static struct ntp_msg msg;
 
@@ -177,10 +179,9 @@ PROCESS_THREAD(ntpd_process, ev, data)
 
 	// set the NTP server address
 #ifdef UIP_CONF_IPV6
-	// uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0x0260,0x6eff,0xfe7a,0xd4b8);
 	uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,0x1);
 #else
-	uip_ipaddr(&ipaddr, 10, 18, 48, 75);
+	uip_ipaddr(&ipaddr, 192, 168, 1, 1);
 #endif /* UIP_CONF_IPV6 */
 
 	/* new connection with remote host */
