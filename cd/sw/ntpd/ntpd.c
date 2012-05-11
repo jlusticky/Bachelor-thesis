@@ -48,6 +48,11 @@
 #include "net/uip-debug.h"
 
 
+// error if remote NTP server not defined in Makefile
+#ifndef REMOTE_HOST
+	#error "No REMOTE_HOST defined in Makefile!"
+#endif
+
 // change ports to non-standard values - NTP_PORT is defined in ntpd.h
 #define REMOTE_PORT NTP_PORT
 #define LOCAL_PORT NTP_PORT
@@ -179,9 +184,11 @@ PROCESS_THREAD(ntpd_process, ev, data)
 
 	// set the NTP server address
 #ifdef UIP_CONF_IPV6
-	uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,0x1);
+	//uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,0x1);
+	uiplib_ipaddrconv(REMOTE_HOST, &ipaddr);
+	//#error "WTF"
 #else
-	uip_ipaddr(&ipaddr, 192, 168, 1, 1);
+	#error "IPv4 support not implemented"
 #endif /* UIP_CONF_IPV6 */
 
 	/* new connection with remote host */
