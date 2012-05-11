@@ -199,7 +199,7 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	msg.ppoll = TAU; // log2(poll_interval)
 	
 	// set clock precision - convert Hz to log2 - borrowed from OpenNTPD
-	int b = CLOCK_SECOND; // CLOCK_SECOND * OCR2A
+	int b = CLOCK_SECOND * (OCR2A + 1); // CLOCK_SECOND * OCR2A - HOW IS IT COMPILED?
 	int a;
 	for (a = 0; b > 1; a--, b >>= 1)
 	{}
