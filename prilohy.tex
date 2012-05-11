@@ -21,6 +21,7 @@ Suppose each character is shown for one second, then next character replaces pre
 \begin{lstlisting}[numbers=left]
 #include "pt.h"
 #include "timer.h"
+#include <string.h>
 
 typedef unsigned short lc_t;
 
@@ -36,7 +37,7 @@ PT_THREAD(display_text(struct pt *pt, const char *msg))
   PT_BEGIN(pt);
   for (int i = 0; i < strlen(msg); i++) {
     lcd_display_char(msg[i]);
-    timer_set(&timer, ONE_SECOND);                 /* Wait for one second. */
+    timer_set(&timer, CLOCK_SECOND);               /* Wait for one second. */
     PT_WAIT_UNTIL(pt, timer_expired(&timer));
   }
   PT_END(pt);
@@ -79,6 +80,7 @@ the same sample of code after simplified preprocessing.
 \begin{lstlisting}[numbers=left]
 #include "pt.h"
 #include "timer.h"
+#include <string.h>
 
 typedef unsigned short lc_t;
 
@@ -95,7 +97,7 @@ int display_text(struct pt *pt, const char *msg)     /* Expanded PT_THREAD */
   
     for (int i = 0; i < strlen(msg); i++) {
       lcd_display_char(msg[i]);
-      timer_set(&timer, ONE_SECOND);               /* Wait for one second. */
+      timer_set(&timer, CLOCK_SECOND);             /* Wait for one second. */
     
                                    /* The following two lines are expanded */
       pt->lc = 31; case 31:   /* PT_WAIT_UNTIL(pt, timer_expired(&timer)); */
