@@ -94,9 +94,9 @@ tcpip_handler(void)
 #if 1 // NTP_SERVER_SUPPORT
 	if ((pkt->status & MODEMASK) == MODE_CLIENT)
 	{
-		msg.status = MODE_SERVER | (NTP_VERSION << 3) | LI_ALARM;
-		msg.xmttime.int_partl = uip_htonl(0x41484f4a); // AHOJ
-		uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
+		pkt->status = MODE_SERVER | (NTP_VERSION << 3) | LI_ALARM;
+		pkt->xmttime.int_partl = uip_htonl(0x41484f4a); // AHOJ
+		uip_udp_packet_send(udpconn, pkt, sizeof(struct ntp_msg));
 		return;
 	}
 #endif
