@@ -71,10 +71,10 @@ for negative values.
 As the 32-bit unsigned long type can express values from 0 to $2^{32}$-1 (4~294~967~295),
 and one second has 1~000~000~000 nanoseconds, this will never wrap around.
 Even negative results of substraction work after casting the result to singed type
-because 1~000~000~000 is still less then maximum expressible value of signed long type $2^{31}$-1 (2~147~483~647).
+because 1~000~000~000 is still less than maximum expressible value of signed long type $2^{31}$-1 (2~147~483~647).
 The nanosecond precision was choosen as modern systems also aim towards this precision~\cite{posix,ntp-precision} and
 the microsecond precision would also require at least 32-bit data type -
-one second has 1~000~000 microseconds, which is more then maximum expressible value of signed 16-bit
+one second has 1~000~000 microseconds, which is more than maximum expressible value of signed 16-bit
 type $2^{16}$ (65~536).
 
 It should be noted that unsigned long data type does not have to result in 32-bit variable -
@@ -147,7 +147,21 @@ msg.precision = a;
 This will work for clock precision greater or equal 1s, i.e. CLOCK\_SECOND must be greater or equal 1.
 %refer to CLOCK\_SECOND - is always greater or equal 1
 
+The clock are set if the time difference is greater that XX seconds. %! TODO
+\begin{lstlisting}
+if (labs((signed long) (ts.sec - tmpts.sec)) > 2)
+{
+  clock_set_time(ts.sec);
+}
+\end{lstlisting}
+Even if {\it{tmpts.sec}} value is greater than {\it{ts.sec}} value,
+subtracting and casting to signed type gives correct (negative) result~\cite{c99}.
+Assuming 32-bit data types this will work until 2038 when wrap around can occur due to difference
+between {\it{ts.sec}} and {\it{tmpts.sec}} greater than $2^{31}$-1 (2~147~483~647).
+But as NTP Era 0 ends 2036 the NTP client code must be changed in the future anyway.
+
 %! TODO
+
 \section{Communication}
 % IEEE 802.15.4
 %as RFC~4944 written by 6lowpan working group of IETF
