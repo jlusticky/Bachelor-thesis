@@ -203,7 +203,7 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	int b = CLOCK_SECOND;// * (OCR2A + 1); // CLOCK_SECOND * OCR2A - HOW IS IT COMPILED?
 	int a;
 	for (a = 0; b > 1; a--, b >>= 1)
-	{}
+		{}
 	msg.precision = a;
 	
 	/*

@@ -17,7 +17,7 @@ is platform specific.
 Another deal is possible packet loss if communication uses UDP on transport layer.
 The reason while this can often happen is explained in section~\ref{sec:contiki-uip}.
 
-For developing and testing Contiki NTP client the AVR Raven platform with CPU ATmega1284P was used.
+For developing and testing Contiki NTP client the AVR Raven platform with CPU ATmega1284P~\cite{avr-datasheet} was used.
 How to get a working setup with Contiki on this platform is described in
 %!%% CHECK THIS %%%
 docs/setup.pdf file on the CD enclosed to this thesis.
@@ -34,7 +34,7 @@ appropriate timer/counter registers and interrupt service routines.
 On AVR CPUs this call is implemented as C macro which evaluates to specific setup code for each CPU
 when compiling.
 The setup code is not common to all CPUs because of differencies among them - e.g. there are usually
-only three Timer/Counter modules, but AVR ATmega1284P has four Timer/Counter modules.
+only three Timer/Counter modules, but AVR ATmega1284P has four Timer/Counter modules~\cite{avr-datasheet}.
 
 %At least one of those is always 16 bit wide
 %This extra module on AVR ATmega1284P is used for
@@ -108,12 +108,11 @@ multiplication of two unsigned long variable takes 33 instructions including {\i
 instructions for entering and returning from the {\it{\_\_mulsi3}} routine, which computes
 the result of multiplication.
 %avr-objdump
-According to AVR Instruction Set manual this results in 48 clock cycles overhead,
+According to AVR Instruction Set manual~\cite{avr-instruction-set} this results in 48 clock cycles overhead,
 which takes 3~000 nanoseconds assuming 16MHz CPU clock.
-The timestamp provided is therefore not exact,
-however there is no correction to remove this inaccuracy.
-Instead the application must be aware that the timestamp is not exactly accurate.
-
+The timestamp provided is therefore not exact.
+However there is no correction to remove this inaccuracy,
+instead the application must be aware that the timestamp is not exactly accurate.
 
 
 \section{NTP values}
@@ -142,7 +141,7 @@ However most implementation supply clock precision.
 int b = CLOCK_SECOND; // CLOCK_SECOND * OCR2A
 int a;
 for (a = 0; b > 1; a--, b >>= 1)
-{}
+  {}
 msg.precision = a;
 \end{lstlisting}
 This will work for clock precision greater or equal 1s, i.e. CLOCK\_SECOND must be greater or equal 1.
