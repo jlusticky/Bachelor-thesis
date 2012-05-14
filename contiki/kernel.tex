@@ -50,7 +50,7 @@ In Contiki, code run in either of two execution contexts:
 cooperative, in which code never preempts other code, and preemptive,
 which preempts the execution of the cooperative code and returns control
 when the preemptive code is finished.
-Processes always run in cooperative mode, where as interrupts run in preemptive mode.
+Processes always run in cooperative mode, whereas interrupts run in preemptive mode.
 The only process control function that can be called from preemptive mode is process\_poll(). 
 Processes communicate with each other by posting events to each other.
 Events are also posted when a process starts and exits.
