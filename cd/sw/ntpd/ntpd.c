@@ -103,11 +103,12 @@ tcpip_handler(void)
 	}
 	
     pkt = uip_appdata;
-#if 0 // NTP_SERVER_SUPPORT
+#if 0 // NTP_SERVER_SUPPORT - can only communicate with REMOTE_HOST
 	if ((pkt->status & MODEMASK) == MODE_CLIENT)
 	{
 		pkt->status = MODE_SERVER | (NTP_VERSION << 3) | LI_ALARM;
-		pkt->xmttime.int_partl = uip_htonl(0x41484f4a); // AHOJ
+		clock_get_time(&tmpts);
+		pkt->xmttime.int_partl = uip_htonl(ts.sec + JAN_1970);
 		uip_udp_packet_send(udpconn, pkt, sizeof(struct ntp_msg));
 		return;
 	}
