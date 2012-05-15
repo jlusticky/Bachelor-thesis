@@ -2,9 +2,6 @@ all: ntpd
 
 UIP_CONF_IPV6=1
 
-#CFLAGS+=-DRAVEN_LCD_INTERFACE=1
-#APPS=raven-lcd-interface
-
 CFLAGS+=-DMAC_ADDRESS="{0x02, 0x11, 0x22, 0xff, 0xfe, 0x33, 0x44, 0x55}"
 CFLAGS+=-D'REMOTE_HOST="aaaa::1"'
 #CFLAGS+=-D'HARD_CODED_ADDRESS="aaaa::11:22ff:fe33:4455"'

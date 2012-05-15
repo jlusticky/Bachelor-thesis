@@ -47,11 +47,6 @@
 #define DEBUG DEBUG_PRINT
 #include "net/uip-debug.h"
 
-#ifdef RAVEN_LCD_INTERFACE
-#include "raven-lcd.h"
-#include "dev/rs232.h"
-#endif
-
 
 // error if remote NTP server not defined in Makefile
 #ifndef REMOTE_HOST
@@ -125,12 +120,6 @@ tcpip_handler(void)
     //ts.nsec;
     
     clock_get_time(&tmpts);
-    
-#ifdef RAVEN_LCD_INTERFACE
-    char buf[7];
-    snprintf(buf, 7, "%s\n", "MAY");
-    raven_lcd_show_text(buf);
-#endif
     
     /* Substract and cast to signed type.
      * This will work until 2038 when wrap around can occur,
@@ -228,10 +217,6 @@ PROCESS_THREAD(ntpd_process, ev, data)
 		tcpip_handler();
 	}
 	*/
-
-#ifdef RAVEN_LCD_INTERFACE
-        //process_start(&raven_lcd_process, NULL);
-#endif
 	
 	etimer_set(&et, SEND_INTERVAL);
 	for(;;) {
