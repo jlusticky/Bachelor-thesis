@@ -64,7 +64,7 @@ struct time_spec {
 The structure representing time specification uses unsigned long values.
 The value 0 seconds and 0 nanoseconds is equal to Unix prime epoch (1st January 1970).
 In case of second part, the 32-bit unsigned long value was choosen because the existing value
-representing uptime in Contiki is of the same type.
+{\it{seconds}}, representing uptime in Contiki, is of the same type.
 Such time representation will wrap around in year 2106.
 In case of nanosecond part, the 32-bit unsigned long value was choosen because there is no need
 for negative values.
