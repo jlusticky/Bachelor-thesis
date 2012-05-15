@@ -108,9 +108,13 @@ tcpip_handler(void)
 		return;
 	}
 #endif
+
 	// check if the server is synchronised
-    ///if (((pkt->status & LI_ALARM) == LI_ALARM) || (pkt->stratum > NTP_MAXSTRATUM)) /// || (pkt->stratum == 0))
+#if 0 // change to 1 for more strict check
+    if (((pkt->status & LI_ALARM) == LI_ALARM) || (pkt->stratum > NTP_MAXSTRATUM) || (pkt->stratum == 0))
+#else
     if (pkt->stratum > NTP_MAXSTRATUM)
+#endif
     {
 		PRINTF("Received NTP packet from unsynchronised server\n");
 		return;
