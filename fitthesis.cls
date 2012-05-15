@@ -358,7 +358,7 @@ Práce je chráněna autorským zákonem a její užití bez udělení oprávně
 % original task
 \newpage
 \thispagestyle{empty}
-\begin{textblock*}{\paperwidth}(5mm,16mm)
+\begin{textblock*}{\paperwidth}(8mm,16mm)
    \noindent\includegraphics[keepaspectratio,width=\paperwidth]{\@task} %height=\paperheight
 \end{textblock*}
 \mbox{}\newpage
