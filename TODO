@@ -19,6 +19,9 @@ contiki/timers.tex - work in progress
 
 ntp.tex - DONE
 ntp/topology.tex - DONE
+ntp/time.tex
+ntp/network.tex
+ntp/algorithms.tex
 
 Tasks
 =====
@@ -42,8 +45,6 @@ RFC NTP - page 20 = packet description
 COOJA?
 
 ipv4 - minimal-net platform and native
-
-task - black&white
 
 try new dir layout + more processes
 document uip - app has to act on incomming data, overwrite
