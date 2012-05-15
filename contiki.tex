@@ -4,8 +4,12 @@
 \chapter{Contiki OS}
 Only 2\% of all microprocessors that are sold today are used in PCs and the remaining 98\%
 of all microprocessors are used in embedded systems~\cite{thesis-programming}.
-The microprocessors
-used in embedded systems have much smaller amounts of memory than PC computers.
+The microprocessors used in embedded systems have much smaller amounts of memory than PC computers.
+Moore's law predicts that these devices
+can be made significantly smaller and less expensive in the future.
+While this means that embedded system networks can
+be deployed to greater extents, it does not necessarily imply
+that the resources will be less constrained~\cite{paper-contiki}.
 The memory constraints make programming for embedded systems a challange.
 
 Operating system Contiki is targeted at embedded systems supporting MSP430, AVR, ARM, x86
@@ -36,7 +40,9 @@ Rime is a layered communication stack for sensor networks,
 with much tinner layers than traditional architectures~\cite{paper-rime}.
 Rime is designed to simplify the implementation of communication
 protocols on low-power radios.
-Rime is shortly discussed in section~\ref{sec:contiki-rime}.
+The communication primitives in the Rime stack were choosen
+based on what typical sensor network protocols use -
+single-hop unicast, single-hop broadcast or multi-hop~\cite{contiki-docs,paper-rime}.
 
 Beside Protothreads and communication stacks uIP and Rime,
 Contiki contains very simple, relatively small and easy to use filesystem
@@ -74,8 +80,6 @@ accessible on Contiki homepage at \url{http://www.contiki-os.org/}.
 \input{contiki/protothreads.tex}
 
 \input{contiki/uip.tex}
-
-\input{contiki/rime.tex}
 
 \input{contiki/kernel.tex}
 
