@@ -11,8 +11,8 @@ lack of time support.
 Not only no common interface availability but also
 almost no platform-specific code has been implemented towards time support yet.
 Contiki provides basic clock interface particularly for use of timers though.
-This interface is is common to for all supported platforms, but the particular implementation
-is platform specific.
+This interface is common for all supported platforms,
+but the particular implementation is platform specific.
 
 Another deal is possible packet loss if communication uses UDP on transport layer.
 The reason while this can often happen is explained in section~\ref{sec:contiki-uip}.
@@ -147,7 +147,7 @@ msg.precision = a;
 This will work for clock precision greater or equal 1s, i.e. CLOCK\_SECOND must be greater or equal 1.
 %refer to CLOCK\_SECOND - is always greater or equal 1
 
-The clock are set if the time difference is greater that XX seconds. %! TODO
+The clock are set if the time difference is greater than XX seconds. %! TODO
 \begin{lstlisting}
 if (labs((signed long) (ts.sec - tmpts.sec)) > 2)
 {
