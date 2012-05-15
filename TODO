@@ -27,9 +27,7 @@ documentation for avr atmega1284p - 3timers and their usage
 study clock interface on POSIX systems - FreeBSD paper <- citation
 study clock hardware on x86 - hpet
 
-Study ISR clock and timer interface on AVR
-
-how to recognize that traffic belongs to this particular process
+describe ISR clock and timer interface on AVR
 
 read RFCs
 generate and read pdf docs
@@ -50,3 +48,7 @@ task - black&white
 
 try new dir layout + more processes
 document uip - app has to act on incomming data, overwrite
+---
+arm + ipv4
+output pin - osciloscope
+adjtime
