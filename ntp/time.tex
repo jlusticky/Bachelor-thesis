@@ -2,13 +2,13 @@
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \section{Time and timescales}\label{sec:ntp-time}
-NTP always uses the Coordinated Universal Time (UTC)~\cite{rfc5905}.
+For expressing the time NTP always uses the Coordinated Universal Time (UTC)~\cite{rfc5905}.
 UTC is maintained by the International Bureau of Weights and Measures in Paris, France.
 It is the time scale that forms the basis for the coordinated dissemination
 of standard frequencies and time signals~\cite{bipm-utc}.
 The time specified by UTC is the same for all timezones.
-Its calculation is the same as with Greenwich Mean Time (GMT) however
-the daylight savings are not accounted.
+Its calculation is the same as with Greenwich Mean Time (GMT),
+however the daylight savings are not accounted.
 
 The UTC scale is adjusted by the insertion of leap seconds to ensure approximate
 agreement with the time derived from the rotation of the Earth~\cite{bipm-utc}.
@@ -24,7 +24,7 @@ in the structure of NTP packet and there are also fields intended for
 information about leap second in structures that NTP algorithm uses~\cite{rfc5905}.
 The formal definition of UTC does not permit double leap seconds~\cite{posix}.
 
-The system time is represented by the system clock maintained by
+In computer the system time is represented by the system clock maintained by
 the hardware and operating system.
 The goal of the NTP algorithms is to minimize
 both the time difference and frequency difference between UTC and the system clock.
@@ -37,8 +37,8 @@ The NTP and POSIX timescales are based on the UTC timescale,
 but not always coincident with it~\cite{ntp-leap}.
 Both timescales reckon in seconds since the prime epoch,
 but the origin of the NTP timescale, the NTP prime epoch, is 00:00:00 UTC on 1 January 1900,
-while the prime epoch of the POSIX timescale is 00:00:00 UTC on 1 January 1970~\cite{ntp-leap}.
-So upon the first tick of POSIX on 1 January 1970 the NTP clock read 2~208~988~800,
+while the prime epoch of the POSIX timescale is 00:00:00 UTC on 1st January 1970~\cite{ntp-leap}.
+So upon the first tick of POSIX clock on 1st January 1970 the NTP clock read 2~208~988~800,
 representing the number of seconds since the NTP prime epoch.
-Some of interesting dates with their respective NTP timestamps
+Some of interesting dates with their respective NTP time values
 can be found in appendix~\ref{app:dates}.
