@@ -77,7 +77,7 @@ the microsecond precision would also require at least 32-bit data type -
 one second has 1~000~000 microseconds, which is more than maximum expressible value of signed 16-bit
 type $2^{16}$ (65~536).
 
-It should be noted that unsigned long data type does not have to result in 32-bit variable -
+It should be noted that unsigned long data type does not have to always result in 32-bit variable -
 it is up to compiler what data width chooses for each data type.
 But as ISO standard C99 states, the maximum value for an object of type unsigned long
 shall be greater or equal $2^{32}$-1 (4~294~967~295)~\cite{c99}.
