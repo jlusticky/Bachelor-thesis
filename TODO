@@ -54,3 +54,4 @@ output pin - osciloscope
 adjtime
 ----
 128Hz vs. LATCH-1
+-struct timex , linux, bsd
