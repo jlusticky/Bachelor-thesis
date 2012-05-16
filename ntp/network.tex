@@ -4,12 +4,13 @@
 \section{Network and timestamps}\label{sec:ntp-network}
 Network specification of NTP defines that
 the protocol uses the User Datagram Protocol (UDP) on port number 123~\cite{ianna-ports,rfc5905}.
-Reliable message delivery such as TCP can actually make the delivered NTP packet less reliable since retries
+Reliable message delivery such as TCP can actually make the delivered of
+NTP packet less reliable since retries
 would increase the delay value and other errors~\cite{rfc5905}.
 This is mostly due to overhead of communication with TCP on transport layer.
 
 NTP manipulates with the time through timestamps - a record of time.
-NTP timestamp has two fields. The seconds field expressing the number of seconds
+NTP timestamp has two fields: the seconds field expressing the number of seconds
 and the fraction field expressing fraction of a second~\cite{rfc5905}.
 All NTP time values are represented in twos-complement format, with
 bits numbered in big-endian fashion from zero starting at the left, or high-order, position~\cite{rfc5905}. 
@@ -27,7 +28,7 @@ For convenience in mapping between formats,
 the seconds field is divided into a 32-bit Era Number field
 and a 32-bit Era Offset field.
 This 128-bit NTP Date format is however not transmitted over the network
-and is used where sufficient storage and word
+and is only used where sufficient storage and word
 size is available~\cite{rfc5905}.
 So there is practically no need of knowing about this format for embedded systems
 at least until year 2036, when the Era Number will be incremented from zero to one.
@@ -53,10 +54,11 @@ requiring usage of NTP Date format.
 	\bigskip
 \end{figure}
 
-Because the short 32-bit format is used for Root dispersion and Root Delay fields,
-they do not need so big scope and precision.
+Because Root dispersion and Root Delay fields do not need so big scope and precision,
+the short 32-bit format is used for them.
 Root dispersion express accumulated total dispersion from primary server
 and Root Delay express accumulated roundtrip delay via primary server~\cite{ntp-arch}.
+
 
 %TODO
 

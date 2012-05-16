@@ -2,21 +2,16 @@
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \section{Algorithms}
-
-% communication with one server
-% However, the
-% NTP protocol does not include a specification of the algorithms for
-% doing this, which is left as a topic for further study
-
-As the figure~\ref{fig:ntp-packet} shows, there are four timestamps
+As the figure~\ref{fig:ntp-packet} shows, there are four 64-bit long timestamps
 in NTP packet: Reference, Origin, Receive and Transmit timestamp.
-The 64-bit long NTP format is used for expressing them~\cite{rfc5905}.
 Using these four timestamps NTP can compute the
 the offset which is given by $\theta = \frac{1}{2}[(t_1 - t_0) + (t_2 - t_1)]$
 where $t_0$ is the time of the request packet transmission,
 $t_1$ is the time of the request packet reception,
 $t_2$ is the time of the response packet transmission and
 $t_3$ is the time of the response packet reception~\cite{ntp-algor}.
+
+%! communication with one server
 
 When computing result from more servers the intersection algorithms is used
 for selecting the possible most exact timestamp recieved from various servers~\cite{rfc5905}.
@@ -50,7 +45,3 @@ and getting slightly different answers from them.
 %Since the clients complying with a subset of NTP, called
 %the Simple Network Time Protocol (SNTPv4) [RFC4330], do not need to
 %implement the mitigation algorithms ... ~\cite{rfc5905}.
-% 
-% No limitation on .. since ..
-% NTP and SNTP servers and clients are
-% completely interoperable and can be intermixed in NTP subnets~\cite{5905}.
