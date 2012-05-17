@@ -5,10 +5,10 @@
 Protothreads provide a way to run C functions quasi-paralelly,
 that is, a C functions work in a way similiar to thread~\cite{paper-protothreads}.
 In Contiki Protothreads allow process to wait for incoming events and
-while waiting for an event to occur, another function can be run.
+while waiting for an event to occur, another function could be run.
 The core of this solution is C {\it switch} statement used in conjuction with variable (called local continuation)
-containing the position where the function was interrupted~\cite{paper-protothreads}.
-Next time function continues from this point.
+containing position, where the function was interrupted~\cite{paper-protothreads}.
+Next time the function continues from this point.
 
 The advantage of Protothreads over ordinary threads is that a Protothread does not require a separate stack.
 In memory constrained systems, the overhead of allocating multiple stacks can consume large amounts of
@@ -25,9 +25,9 @@ conditional blocking {\it{PT\_WAIT\_UNTIL()}} and exit {\it{PT\_END()}}~\cite{pa
 However the experience with rewriting event-driven state machines to Protothreads revealed
 the importance of an unconditional blocking wait {\it{PT\_YIELD()}}~\cite{thesis-programming},
 which temporarily blocks the Protothread until the next time the Protothread is invoked.
-After invoked the Protothread continues executing the code following the {\it{PT\_YIELD()}} statement.
-To understand how are Protothreads implemented and how do they actually work please refer
-to appendix~\ref{app:protothreads}, where an example of usage is shown.
+After invocation the Protothread continues executing the code following the {\it{PT\_YIELD()}} statement.
+To understand how Protothreads are implemented and how do they actually work,
+please refer to appendix~\ref{app:protothreads}, where an example of usage is shown.
 
 Since Protothreads are implemented using standard C, library providing Protothreads can be used everywhere C toolchain is available.
 But there are some cons to consider. Because Protothreads are stackless, a Protothread can only run within a single C function.

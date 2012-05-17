@@ -4,8 +4,8 @@
 \section{Algorithms}
 As the figure~\ref{fig:ntp-packet} shows, there are four 64-bit long timestamps
 in NTP packet: Reference, Origin, Receive and Transmit timestamp.
-Using these four timestamps NTP can compute the
-the offset which is given by $\theta = \frac{1}{2}[(t_1 - t_0) + (t_2 - t_1)]$
+Using these four timestamps, NTP can compute
+the offset which is given by $\theta = \frac{1}{2}[(t_1 - t_0) + (t_2 - t_1)]$,
 where $t_0$ is the time of the request packet transmission,
 $t_1$ is the time of the request packet reception,
 $t_2$ is the time of the response packet transmission and
@@ -29,7 +29,7 @@ If we have the estimates $10 \pm 2$, $12 \pm 1$ and $11 \pm 1$
 then these intervals are $<8; 12>$, $<11; 13>$ and $<10; 12>$ which
 intersect to form $<11; 12>$ or $11.5 \pm 0.5$ as consistent with all three values.
 The arithmetic mean is used as a value of result.
-When querying servers again the algorithm repeats but the new result computation
+When querying servers again, the algorithm repeats but the new result computation
 also depends on the previous result~\cite{rfc5905}.
 This eliminates possible jitter which can be caused by reapeatedly quering the servers
 and getting slightly different answers from them.

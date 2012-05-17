@@ -15,23 +15,24 @@ This interface is common for all supported platforms,
 but the particular implementation is platform specific.
 
 Another deal is possible packet loss if communication uses UDP on transport layer.
-The reason while this can often happen is explained in section~\ref{sec:contiki-uip}.
+The reason this can happen often is explained in section~\ref{sec:contiki-uip}.
 
-For developing and testing Contiki NTP client the AVR Raven platform with CPU ATmega1284P~\cite{avr-datasheet} was used.
+For developing and testing Contiki NTP client the AVR Raven platform with ATmega1284P~\cite{avr-datasheet} was used.
+% do not mention, appendix?
 How to get a working setup with Contiki on this platform is described in
 %!%% CHECK THIS %%%
 docs/setup.pdf file on the CD enclosed to this thesis.
 %%% CHECK THIS %%%
 
-\section{Hradware clock interface}
-Contiki feature a basic clock interface with a simple goal - measuring time.
-This interface provides needed calls for timers and its defintion is to be found in /core/sys/clock.h file.
-Specific implementations of this common interface are localed in /cpu direcory of Contiki source code.
-Interface provides call for initialising CPU's clock system - clock\_init, that is automatically called during
+\section{Required hardware clock interface}
+Contiki features a basic clock interface with a simple goal - measuring time.
+This interface provides needed calls for timers and its defintion is to be found in {\it{/core/sys/clock.h}} file.
+Specific implementations of this common interface are located in {\it{/cpu}} direcory of Contiki source code.
+The interface provides call for initialising CPU's clock system - {\it{clock\_init}}, that is automatically called during
 boot sequence of Contiki.
-The goal of the clock\_init call is to set up
+The goal of the {\it{clock\_init}} call is to set up
 appropriate timer/counter registers and interrupt service routines.
-On AVR CPUs this call is implemented as C macro which evaluates to specific setup code for each CPU
+On AVR CPU this call is implemented as C macro which evaluates to specific setup code for each CPU
 when compiling.
 The setup code is not common to all CPUs because of differencies among them - e.g. there are usually
 only three Timer/Counter modules, but AVR ATmega1284P has four Timer/Counter modules~\cite{avr-datasheet}.
@@ -42,7 +43,7 @@ only three Timer/Counter modules, but AVR ATmega1284P has four Timer/Counter mod
 
 %clock\_seconds
 %CLOCK\_SECOND
-This is however enough for implementing a reasonable time interface and later using it for NTP client.
+This is however enough for implementing a reasonable time interface and using it for NTP client later.
 
 % ntp interface extending the clock library, similiar to posix calls
 
@@ -50,7 +51,7 @@ This is however enough for implementing a reasonable time interface and later us
 
 \section{Operating system clock interface}
 There is no way of setting the time in Contiki OS.
-The interface for setting, getting and adjusting time was developed.
+The interface for setting, getting and adjusting time was developed in this thesis.
 
 The structure similiar to POSIX {\it{timespec}} structure (described in section~\ref{sec:posix})
 was implemented for expressing exact time value.
@@ -63,10 +64,10 @@ struct time_spec {
 \end{lstlisting}
 The structure representing time specification uses unsigned long values.
 The value 0 seconds and 0 nanoseconds is equal to Unix prime epoch (1st January 1970).
-In case of second part, the 32-bit unsigned long value was choosen because the existing value
+In case of seconds part, the 32-bit unsigned long value was choosen because the existing value
 {\it{seconds}}, representing uptime in Contiki, is of the same type.
 Such time representation will wrap around in year 2106.
-In case of nanosecond part, the 32-bit unsigned long value was choosen because there is no need
+In case of nanoseconds part, the 32-bit unsigned long value was choosen because there is no need
 for negative values.
 As the 32-bit unsigned long type can express values from 0 to $2^{32}$-1 (4~294~967~295),
 and one second has 1~000~000~000 nanoseconds, this will never wrap around.
@@ -78,8 +79,8 @@ one second has 1~000~000 microseconds, which is more than maximum expressible va
 type $2^{16}$ (65~536).
 
 It should be noted that unsigned long data type does not have to always result in 32-bit variable -
-it is up to compiler what data width chooses for each data type.
-But as ISO standard C99 states, the maximum value for an object of type unsigned long
+it is up to compiler what data width it chooses for each data type.
+But as ISO C99 standard states, the maximum value for an object of type unsigned long
 shall be greater or equal $2^{32}$-1 (4~294~967~295)~\cite{c99}.
 This in fact results in at least 32-bit variable unless the compilation setting is changed.
 Next to this, as the already presented variable {\it{seconds}} is also of unsigned long type,
@@ -120,13 +121,13 @@ Unlike the RFC 5905~\cite{rfc5905} shows, there are no 64 bit values. %! RFC - A
 
 
 \section{NTP client implementation}
-The structures representing NTP message were borrowed from OpenNTPD NTP Unix daemon.
+Structures representing NTP message were borrowed from OpenNTPD NTP Unix daemon.
 %They are not using the GCC extension for representing a bit field.
 
 Packet sanity tests~\cite{ntp-arch}.
 
-A client sends messages to each server with a poll interval of $2^{tau}$
-seconds, as determined by the poll exponent tau.
+A client sends messages to each server with a poll interval of $2^{\tau}$
+seconds, as determined by the poll exponent $\tau$ (tau).
 In NTPv4, $\tau$ ranges from 4 (16 s) to 17 (36 h).
 
 

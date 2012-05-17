@@ -3,7 +3,7 @@
 
 \chapter{NTP on other systems}
 
-NTP daemon is application running in user-space using the kernel calls to adjust system time.
+NTP daemon is an application running in user-space using kernel calls to adjust system time.
 The kernel interface is...
 
 \section{POSIX-compliant systems}\label{sec:posix}
@@ -21,7 +21,7 @@ long    tv_nsec   Nanoseconds
 A clock may be system-wide (that is, visible to all processes)
 or per-process (measuring time that is meaningful only within a process).
 All implementations shall support a clock\_id of CLOCK\_REALTIME as
-defined in <time.h>.
+defined in header file {\it{time.h}}.
 This clock represents the clock measuring real time for the system.
 For this clock, the values returned by clock\_gettime() and specified
 by clock\_settime() represent the amount

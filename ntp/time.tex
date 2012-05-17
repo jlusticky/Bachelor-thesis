@@ -4,7 +4,7 @@
 \section{Time and timescales}\label{sec:ntp-time}
 For expressing the time NTP always uses the Coordinated Universal Time (UTC)~\cite{rfc5905}.
 UTC is maintained by the International Bureau of Weights and Measures in Paris, France.
-It is the time scale that forms the basis for the coordinated dissemination
+It is the time scale that forms the basis for coordinated dissemination
 of standard frequencies and time signals~\cite{bipm-utc}.
 The time specified by UTC is the same for all timezones.
 Its calculation is the same as with Greenwich Mean Time (GMT),
@@ -12,20 +12,20 @@ however the daylight savings are not accounted.
 
 The UTC scale is adjusted by the insertion of leap seconds to ensure approximate
 agreement with the time derived from the rotation of the Earth~\cite{bipm-utc}.
-The atomic clocks, on which is UTC based, are so precise that
-they do not match the rotation of the Earth
+The atomic clocks, on which UTC is based, are so precise that
+they do not match the rotation of the Earth,
 which periodically speeds up and slows down due to the action
-of the tides and changes within the Earth's core~\cite{cnn-earth}.
+of tides and changes within the Earth's core~\cite{cnn-earth}.
 The goal of a leap second is to catch up UTC with these changes.
-The leap second is inserted on the advice of the International Earth Rotation and Reference Systems Service~\cite{bipm-utc}.
+The leap second is inserted on the advice of International Earth Rotation and Reference Systems Service~\cite{bipm-utc}.
 NTP is well designed for leap second occurance -
 there is Leap Indicator field
 in the structure of NTP packet and there are also fields intended for
 information about leap second in structures that NTP algorithm uses~\cite{rfc5905}.
 The formal definition of UTC does not permit double leap seconds~\cite{posix}.
 
-In computer the system time is represented by the system clock maintained by
-the hardware and operating system.
+In computer the system time is represented by system clock maintained by
+hardware and operating system.
 The goal of the NTP algorithms is to minimize
 both the time difference and frequency difference between UTC and the system clock.
 When these differences have been reduced below nominal
