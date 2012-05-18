@@ -33,7 +33,8 @@ Operating systems:
 Linux
 OpenBSD - Kernel calls gettimeofday, settimeofday, adjtime, no kernel disciplne (timex structure)
 as of OpenBSD 5.1 ntp\_gettime and ntp\_adjtime not implemented
-DragonflyBSD - Kernel calls int ntp\_adjtime(struct timex *tp), BUT ONLY IN KERNEL: int ntp\_gettime(struct ntptimeval *ntv)
+DragonflyBSD - Kernel calls int ntp\_adjtime(struct timex *tp),
+BUT ONLY IN KERNEL: int ntp\_gettime(struct ntptimeval *ntv) - nanosecond resolution -> timex.h
 
 NTP implementations:
 
