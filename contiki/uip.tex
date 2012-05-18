@@ -8,12 +8,12 @@ for memory constrained systems such as embedded systems.
 
 Before uIP the TCP/IP architecture was considered to be a heavyweight
 due to its perceived need for processing power and memory.
-The protocols were seen as too large to fit into the constrained environment -
+IP protocol was seen as too large to fit into the constrained environment -
 existing implementations of the IP protocol family for general purpose computers would need hundreds
 of kilobytes, whereas a typical constrained system has only a few tens of kilobytes of memory~\cite{interconnecting}.
 For this reason, several non-IP stacks were developed.
 
-In the early 2000s, however, this view was challenged by lightweight implementations of the IP
+In early 2000s, however, this view was challenged by lightweight implementations of the IP
 protocol family for smart objects such as the uIP stack~\cite{interconnecting}.
 uIP showed that the IP architecture would fit nicely into the typical constrained systems,
 without removing any of the essential mechanisms from IP.
@@ -27,8 +27,8 @@ a BSD sockets-like API called Protosockets and raw event-driven API.
 Protosockets are based on Protothreads putting the same limitation on them - such as 
 no way of storing automatic local variables and an impossibility of using the C {\it switch} statement.
 Protosockets only work with TCP connections~\cite{contiki-docs}.
-Since NTP uses UDP, Protosockets will not be
-discussed in this thesis further. For more information about Protosockets
+Since NTP uses UDP, Protosockets will not be further
+discussed in this thesis. For more information about Protosockets
 please refer to Contiki documentation~\cite{contiki-docs}.
 
 uIP contains only the absolute minimum of required features to fulfill the protocol standard.
@@ -48,7 +48,7 @@ Instead it uses a single global buffer for holding packets and has a fixed
 table for holding connection state.
 The global packet buffer is large enough to contain one packet of maximum size~\cite{contiki-docs}.
 
-When a packet arrives from the network, the device driver places it in the
+When a packet arrives from network, the device driver places it in the
 global buffer and calls the TCP/IP stack.
 If the packet contains data, the TCP/IP stack will notify the corresponding application.
 Because the data in the buffer will be overwritten by the next incoming packet,
@@ -73,7 +73,7 @@ However small systems that uIP is targeting usually do not produce enough data
 to make the preformance degratation a serious problem~\cite{thesis-towards}.
 
 Despite being so small uIP is not only RFC compliant but also IPv6 Ready Phase 1 certified.
-uIP is written in the C programming language and it is fully integrated to Contiki operating system.
-In uIP there are even some more tricks how to smaller the stack
+uIP is written in C programming language and it is fully integrated to Contiki operating system.
+In uIP, there are even some more tricks to smaller the stack
 but complete uIP description is outside the scope of this thesis.
 Please refer to Contiki documentation for more details~\cite{contiki-docs}.

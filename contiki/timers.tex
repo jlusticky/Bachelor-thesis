@@ -2,8 +2,9 @@
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \section{Timers}\label{sec:contiki-timers}
-As the Contiki kernel kernel does not provide support for timed events,
-an application that wants to use timers needs to explicitly use the timer library.
+As the Contiki kernel does not provide support for timed events,
+an application that wants to use timers needs to explicitly use timer library.
+an application that wants to use timers needs to explicitly use timer library.
 The timer library provides functions for setting, resetting and restarting timers,
 and for checking if a timer has expired~\cite{contiki-docs}.
 An application must manually check if its timers have expired - this is not done automatically~\cite{contiki-docs}.
@@ -19,8 +20,8 @@ timers use system clock ticks, whose value is incremented when interrupt from ha
 while stimers use seconds to allow much longer time periods~\cite{contiki-wiki-timers}.
 The value expressing seconds is also incremented in interrupt service routine (ISR),
 but only when enough clock ticks since last increment occured.
-The number of clock ticks within one second is in Contiki expressed by the {\it{CLOCK\_SECOND}} macro.
-That means there are {\it{CLOCK\_SECOND}} interrupts from hardware clock pre second.
+The number of clock ticks within one second is expressed by the {\it{CLOCK\_SECOND}} macro in Contiki.
+That means there are {\it{CLOCK\_SECOND}} interrupts from hardware clock per second.
 
 %! TODO FROM HERE - usage in appendix A + clock_second
 The bare timers in Contiki are implemented in the timer module.
@@ -30,7 +31,7 @@ purpose.
 
 
 Event timers (etimer module) provides a way to generate timed events.
-An event timer will post a event to the process that set the timer when the
+An event timer will post an event to the process that set the timer when the
 event timer expires~\cite{contiki-docs}.
 The etimer module is implemented as a Contiki process and uses the simple timer library.
 
@@ -39,7 +40,7 @@ C function when a ctimer expires~\cite{contiki-docs}.
 
 The stimer library provides functions for setting, resetting and
 restarting timers, and for checking if a timer has expired.
-Intervals should be specified in the seconds~\cite{contiki-docs}.
+Intervals should be specified in seconds~\cite{contiki-docs}.
 The stimer library uses the clock "Clock library" to
 measure time.
 
