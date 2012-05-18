@@ -48,6 +48,12 @@ This is however enough for implementing a reasonable time interface and later us
 
 %!!AVR
 
+Adjusting time:
+LATCH = 31 => 128Hz => 1s = 1s
+LATCH = 31 => ca132.129Hz => 1s = ca1.032s
+LATCH = 33 => 124.12per => 1s = 0.96per s
+
+
 \section{Operating system clock interface}
 There is no way of setting the time in Contiki OS.
 The interface for setting, getting and adjusting time was developed.
