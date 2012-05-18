@@ -31,8 +31,9 @@ of time (in seconds and nanoseconds) since the Epoch.
 Operating systems:
 
 Linux
-OpenBSD
-DragonflyBSD
+OpenBSD - Kernel calls gettimeofday, settimeofday, adjtime, no kernel disciplne (timex structure)
+as of OpenBSD 5.1 ntp\_gettime and ntp\_adjtime not implemented
+DragonflyBSD - Kernel calls int ntp\_adjtime(struct timex *tp), BUT ONLY IN KERNEL: int ntp\_gettime(struct ntptimeval *ntv)
 
 NTP implementations:
 
