@@ -36,6 +36,16 @@
 #define __NTPD_H__
 
 /*
+ * Numbers and conversions according to RFC 5905
+ */
+#define NTP_PORT             123
+#define	JAN_1970             2208988800UL    /* 1970 - 1900 in seconds */
+
+#define	NTP_VERSION	4
+#define	NTP_MAXSTRATUM	15
+
+
+/*
  * NTP Packet sizes - borrowed from OpenNTPD 4.6
  */
 #define	NTP_DIGESTSIZE		16
@@ -98,30 +108,5 @@ struct ntp_msg {
 #define	MODE_BROADCAST	5	/* broadcast */
 #define	MODE_RES1	6	/* reserved for NTP control message */
 #define	MODE_RES2	7	/* reserved for private use */
-
-
-
-/*
- * Numbers and conversions according to RFC 5905
- */
-#define NTP_PORT             123
-#define NTP_EPOCH            (86400U * (365U * 70U + 17U))
-#define	JAN_1970             2208988800UL    /* 1970 - 1900 in seconds */
-
-#define	NTP_VERSION	4
-#define	NTP_MAXSTRATUM	15
-
-
-
-#define FRAC       4294967296.0             /* 2^32 as a double */
-#define D2LFP(a)   ((unsigned long long)((a) * FRAC))  /* NTP timestamp */
-#define LFP2D(a)   ((double)(a) / FRAC)
-#define U2LFP(a)   (((unsigned long long) \
-                       ((a).tv_sec + JAN_1970) << 32) + \
-                       (unsigned long long) \
-                       ((a).tv_usec / 1e6 * FRAC))
-#define LOG2D(a)   ((a) < 0 ? 1. / (1L << -(a)) : \
-                       1L << (a))          /* poll, etc. */
-
 
 #endif /* __NTPD_H__ */
