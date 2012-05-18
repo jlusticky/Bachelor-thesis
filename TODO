@@ -52,5 +52,5 @@ document uip - app has to act on incomming data, overwrite
 arm + ipv4
 adjtime
 ----
-128Hz vs. LATCH-1
+no LATCH, but COMPARE
 -struct timex , linux, bsd
