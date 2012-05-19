@@ -20,7 +20,7 @@ Protothreads extensively to achieve cooperative multitasking~\cite{contiki-wiki-
 Every Contiki process consists of a process control block and a process thread~\cite{contiki-wiki-processes}.
 The process control block contains run-time information about the process and
 the process thread contains the code of the process.
-The process control block contains
+Among other things, the process control block contains
 textual name of the process, pointer to the process thread and state of the process.
 The process thread is implemented as a single Protothread,
 that is invoked from the process scheduler in the Contiki kernel~\cite{contiki-wiki-processes}.
@@ -31,19 +31,20 @@ and the process control block remembers the actual state of execution of this fu
 in the same way as the local continuation works by Protothreads.
 Processes are therefore running quasi-parallely in Contiki.
 
-All code execution is initiated by the Contiki kernel
-that acts like a simple dispatcher calling these functions~\cite{contiki-docs}.
-Just like Protothreads, processes are also implemented using macros,
-making them fully standard C compatible.
-\begin{lstlisting}
+\begin{lstlisting}[caption=Process control block in Contiki OS]
 struct process {
 	struct process *next;
 	const char *name;
-	int/char (* thread)(struct pt *, process_event_t, process_data_t);
+	int (* thread)(struct pt *, process_event_t, process_data_t);
 	struct pt pt;
 	unsigned char state, needspoll;
 	};
 \end{lstlisting}
+
+All code execution is initiated by the Contiki kernel
+that acts like a simple dispatcher calling these functions~\cite{contiki-docs}.
+Just like Protothreads, processes are also implemented using macros,
+making them fully standard C compatible.
 
 %% continue here - UP HERE DONE
 In Contiki, code run in either of two execution contexts:

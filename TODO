@@ -14,7 +14,7 @@ obsah.tex - conclusion
 contiki.tex - DONE
 contiki/protothreads.tex - DONE
 contiki/uip.tex - DONE
-contiki/kernel.tex - return type of process, work in progress
+contiki/kernel.tex - work in progress
 contiki/timers.tex - work in progress
 
 ntp.tex - DONE
