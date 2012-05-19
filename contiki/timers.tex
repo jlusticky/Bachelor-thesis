@@ -19,7 +19,7 @@ The difference between these two is the resolution of time -
 timers use system clock ticks, whose value is incremented when interrupt from hardware clock occurs,
 while stimers use seconds to allow much longer time periods~\cite{contiki-wiki-timers}.
 The value expressing seconds is also incremented in interrupt service routine (ISR),
-but only when enough clock ticks since last increment occured.
+but only when enough clock ticks since last increment occurred.
 The number of clock ticks within one second is expressed by the {\it{CLOCK\_SECOND}} macro in Contiki.
 That means there are {\it{CLOCK\_SECOND}} interrupts from hardware clock per second.
 

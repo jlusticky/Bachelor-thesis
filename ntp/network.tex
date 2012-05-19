@@ -17,7 +17,7 @@ bits numbered in big-endian fashion from zero starting at the left, or high-orde
 There are two formats of timestamp in NTP packet structure:
 long 64-bit and short 32-bit as shown on figure~\ref{fig:ntp-timestamps}.
 The 64-bit long timestamp used by NTP consists of a 32-bit unsigned seconds
-field spanning $2^{32}$ seconds (aprox. 136 years from 1900 to 2036) and a 32-bit fraction field resolving
+field spanning $2^{32}$ seconds (approx. 136 years from 1900 to 2036) and a 32-bit fraction field resolving
 $2^{-32}$ seconds (aprox. 232 picoseconds)~\cite{rfc5905}.
 The short 32-bit timestamp includes a 16-bit unsigned seconds field
 and 16-bit fraction field.
@@ -33,7 +33,7 @@ size is available~\cite{rfc5905}.
 There is practically no need of knowing about this format for embedded systems
 at least until year 2036, when the Era Number will be incremented from zero to one.
 But strictly speaking an NTP timestamp is a truncated NTP Date format~\cite{rfc5905}.
-Refer to apendix~\ref{app:dates} for a short list of some dates
+Refer to appendix~\ref{app:dates} for a short list of some dates
 requiring usage of NTP Date format.
 
 \begin{figure}
@@ -62,6 +62,6 @@ and Root Delay express accumulated roundtrip delay via primary server~\cite{ntp-
 
 %TODO
 
-Because of network latency the timestamp recieved will never be exactly corresponding to
+Because of network latency the timestamp received will never be exactly corresponding to
 the current time.
 One of the main goals of NTP is to deal with the network latency~\cite{ntp-overview}.

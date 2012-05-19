@@ -2,11 +2,11 @@
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \section{Protothreads}\label{sec:contiki-protothreads}
-Protothreads provide a way to run C functions quasi-paralelly,
-that is, a C functions work in a way similiar to thread~\cite{paper-protothreads}.
+Protothreads provide a way to run C functions quasi-parallely,
+that is, a C functions work in a way similar to thread~\cite{paper-protothreads}.
 In Contiki Protothreads allow process to wait for incoming events and
 while waiting for an event to occur, another function could be run.
-The core of this solution is C {\it switch} statement used in conjuction with variable (called local continuation)
+The core of this solution is C {\it switch} statement used in conjunction with variable (called local continuation)
 containing position, where the function was interrupted~\cite{paper-protothreads}.
 Next time the function continues from this point.
 

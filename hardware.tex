@@ -19,7 +19,7 @@ Programmable Interrupt Controller (PIT) Intel 8253 and 8254 - 3 counters (counte
 
 
 Used by historic versions of Linux
-=> read initial time from RTC, setup PIT and interrupts (IRQ 0, INT 8), increment jiffies on every interrupt, provide app resolution of jiffies
+=> read initial time from RTC, setup PIT and interrupts (IRQ 0, INT 8), increment jiffies on every interrupt, provide application resolution of jiffies
 
 init/main.c - time\_init() - read from RTC and save to startup\_time
 kernel/sched.c - sched\_init() = PTI setup for interrupts - LATCH (1193180/HZ)

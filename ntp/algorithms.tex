@@ -14,7 +14,7 @@ $t_3$ is the time of the response packet reception~\cite{ntp-algor}.
 %! communication with one server
 
 When computing result from more servers the intersection algorithms is used
-for selecting the possible most exact timestamp recieved from various servers~\cite{rfc5905}.
+for selecting the possible most exact timestamp received from various servers~\cite{rfc5905}.
 % Derived from Murzollo algorithm but the base remains... ~\cite{ntp-history}.
 The resulting exact timestamp does not have to be the same
 as one of those servers provided.
@@ -31,7 +31,7 @@ intersect to form $<11; 12>$ or $11.5 \pm 0.5$ as consistent with all three valu
 The arithmetic mean is used as a value of result.
 When querying servers again, the algorithm repeats but the new result computation
 also depends on the previous result~\cite{rfc5905}.
-This eliminates possible jitter which can be caused by reapeatedly quering the servers
+This eliminates possible jitter which can be caused by repeatedly querying the servers
 and getting slightly different answers from them.
 
 \begin{figure}

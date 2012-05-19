@@ -26,15 +26,15 @@ docs/setup.pdf file on the CD enclosed to this thesis.
 
 \section{Required hardware clock interface}
 Contiki features a basic clock interface with a simple goal - measuring time.
-This interface provides needed calls for timers and its defintion is to be found in {\it{/core/sys/clock.h}} file.
-Specific implementations of this common interface are located in {\it{/cpu}} direcory of Contiki source code.
+This interface provides needed calls for timers and its definition is to be found in {\it{/core/sys/clock.h}} file.
+Specific implementations of this common interface are located in {\it{/cpu}} directory of Contiki source code.
 The interface provides call for initialising CPU's clock system - {\it{clock\_init}}, that is automatically called during
 boot sequence of Contiki.
 The goal of the {\it{clock\_init}} call is to set up
 appropriate timer/counter registers and interrupt service routines.
 On AVR CPU this call is implemented as C macro which evaluates to specific setup code for each CPU
 when compiling.
-The setup code is not common to all CPUs because of differencies among them - e.g. there are usually
+The setup code is not common to all CPUs because of differences among them - e.g. there are usually
 only three Timer/Counter modules, but AVR ATmega1284P has four Timer/Counter modules~\cite{avr-datasheet}.
 
 %At least one of those is always 16 bit wide
@@ -45,7 +45,7 @@ only three Timer/Counter modules, but AVR ATmega1284P has four Timer/Counter mod
 %CLOCK\_SECOND
 This is however enough for implementing a reasonable time interface and using it for NTP client later.
 
-% ntp interface extending the clock library, similiar to posix calls
+% ntp interface extending the clock library, similar to posix calls
 
 %!!AVR
 
@@ -58,7 +58,7 @@ LATCH = 33 => 124.12per => 1s = 0.969p
 There is no way of setting the time in Contiki OS.
 The interface for setting, getting and adjusting time was developed in this thesis.
 
-The structure similiar to POSIX {\it{timespec}} structure (described in section~\ref{sec:posix})
+The structure similar to POSIX {\it{timespec}} structure (described in section~\ref{sec:posix})
 was implemented for expressing exact time value.
 However name was changed to {\it{time\_spec}} to avoid collision with existing POSIX-compliant systems.
 \begin{lstlisting}
@@ -69,16 +69,16 @@ struct time_spec {
 \end{lstlisting}
 The structure representing time specification uses unsigned long values.
 The value 0 seconds and 0 nanoseconds is equal to Unix prime epoch (1st January 1970).
-In case of seconds part, the 32-bit unsigned long value was choosen because the existing value
+In case of seconds part, the 32-bit unsigned long value was chosen because the existing value
 {\it{seconds}}, representing uptime in Contiki, is of the same type.
 Such time representation will wrap around in year 2106.
-In case of nanoseconds part, the 32-bit unsigned long value was choosen because there is no need
+In case of nanoseconds part, the 32-bit unsigned long value was chosen because there is no need
 for negative values.
 As the 32-bit unsigned long type can express values from 0 to $2^{32}$-1 (4~294~967~295),
 and one second has 1~000~000~000 nanoseconds, this will never wrap around.
-Even negative results of substraction work after casting the result to singed type
+Even negative results of subtraction work after casting the result to singed type
 because 1~000~000~000 is still less than maximum expressible value of signed long type $2^{31}$-1 (2~147~483~647).
-The nanosecond precision was choosen as modern systems also aim towards this precision~\cite{posix,ntp-precision} and
+The nanosecond precision was chosen as modern systems also aim towards this precision~\cite{posix,ntp-precision} and
 the microsecond precision would also require at least 32-bit data type -
 one second has 1~000~000 microseconds, which is more than maximum expressible value of signed 16-bit
 type $2^{16}$ (65~536).

@@ -14,7 +14,7 @@ Here is
 %Next page shows
 an example of delaying text on an LCD panel using Protothreads.
 It is taken from
-Adam Dunkel's Protothreads website~\cite{adam-protothreads} and slightly modified.
+Adam Dunkels' Protothreads website~\cite{adam-protothreads} and slightly modified.
 Protothreads can be used for introducing delays inside a function, without using a full threading model.
 The example shows a function writing characters to LCD panel.
 Suppose each character is shown for one second, then next character replaces previous.
@@ -61,12 +61,12 @@ which causes the function to check the condition it is waiting for (timer expire
 If the condition is met the function resumes, if not it returns again.
 Strictly speaking the amount of time between showing each character can
 be more than one second.
-This is because Protothreads are not running simultenously: when the timer expires
+This is because Protothreads are not running simultaneously: when the timer expires
 and another Protothread is running, this Protothread would have to wait until
 it is entered again. Than the condition specified in PT\_WAIT\_UNTIL is met and
 next iteration of loop started, that is, next character is displayed.
 
-How does it work? The macro PT\_BEGIN exapands to {\it switch} statement while preprocessing the
+How does it work? The macro PT\_BEGIN is expanded to {\it switch} statement while preprocessing the
 code for compilation.
 The PT\_WAIT\_UNTIL macro expands to {\it case} and setting the local continuation
 to the value, so that next time this function is run, it jumps to this {\it case}.
@@ -121,7 +121,7 @@ int main(void)
 
 \end{lstlisting}
 
-\chapter{Interesting NTP dates}\label{app:dates}
+\chapter{Interesting dates for NTP}\label{app:dates}
 NTP timestamps are unsigned values, and operations on them produce a
 result in the same or adjacent Eras.
 Era 0 includes dates from the prime epoch to some time in 2036,

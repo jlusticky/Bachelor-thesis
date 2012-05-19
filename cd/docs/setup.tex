@@ -82,7 +82,7 @@ compile the project for our saved target avr-raven:
 \end{lstlisting}
 Now we have the hello-world project compiled for avr-raven target.
 
-To see all avaliable target platforms issue the following command:
+To see all available target platforms issue the following command:
 \begin{lstlisting}
 	&\textdollar& make targets
 \end{lstlisting}
@@ -245,7 +245,7 @@ Now we can flash the hardware (use sudo if udev is not configured):
 \end{lstlisting}
 
 
-If for some reason you need to specify a MAC addres of the AVR Raven, you can do it
+If for some reason you need to specify a MAC address of the AVR Raven, you can do it
 a) by setting the compile flags in Makefile before the CONTIKI dir is specified
 \begin{lstlisting}
 	CFLAGS+=-DMAC_ADDRESS="{0x02, 0x11, 0x22, 0xff, 0xfe, 0x33, 0x44, 0x66}"

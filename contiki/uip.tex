@@ -64,13 +64,13 @@ This way uIP does not have to have its own buffer structures and thus
 needs only minimal memory amount.
 Possible packet loss is a trade-off for minimalism and ability to communicate using TCP/IP.
 It is not such a big deal for communication using TCP on transport layer
-because of acknowledgment system used in TCP to prevent data loss.
+because of acknowledgement system used in TCP to prevent data loss.
 However data carried on UDP can be irrecoverably lost.
 
 As was expected the measurements shows that uIP implementation provides very low
 throughput, particularly when communicating with a PC host~\cite{thesis-towards}.
 However small systems that uIP is targeting usually do not produce enough data
-to make the preformance degratation a serious problem~\cite{thesis-towards}.
+to make the performance degradation a serious problem~\cite{thesis-towards}.
 
 Despite being so small uIP is not only RFC compliant but also IPv6 Ready Phase 1 certified.
 uIP is written in C programming language and it is fully integrated to Contiki operating system.
