@@ -18,18 +18,17 @@ There are two formats of timestamp in NTP packet structure:
 long 64-bit and short 32-bit as shown on figure~\ref{fig:ntp-timestamps}.
 The 64-bit long timestamp used by NTP consists of a 32-bit unsigned seconds
 field spanning $2^{32}$ seconds (approx. 136 years from 1900 to 2036) and a 32-bit fraction field resolving
-$2^{-32}$ seconds (aprox. 232 picoseconds)~\cite{rfc5905}.
+$2^{-32}$ seconds (approx. 232 picoseconds)~\cite{rfc5905}.
 The short 32-bit timestamp includes a 16-bit unsigned seconds field
 and 16-bit fraction field.
 
-There is one more NTP time format - 128-bit NTP Date format.
+Besides these two, there is one more NTP timestamp format - 128-bit NTP Date format.
 It includes a 64-bit signed seconds field and 64-bit fraction field.
 For convenience in mapping between formats,
 the seconds field is divided into a 32-bit Era Number field
 and a 32-bit Era Offset field.
 This 128-bit NTP Date format is however not transmitted over the network
-and is only used where sufficient storage and word
-size is available~\cite{rfc5905}.
+and is only used where sufficient storage and word size is available~\cite{rfc5905}.
 There is practically no need of knowing about this format for embedded systems
 at least until year 2036, when the Era Number will be incremented from zero to one.
 But strictly speaking an NTP timestamp is a truncated NTP Date format~\cite{rfc5905}.
