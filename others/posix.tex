@@ -2,8 +2,8 @@
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \section{POSIX-compliant systems}\label{sec:others-posix}
-POSIX standard
-%The <time.h> header shall declare the timespec structure
+The POSIX standard specifies that
+the system header file {\it{time.h}} shall declare the following timespec structure.
 \begin{lstlisting}[morekeywords={clockid_t,time_t}]
 clock_gettime(clockid_t clock_id, struct timespec *res);
 clock_settime(clockid_t clock_id, const struct timespec *res);
