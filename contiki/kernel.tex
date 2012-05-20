@@ -1,7 +1,7 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
-\section{Kernel and processes}
+\section{Kernel and processes}\label{sec:contiki-kernel}
 The kernel in Contiki is event-driven providing cooperative multitasking
 environment, but the system supports preemptive
 multithreading that can be applied on a per-process basis~\cite{video}.
@@ -41,45 +41,66 @@ struct process {
 	};
 \end{lstlisting}
 
+Process control block is not declared or defined directly,
+but through the {\it{PROCESS()}} macro.
+This macro takes two parameters: the variable name of the process control block
+and a textual name of the process,
+which is used in debugging and when printing out lists of active processes to users~\cite{contiki-wiki-processes}.
+
 All code execution is initiated by the Contiki kernel
 that acts like a simple dispatcher calling these functions~\cite{contiki-docs}.
 Just like Protothreads, processes are also implemented using macros,
 making them fully standard C compatible.
 
-%% continue here - UP HERE DONE
 In Contiki, code run in either of two execution contexts:
 cooperative, in which code never preempts other code, and preemptive,
-which preempts the execution of the cooperative code and returns control
-when the preemptive code is finished.
-Processes always run in cooperative mode, whereas interrupts run in preemptive mode.
-The only process control function that can be called from preemptive mode is process\_poll(). 
-Processes communicate with each other by posting events to each other.
-Events are also posted when a process starts and exits.
-%! https://www.sics.se/contiki/wiki/index.php/Processes
-In the ... execution context processes cannot be blocked,
-instead they run complete~\cite{video, paper-contiki}.
+which preempts the execution of cooperative code and returns control
+when preemptive code is finished.
+Processes always run in cooperative mode,
+whereas interrupt service routines and real-time timers run in preemptive mode~\cite{contiki-wiki-processes}.
+Code running in both execution contexts illustrates figure~\ref{fig:contiki-execution-context}.
 
-Interprocess communication is done by posting events~\cite{paper-contiki}.
-%! todo - process
+\begin{figure}
+  \centering
+  \includegraphics[width=13cm,keepaspectratio]{fig/Execution-contexts.png}
+  \caption{Contiki execution contexts by A. Dunkels}
+  \label{fig:contiki-execution-context}
+\end{figure}
 
-The Contiki kernel does not provide support for timed events,
-instead an application that wants to use timers needs to explicitly use the timer library~\cite{contiki-docs}.
-The Contiki timer library is further discussed in section~\ref{sec:contiki-timers}.
+Interprocess communication is done by posting events in Contiki OS -
+processes communicate with each other by posting events to each other~\cite{paper-contiki}.
+There are two types of events: synchronous and asynchronous.
+Synchronous events are directly delivered to the receiving process when posted and
+can only be posted to a specific processes~\cite{contiki-wiki-processes}.
+Because synchronous events are delivered immediately,
+posting synchronous event is equivalent to a function call:
+the process to which an event is delivered is directly invoked,
+and the process that posted the event is blocked
+until the receiving process has finished processing the event~\cite{contiki-wiki-processes}.
 
+Asynchronous events are delivered to the receiving process
+some time after they have been posted~\cite{contiki-wiki-processes}.
+Before delivery, the asynchronous events are held on event queue inside Contiki kernel.
+The kernel loops through this event queue and delivers
+the event to the process by invoking the process. 
+The receiver of an asynchronous event can be either a specific process
+or all running processes~\cite{contiki-wiki-processes}.
+As processes are run when they receive an event,
+events are essential part of Contiki OS~\cite{contiki-wiki-processes}.
+
+%! paper-contiki - dunkels04contiki
+%Being able to power down the device
+%when the network is inactive is often required way to reduce energy consumption.
+%Power conservation mechanisms
+%depend on both the applications and the network protocols.
+%The Contiki kernel contains no explicit power
+%save abstractions, but lets the the application specific parts
+%of the system implement such mechanisms.
+%To help the application decide when to power down the system, the event
+%scheduler exposes the size of the event queue.
+%This information can be used to power down the processor when there
+%are no events scheduled.
 %! paper-contiki
-In sensor networks, being able to power down the node
-when the network is inactive is an often required way to reduce energy consumption.
-Power conservation mechanisms
-depend on both the applications and the network protocols.
-The Contiki kernel contains no explicit power
-save abstractions, but lets the the application specific parts
-of the system implement such mechanisms.
-To help the application decide when to power down the system, the event
-scheduler exposes the size of the event queue.
-This information can be used to power down the processor when there
-are no events scheduled. When the processor wakes up in
-response to an interrupt, the poll handlers are run to handle the external event.
-%! paper-contiki
 
-As stated before, Contiki is well documented and you can find out more about
-the kernel as well as the system in the documentation~\cite{contiki-docs}.
+%As stated before, Contiki is well documented and you can find out more about
+%the kernel as well as the system in the documentation~\cite{contiki-docs}.

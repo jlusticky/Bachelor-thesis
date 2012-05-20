@@ -11,10 +11,11 @@ core/net/uip.h - The uIP packet buffer.
 Content
 =======
 obsah.tex - conclusion
+
 contiki.tex - DONE
 contiki/protothreads.tex - DONE
 contiki/uip.tex - DONE
-contiki/kernel.tex - work in progress
+contiki/kernel.tex - DONE + power-save?
 contiki/timers.tex - work in progress
 
 ntp.tex - DONE
