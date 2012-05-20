@@ -14,9 +14,10 @@ clock_gettime(clockid_t clock_id, struct timespec *res);
 clock_settime(clockid_t clock_id, const struct timespec *res);
 clock_getres(clockid_t clock_id, struct timespec *res);
 
-struct timespec
-time_t  tv_sec    Seconds
-long    tv_nsec   Nanoseconds
+struct timespec {
+  time_t  tv_sec;
+  long    tv_nsec;
+}
 \end{lstlisting}
 A clock may be system-wide (that is, visible to all processes)
 or per-process (measuring time that is meaningful only within a process).
