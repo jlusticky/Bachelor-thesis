@@ -43,7 +43,41 @@ requiring usage of NTP Date format.
 	\bigskip
 \end{figure}
 
-% TODO - packet description
+%! TODO
+Standard NTP packet structure without Autokey extension is shown on figure~\ref{fig:ntp-packet}.
+
+Leap Indicator (LI) is 2-bit integer warning of an impending leap
+second to be inserted or deleted in the last minute of the current
+month~\cite{rfc5905}.
+
+Version Number (VN) is 3-bit integer representing the NTP
+version number, currently 4.
+
+Mode 3-bit integer representing the mode...
+
+Stratum is 8-bit integer representing the stratum.
+
+Poll is 8-bit signed integer representing the maximum interval between
+successive messages, in log2 seconds.
+Suggested default limits for minimum and maximum poll intervals are 6 and 10, respectively.
+
+Precision is 8-bit signed integer representing the precision of the
+system clock, in log2 seconds.
+For instance, a value of -18
+corresponds to a precision of about one microsecond. %! FALSE!
+The precision
+can be determined when the service first starts up as the minimum
+time of several iterations to read the system clock.
+   
+   
+   
+   Root Delay (rootdelay): Total round-trip delay to the reference
+   clock, in NTP short format.
+
+   Root Dispersion (rootdisp): Total dispersion to the reference clock,
+   in NTP short format.
+
+Reference ID (refid): 32-bit code identifying the particular server or reference clock.
 
 \begin{figure}
 	\centering
