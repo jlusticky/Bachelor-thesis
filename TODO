@@ -53,5 +53,4 @@ document uip - app has to act on incomming data, overwrite
 arm + ipv4
 adjtime
 ----
-no LATCH, but COMPARE
 -struct timex , linux, bsd
