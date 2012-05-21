@@ -67,7 +67,7 @@ static struct ntp_msg msg;
 struct time_spec ts;
 
 // NTP Poll interval in seconds = 2^TAU
-/// TAU ranges from 4 (Poll interval 16 s) to 17 ( Poll interval 36 h)
+/// TAU ranges from 4 (Poll interval 16 s) to 17 ( Poll interval 36 h) - multiply as in RFC1361?
 /// - timer is limited in Contiki to xx s - use etimer vs. stimer
 ///#ifndef NTP_TAU
 	#define TAU 4
@@ -110,10 +110,11 @@ tcpip_handler(void)
 #endif
 
 	// check if the server is synchronised
-#if 0 // change to 1 for more strict check
-    if (((pkt->status & LI_ALARM) == LI_ALARM) || (pkt->stratum > NTP_MAXSTRATUM) || (pkt->stratum == 0))
+#if 0 // change to 1 for strict check
+    if (((pkt->status & LI_ALARM) == LI_ALARM) || (pkt->stratum > NTP_MAXSTRATUM) ||
+		(pkt->stratum == 0) || ((pkt->xmttime.int_partl) == (uint32_t) 0))
 #else
-    if (pkt->stratum > NTP_MAXSTRATUM)
+    if ((pkt->stratum > NTP_MAXSTRATUM) || (pkt->xmttime.int_partl) == (uint32_t) 0)
 #endif
     {
 		PRINTF("Received NTP packet from unsynchronised server\n");
@@ -129,15 +130,20 @@ tcpip_handler(void)
      * This will work until 2038 when wrap around can occur,
      * but as NTP Era 0 ends 2036 this code must be in the future changed anyway.
      */
-    if (labs((signed long) (ts.sec - tmpts.sec)) > 2)
+    long sec_diff = (signed long) (ts.sec - tmpts.sec);
+    if (labs(sec_diff) > 5)
     {
 	/// do this only IF difference > 36min use settime, otherwise adjtime
-		clock_set_time(ts.sec);
-		
 		PRINTF("Setting the time\n");
+		clock_set_time(ts.sec);
 		
 		///msg.xmttime.int_partl = uip_htonl(0x534554);
 		///uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
+	}
+	else
+	{
+		PRINTF("Setting the time\n");
+		clock_adjust_time(sec_diff);
 	}
   }
 }
@@ -224,6 +230,7 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	
 	etimer_set(&et, SEND_INTERVAL);
 	for(;;) {
+		printf("YIELD\n");
 		PROCESS_YIELD();
 		if(etimer_expired(&et))
 		{
