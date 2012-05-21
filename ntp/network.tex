@@ -54,6 +54,13 @@ Version Number (VN) is 3-bit integer representing the NTP
 version number, currently 4.
 
 Mode 3-bit integer representing the mode...
+...In the unsymmetric mode the
+      client periodically sends an NTP message to the server, which then
+      responds within some interval.  Usually, the server simply
+      interchanges addresses and ports, fills in the required
+      information and sends the message right back. Servers operating in
+      the unsymmetric mode then need retain no state information between
+      client requests.
 
 Stratum is 8-bit integer representing the stratum.
 
@@ -93,6 +100,11 @@ Root dispersion express accumulated total dispersion from primary server
 and Root Delay express accumulated roundtrip delay via primary server~\cite{ntp-arch}.
 
 
+%TODO - TIMESTAMPS
+There will exist
+   a 232-picosecond interval, henceforth ignored, every 136 years when
+   the 64-bit field will be zero, which by convention is interpreted as
+   an invalid timestamp.
 %TODO
 
 Because of network latency the timestamp received will never be exactly corresponding to

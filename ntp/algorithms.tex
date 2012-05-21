@@ -11,7 +11,21 @@ $t_1$ is the time of the request packet reception,
 $t_2$ is the time of the response packet transmission and
 $t_3$ is the time of the response packet reception~\cite{ntp-algor}.
 
-%! communication with one server
+%! communication with one server - RFC958
+The destination peer calculates the roundtrip delay and clock
+      offset relative to the source peer as follows.  Let t1, t2 and t3
+      represent the contents of the Originate Timestamp, Receive
+      Timestamp and Transmit Timestamp fields and t4 the local time the
+      NTP message is received.  Then the roundtrip delay d and clock
+      offset c is:
+
+         d = (t4 - t1) - (t3 - t2)  and  c = (t2 - t1 + t3 - t4)/2 .
+
+      The implicit assumption in the above is that the one-way delay is
+      statistically half the roundtrip delay and that the intrinsic
+      drift rates of both the client and server clocks are small and
+      close to the same value.
+%one server
 
 When computing result from more servers the intersection algorithms is used
 for selecting the possible most exact timestamp received from various servers~\cite{rfc5905}.
