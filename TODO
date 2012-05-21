@@ -40,9 +40,6 @@ look to RS232 output in AVR Studio
 
 dntpd - ntpreq.c
 
-
-RFC NTP - page 20 = packet description
-
 COOJA?
 
 ipv4 - minimal-net platform and native
