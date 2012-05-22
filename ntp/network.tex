@@ -108,6 +108,14 @@ the short 32-bit format is used for them.
 Root dispersion express accumulated total dispersion from primary server
 and Root Delay express accumulated roundtrip delay via primary server~\cite{ntp-arch}.
 
+% RFC 1769
+The Originate Timestamp field is copied
+   unchanged from the Transmit Timestamp field of the request. It is
+   important that this field be copied intact, as a NTP client uses it
+   to check for replays.
+  ?? In broadcast mode, this field is set to the
+   time of day when the message is sent.
+%
 
 %TODO - TIMESTAMPS
 There exists approx. 232-picosecond interval, henceforth ignored, every 136 years when
