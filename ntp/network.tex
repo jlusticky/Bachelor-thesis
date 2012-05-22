@@ -61,8 +61,17 @@ Mode 3-bit integer representing the mode...
       information and sends the message right back. Servers operating in
       the unsymmetric mode then need retain no state information between
       client requests.
+% BROADCAST MODE - rfc1769
 
 Stratum is 8-bit integer representing the stratum.
+
+7.4.  The Kiss-o'-Death Packet
+
+   If the Stratum field is 0, which implies unspecified or invalid, the
+   Reference Identifier field can be used to convey messages useful for
+   status reporting and access control.  These are called Kiss-o'-Death
+   (KoD) packets and the ASCII messages they convey are called kiss
+   codes. 
 
 Poll is 8-bit signed integer representing the maximum interval between
 successive messages, in log2 seconds.
@@ -101,10 +110,8 @@ and Root Delay express accumulated roundtrip delay via primary server~\cite{ntp-
 
 
 %TODO - TIMESTAMPS
-There will exist
-   a 232-picosecond interval, henceforth ignored, every 136 years when
-   the 64-bit field will be zero, which by convention is interpreted as
-   an invalid timestamp.
+There exists approx. 232-picosecond interval, henceforth ignored, every 136 years when
+the 64-bit field will be zero, which by convention is interpreted as an invalid timestamp.
 %TODO
 
 Because of network latency the timestamp received will never be exactly corresponding to
