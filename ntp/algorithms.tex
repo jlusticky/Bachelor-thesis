@@ -4,12 +4,16 @@
 \section{Algorithms}
 As the figure~\ref{fig:ntp-packet} shows, there are four 64-bit long timestamps
 in NTP packet: Reference, Origin, Receive and Transmit timestamp.
-Using these four timestamps, NTP can compute
-the offset which is given by $\theta = \frac{1}{2}[(t_1 - t_0) + (t_2 - t_1)]$,
-where $t_0$ is the time of the request packet transmission,
-$t_1$ is the time of the request packet reception,
-$t_2$ is the time of the response packet transmission and
-$t_3$ is the time of the response packet reception~\cite{ntp-algor}.
+%The Reference timestamp is when server was synchronised
+%! TODO ->
+Using these four timestamps, NTP client can compute
+the local clock offset which is given by $\theta = \frac{1}{2}[(t_2 - t_1) + (t_3 - t_4)]$,
+where $t_1$ is the time of the request packet transmission,
+$t_2$ is the time of the request packet reception,
+$t_3$ is the time of the response packet transmission and
+$t_4$ is the time of the response packet reception~\cite{ntp-algor,rfc5905}.
+%! t_4 is not packet XX
+%! figure
 
 %! communication with one server - RFC958
 The destination peer calculates the roundtrip delay and clock
