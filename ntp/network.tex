@@ -63,15 +63,14 @@ Mode 3-bit integer representing the mode...
       client requests.
 % BROADCAST MODE - rfc1769
 
-Stratum is 8-bit integer representing the stratum.
-
-7.4.  The Kiss-o'-Death Packet
-
-   If the Stratum field is 0, which implies unspecified or invalid, the
-   Reference Identifier field can be used to convey messages useful for
-   status reporting and access control.  These are called Kiss-o'-Death
-   (KoD) packets and the ASCII messages they convey are called kiss
-   codes. 
+Stratum is 8-bit integer representing the stratum as described in section~\ref{sec:ntp-topology}.
+If the Stratum field is 0, which implies unspecified or invalid, the
+Reference Identifier field can be used to convey messages useful for
+status reporting and access control.
+These are called Kiss-o'-Death (KoD)
+packets and the ASCII messages they convey are called kiss codes~\cite{rfc5905}.
+These codes are particularly used by server to tell the client to stop sending packets or to reduce
+its polling interval to that server.
 
 Poll is 8-bit signed integer representing the maximum interval between
 successive messages, in log2 seconds.
