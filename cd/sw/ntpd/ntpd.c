@@ -103,7 +103,7 @@ tcpip_handler(void)
 	{
 		pkt->status = MODE_SERVER | (NTP_VERSION << 3) | LI_ALARM;
 		clock_get_time(&tmpts);
-		pkt->xmttime.int_partl = uip_htonl(ts.sec + JAN_1970);
+		pkt->xmttime.int_partl = uip_htonl(tmpts.sec + JAN_1970);
 		uip_udp_packet_send(udpconn, pkt, sizeof(struct ntp_msg));
 		return;
 	}
