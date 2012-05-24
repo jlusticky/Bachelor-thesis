@@ -123,7 +123,8 @@ instead the application must be aware that the timestamp is not exactly accurate
 
 \section{NTP values}
 Unlike the RFC 5905~\cite{rfc5905} shows, there are no 64 bit values. %! RFC - A.4. Kernel System Clock Interface
-
+No floating point numbers.
+Divide by 2 is done through arithmetic right shift. Compiler does not translates division by 2 automatically.
 
 \section{NTP client implementation}
 Structures representing NTP message were borrowed from OpenNTPD NTP Unix daemon.
