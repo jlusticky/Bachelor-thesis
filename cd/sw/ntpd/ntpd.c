@@ -121,28 +121,51 @@ tcpip_handler(void)
 		return;
 	}
     
-    ts.sec = uip_ntohl(pkt->xmttime.int_partl) - JAN_1970;
-    //ts.nsec;
-    
     clock_get_time(&tmpts);
     
-    /* Substract and cast to signed type.
-     * This will work until 2038 when wrap around can occur,
-     * but as NTP Era 0 ends 2036 this code must be in the future changed anyway.
-     */
-    long sec_diff = (signed long) (ts.sec - tmpts.sec);
+    /* Compute adjustment */
+    long sec_diff;
+    if ((pkt->status & MODEMASK) == MODE_BROADCAST)
+    {
+	    /* Substract and cast to signed type.
+	     * This will work until 2038 when wrap around can occur,
+	     * but as NTP Era 0 ends 2036 this code must be in the future changed anyway.
+	     */
+	    // local clock offset THETA = t3 - t4
+	    sec_diff = (long) ((uip_ntohl(pkt->xmttime.int_partl) - JAN_1970) - tmpts.sec);
+	}
+	else
+	{
+		if (ts.sec != (uip_ntohl(pkt->orgtime.int_partl) - JAN_1970))
+		{
+			PRINTF("Received NTP packet is not for us\n");
+			return;
+		}
+		PRINTF("\n");
+		// local clock offset THETA = ((t2 - t1) + (t3 - t4)) / 2
+		PRINTF("THETA = ((%lu - %lu) + (%lu - %lu)) / 2\n",
+		(uip_ntohl(pkt->rectime.int_partl) - JAN_1970), ts.sec,
+		(uip_ntohl(pkt->xmttime.int_partl) - JAN_1970), tmpts.sec);
+		
+		sec_diff = (long) ((long)(uip_ntohl(pkt->rectime.int_partl) - JAN_1970 - ts.sec)
+		+ (long)(uip_ntohl(pkt->xmttime.int_partl) - JAN_1970 - tmpts.sec)) >> 1;
+		
+		PRINTF("Local clock offset = %ld\n",  sec_diff);
+	}
+	
+	/* Set or adjust local clock */
     if (labs(sec_diff) > 5)
     {
 	/// do this only IF difference > 36min use settime, otherwise adjtime
-		PRINTF("Setting the time\n");
-		clock_set_time(ts.sec);
+		PRINTF("Setting the time to xmttime from server = %lu\n", tmpts.sec, sec_diff);
+		clock_set_time(uip_ntohl(pkt->xmttime.int_partl) - JAN_1970);
 		
 		///msg.xmttime.int_partl = uip_htonl(0x534554);
 		///uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
 	}
 	else
 	{
-		PRINTF("Setting the time\n");
+		PRINTF("Adjusting the time\n");
 		clock_adjust_time(sec_diff);
 	}
   }
@@ -152,7 +175,6 @@ static void
 timeout_handler(void)
 {
 	msg.status = MODE_CLIENT | (NTP_VERSION << 3) | LI_ALARM; ///LI_NOWARNING; - NOT SYNCHRONISED
-	//msg.refid = UIP_HTONL(0x494e4954); // INIT string in ASCII - only for the first time - delete?
 	
 	clock_get_time(&ts);
 	msg.xmttime.int_partl = uip_htonl(ts.sec + JAN_1970);
@@ -160,7 +182,6 @@ timeout_handler(void)
 	PRINTF("Sending NTP packet to server ");
 	PRINT6ADDR(&udpconn->ripaddr); // PRINTLLADDR for ipv4
 	PRINTF("\n");
-	PRINTF("ts.sec: %lu, ts.sec + JAN_1970: %lu\n", ts.sec, ts.sec + JAN_1970);
 	
 	uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
 }
@@ -230,7 +251,6 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	
 	etimer_set(&et, SEND_INTERVAL);
 	for(;;) {
-		printf("YIELD\n");
 		PROCESS_YIELD();
 		if(etimer_expired(&et))
 		{
