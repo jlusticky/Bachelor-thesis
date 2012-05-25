@@ -152,20 +152,17 @@ tcpip_handler(void)
 		
 		PRINTF("Local clock offset = %ld\n",  sec_diff);
 	}
-	
+
 	/* Set or adjust local clock */
     if (labs(sec_diff) > 5)
     {
 	/// do this only IF difference > 36min use settime, otherwise adjtime
-		PRINTF("Setting the time to xmttime from server = %lu\n", tmpts.sec, sec_diff);
+		PRINTF("Setting the time to xmttime from server\n");
 		clock_set_time(uip_ntohl(pkt->xmttime.int_partl) - JAN_1970);
-		
-		///msg.xmttime.int_partl = uip_htonl(0x534554);
-		///uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
 	}
 	else
 	{
-		PRINTF("Adjusting the time\n");
+		PRINTF("Adjusting the time %hhd\n", (int8_t)sec_diff);
 		clock_adjust_time(sec_diff);
 	}
   }
@@ -238,20 +235,20 @@ PROCESS_THREAD(ntpd_process, ev, data)
 		{}
 	msg.precision = a;
 	
-	/*
+#if 1 // initial setting of time 4s after startup
+	// wait for ip to settle
+	etimer_set(&et, 4*CLOCK_SECOND);
+	PROCESS_WAIT_EVENT();
+	
 	// ask for time and wait for response
 	msg.refid = UIP_HTONL(0x494e4954); // INIT string in ASCII
 	timeout_handler();
-	PROCESS_YIELD();
-	if (ev == tcpip_event)
-	{
-		tcpip_handler();
-	}
-	*/
-	
+	msg.refid = 0;
+#endif
+
 	etimer_set(&et, SEND_INTERVAL);
 	for(;;) {
-		PROCESS_YIELD();
+		PROCESS_WAIT_EVENT();
 		if(etimer_expired(&et))
 		{
 			timeout_handler();
