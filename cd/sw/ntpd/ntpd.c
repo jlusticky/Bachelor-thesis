@@ -188,7 +188,7 @@ tcpip_handler(void)
 			xmf = xmf * 100;
 			printf("XMF my = %" PRIu32 "\n", xmf);
 			
-//#elif 1
+//#elif 1 -- FASTER?
 			xmf = uip_ntohl(pkt->xmttime.fractionl);
 			asm("nop\n");
 			xmf = ((uint64_t)xmf * 1000000000) / 0xFFFFFFFF;
