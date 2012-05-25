@@ -1,7 +1,6 @@
 Thesis
 ======
 NTP - algorithms + history, Round Trip Time (RTT)
-Kernel - events
 Timers
 Clock - figures
 Use more BOOKs not only MISC in citations
@@ -52,3 +51,4 @@ adjtime - wip
 FAQ-kernel discipline
 ----
 try broadcast - determine mode from incomming packet
+thus, the time is always a monotonically increasing function.
