@@ -151,6 +151,52 @@ tcpip_handler(void)
 		+ (long)(uip_ntohl(pkt->xmttime.int_partl) - JAN_1970 - tmpts.sec)) >> 1;
 		
 		PRINTF("Local clock offset = %ld\n",  sec_diff);
+		
+		if (sec_diff == 0)
+		{
+			uint32_t xmf = uip_ntohl(pkt->xmttime.fractionl);
+			printf("we have to compute:  %" PRIu32 " * 1000000000 / %" PRIu32 "\n", xmf, 0xFFFFFFFF);
+			printf("XMF ntp = %" PRIx32 " = %" PRIu32 "\n", xmf, xmf);
+			
+//#if 0 // float support
+			xmf = xmf * 1000000000.0 / 0xFFFFFFFF;
+			printf("XMF float = %" PRIu32 "\n", xmf);
+			
+//#elif 0
+			xmf = uip_ntohl(pkt->xmttime.fractionl);
+			/**xmf = xmf >> 16;
+			xmf = xmf * 10000;
+			xmf = xmf >> 16;
+			printf("xmf ntp = %" PRIx32 " = %" PRIu32 "\n", xmf, xmf);
+			xmf = xmf * 100000;*/
+			// or use >> 8 ? determine precison of clock
+			xmf = xmf >> 4;
+			xmf = xmf * 10;
+			xmf = xmf >> 4;
+			xmf = xmf * 10;
+			xmf = xmf >> 4;
+			xmf = xmf * 10;
+			xmf = xmf >> 4;
+			xmf = xmf * 10;
+			xmf = xmf >> 4;
+			xmf = xmf * 10;
+			xmf = xmf >> 4;
+			xmf = xmf * 10;
+			xmf = xmf >> 4;
+			xmf = xmf * 10;
+			xmf = xmf >> 4;
+			xmf = xmf * 100;
+			printf("XMF my = %" PRIu32 "\n", xmf);
+			
+//#elif 1
+			xmf = uip_ntohl(pkt->xmttime.fractionl);
+			asm("nop\n");
+			xmf = ((uint64_t)xmf * 1000000000) / 0xFFFFFFFF;
+			asm("nop\n");
+			printf("XMF 64 = %" PRIu32 "\n", xmf);
+//#endif			
+			
+		}
 	}
 
 	/* Set or adjust local clock */
@@ -235,9 +281,9 @@ PROCESS_THREAD(ntpd_process, ev, data)
 		{}
 	msg.precision = a;
 	
-#if 1 // initial setting of time 4s after startup
+#if 1 // initial setting of time 6s after startup
 	// wait for ip to settle
-	etimer_set(&et, 4*CLOCK_SECOND);
+	etimer_set(&et, 6*CLOCK_SECOND);
 	PROCESS_WAIT_EVENT();
 	
 	// ask for time and wait for response
