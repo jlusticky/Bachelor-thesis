@@ -10,7 +10,7 @@
 As debugging using GDB might not be sufficient for all cases of development (such as the Timer/Counter modules),
 this guide shows how to set up AVR Studio 4 for simulation with Contiki project.
 
-First of all we need a PC with Windows or Virtualbox with Windows installed on our development PC.
+First of all we need a PC with Windows or Virtualbox with Windows installed on our Linux development PC.
 The installation of Windows in Virtualbox is preferred because this way we can easily copy our compiled binaries
 from the development Linux PC to Windows guest
 without need of setting up build environment in Windows or network connection between two PCs.
@@ -34,7 +34,8 @@ and the avr-gcc header files usually from {\it{/usr/lib/gcc/avr/}}VERSION{\it{/i
 where VERSION can be determined from {\it{avr-gcc -v}} command.
 If the headers files are not to be found in this paths, {\it{avr-gcc -v }} command might help you to find them elsewhere.
 
-If you will not stick to this paths on Windows you might be later asked by AVR Studio to locate this files and directories manually.
+If you will not stick to this paths on Windows,
+you might be later asked by AVR Studio to locate these files and directories manually.
 
 
 \section{Simulation}
@@ -46,5 +47,6 @@ Now you will be asked to select the debug platform and the device.
 Choose AVR Simulator and ATmega1284P for AVR Raven. (There seems to be a problem with the newer Simulator 2 with Timer/Counter 2 module).
 You may be asked if you want to load EEPROM data - click OK.
 Now you can simulate and debug you Contiki project in AVR Studio 4.
-The debug menu has all you need to step through the code. The I/O view shows current status of the hardware.
+To select CPU frequency go to menu Debug and select AVR Simulator Options.
+The Debug menu has all you need to step through the code. The I/O view shows current status of the hardware.
 \end{document}
