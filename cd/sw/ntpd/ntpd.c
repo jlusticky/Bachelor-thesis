@@ -50,6 +50,7 @@
 
 // error if remote NTP server not defined in Makefile
 #ifndef REMOTE_HOST
+/// TODO : broadcast mode
 	#error "No REMOTE_HOST defined in Makefile!"
 #endif
 
@@ -69,10 +70,8 @@ struct time_spec ts;
 // NTP Poll interval in seconds = 2^TAU
 /// TAU ranges from 4 (Poll interval 16 s) to 17 ( Poll interval 36 h) - multiply as in RFC1361?
 /// - timer is limited in Contiki to xx s - use etimer vs. stimer
-///#ifndef NTP_TAU
-	#define TAU 4
-	#define POLL_INTERVAL (1 << TAU)
-///#endif // TAU
+#define TAU 4
+#define POLL_INTERVAL (1 << TAU)
 
 // Send interval in clock ticks
 #define SEND_INTERVAL POLL_INTERVAL * CLOCK_SECOND
@@ -85,11 +84,22 @@ static void timeout_handler(void);
 static void
 tcpip_handler(void)
 {
-  struct ntp_msg *pkt;
-  struct time_spec tmpts;
+  struct ntp_msg *pkt; // pointer to incomming packet
+  
+  /* timestamps for offset calculation */
+  ///struct time_spec orgts; // t1 == ts
+  struct time_spec rects; // t2
+  struct time_spec xmtts; // t3
+  struct time_spec dstts; // t4
+  
+  /* timestamp for local clock adjustement */
+  struct time_spec adjts;
 
   if(uip_newdata())
   {
+	// get destination (t4) timestamp
+	clock_get_time(&dstts);
+	
     // check if received packet is complete
     if ((uip_datalen() != NTP_MSGSIZE_NOAUTH) && (uip_datalen() != NTP_MSGSIZE))
     {
@@ -98,12 +108,13 @@ tcpip_handler(void)
 	}
 	
     pkt = uip_appdata;
+
 #if 0 // NTP_SERVER_SUPPORT - can only communicate with REMOTE_HOST
 	if ((pkt->status & MODEMASK) == MODE_CLIENT)
 	{
+		// set server mode and send our time
 		pkt->status = MODE_SERVER | (NTP_VERSION << 3) | LI_ALARM;
-		clock_get_time(&tmpts);
-		pkt->xmttime.int_partl = uip_htonl(tmpts.sec + JAN_1970);
+		pkt->xmttime.int_partl = uip_htonl(dstts.sec + JAN_1970);
 		uip_udp_packet_send(udpconn, pkt, sizeof(struct ntp_msg));
 		return;
 	}
@@ -121,95 +132,68 @@ tcpip_handler(void)
 		return;
 	}
     
-    clock_get_time(&tmpts);
-    
     /* Compute adjustment */
-    long sec_diff;
-    if ((pkt->status & MODEMASK) == MODE_BROADCAST)
+    adjts.nsec = 0;
+    if ((pkt->status & MODEMASK) == MODE_BROADCAST) // in broadcast mode set time to xmttime
     {
-	    /* Substract and cast to signed type.
+	    /** Substract and cast to signed type.
 	     * This will work until 2038 when wrap around can occur,
 	     * but as NTP Era 0 ends 2036 this code must be in the future changed anyway.
 	     */
 	    // local clock offset THETA = t3 - t4
-	    sec_diff = (long) ((uip_ntohl(pkt->xmttime.int_partl) - JAN_1970) - tmpts.sec);
+	    adjts.sec = (uip_ntohl(pkt->xmttime.int_partl) - JAN_1970) - dstts.sec;
+	    
+	    if (adjts.sec == 0) // if seconds are the same calculate nsec offset
+	    {
+			///uip_ntohl(pkt->xmttime.fractionl);
+			///adjts.nsec =
+		}
 	}
-	else
+	else // in client-server mode calculate local clock offset
 	{
 		if (ts.sec != (uip_ntohl(pkt->orgtime.int_partl) - JAN_1970))
 		{
-			PRINTF("Received NTP packet is not for us\n");
+			PRINTF("Orgtime mismatch between received NTP packet and our sent timestamp\n");
 			return;
 		}
-		PRINTF("\n");
-		// local clock offset THETA = ((t2 - t1) + (t3 - t4)) / 2
-		PRINTF("THETA = ((%lu - %lu) + (%lu - %lu)) / 2\n",
-		(uip_ntohl(pkt->rectime.int_partl) - JAN_1970), ts.sec,
-		(uip_ntohl(pkt->xmttime.int_partl) - JAN_1970), tmpts.sec);
 		
-		sec_diff = (long) ((long)(uip_ntohl(pkt->rectime.int_partl) - JAN_1970 - ts.sec)
-		+ (long)(uip_ntohl(pkt->xmttime.int_partl) - JAN_1970 - tmpts.sec)) >> 1;
+		/* Compute local clock offset THETA = ((t2 - t1) + (t3 - t4)) / 2
+		 * only for seconds part.
+		 * If seconds offset is zero, compute nsec offset later.
+		 */
+		rects.sec = uip_htonl(pkt->rectime.int_partl) - JAN_1970;
+		xmtts.sec = uip_htonl(pkt->xmttime.int_partl) - JAN_1970;
 		
-		PRINTF("Local clock offset = %ld\n",  sec_diff);
+		PRINTF("SECONDS: org = %lu, rec = %lu, xmt = %lu, dst = %lu\n", ts.sec, rects.sec, xmtts.sec, dstts.sec); 
+		PRINTF("THETA = ((%lu - %lu) + (%lu - %lu + 1)) / 2\n", rects.sec, ts.sec, xmtts.sec, dstts.sec);
 		
-		if (sec_diff == 0)
+		adjts.sec = ((rects.sec - ts.sec) // TODO look at assembly for DIV vs. shift
+					+ (xmtts.sec - dstts.sec)) / 2; // dstts.sec + 1 = 0
+		
+		PRINTF("Local clock offset = %ld sec\n",  adjts.sec);
+		
+		if (adjts.sec == 0) // if seconds offset is zero calculate nsec offset
 		{
-			uint32_t xmf = uip_ntohl(pkt->xmttime.fractionl);
-			printf("we have to compute:  %" PRIu32 " * 1000000000 / %" PRIu32 "\n", xmf, 0xFFFFFFFF);
-			printf("XMF ntp = %" PRIx32 " = %" PRIu32 "\n", xmf, xmf);
+			rects.nsec = fractionl_to_nsec(uip_htonl(pkt->rectime.fractionl));
+			xmtts.nsec = fractionl_to_nsec(uip_htonl(pkt->xmttime.fractionl));
 			
-//#if 0 // float support
-			xmf = xmf * 1000000000.0 / 0xFFFFFFFF;
-			printf("XMF float = %" PRIu32 "\n", xmf);
+			PRINTF("THETA = ((%lu - %lu) + (%lu - %lu + 1)) / 2\n", rects.nsec, ts.nsec, xmtts.nsec, dstts.nsec);
 			
-//#elif 0
-			xmf = uip_ntohl(pkt->xmttime.fractionl);
-			/**xmf = xmf >> 16;
-			xmf = xmf * 10000;
-			xmf = xmf >> 16;
-			printf("xmf ntp = %" PRIx32 " = %" PRIu32 "\n", xmf, xmf);
-			xmf = xmf * 100000;*/
-			// or use >> 8 ? determine precison of clock
-			xmf = xmf >> 4;
-			xmf = xmf * 10;
-			xmf = xmf >> 4;
-			xmf = xmf * 10;
-			xmf = xmf >> 4;
-			xmf = xmf * 10;
-			xmf = xmf >> 4;
-			xmf = xmf * 10;
-			xmf = xmf >> 4;
-			xmf = xmf * 10;
-			xmf = xmf >> 4;
-			xmf = xmf * 10;
-			xmf = xmf >> 4;
-			xmf = xmf * 10;
-			xmf = xmf >> 4;
-			xmf = xmf * 100;
-			printf("XMF my = %" PRIu32 "\n", xmf);
-			
-//#elif 1 -- FASTER?
-			xmf = uip_ntohl(pkt->xmttime.fractionl);
-			asm("nop\n");
-			xmf = ((uint64_t)xmf * 1000000000) / 0xFFFFFFFF;
-			asm("nop\n");
-			printf("XMF 64 = %" PRIu32 "\n", xmf);
-//#endif			
-			
+			adjts.nsec = ((rects.nsec - ts.nsec) + (xmtts.sec - dstts.sec)) / 2; // TODO as above
+			PRINTF("Local clock offset = %ld nsec\n", (long)adjts.nsec); /// unsigned
 		}
 	}
 
 	/* Set or adjust local clock */
-    if (labs(sec_diff) > 5)
+    if (labs((long)adjts.sec) > 5) /// do this only IF difference > 36min use settime, otherwise adjtime
     {
-	/// do this only IF difference > 36min use settime, otherwise adjtime
 		PRINTF("Setting the time to xmttime from server\n");
 		clock_set_time(uip_ntohl(pkt->xmttime.int_partl) - JAN_1970);
 	}
 	else
 	{
-		PRINTF("Adjusting the time %hhd\n", (int8_t)sec_diff);
-		clock_adjust_time(sec_diff);
+		PRINTF("Adjusting the time for %ld and %ld\n", (long)adjts.sec, (long)adjts.nsec);
+		clock_adjust_time(&adjts);
 	}
   }
 }
@@ -217,13 +201,17 @@ tcpip_handler(void)
 static void
 timeout_handler(void)
 {
-	msg.status = MODE_CLIENT | (NTP_VERSION << 3) | LI_ALARM; ///LI_NOWARNING; - NOT SYNCHRONISED
+	msg.status = MODE_CLIENT | (NTP_VERSION << 3) | LI_ALARM;
 	
 	clock_get_time(&ts);
 	msg.xmttime.int_partl = uip_htonl(ts.sec + JAN_1970);
 	
 	PRINTF("Sending NTP packet to server ");
-	PRINT6ADDR(&udpconn->ripaddr); // PRINTLLADDR for ipv4
+#ifdef UIP_CONF_IPV6
+	PRINT6ADDR(&udpconn->ripaddr);
+#else
+	PRINTLLADDR(&udpconn->ripaddr);
+#endif /* UIP_CONF_IPV6 */
 	PRINTF("\n");
 	
 	uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
@@ -275,18 +263,18 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	msg.ppoll = TAU; // log2(poll_interval)
 	
 	// set clock precision - convert Hz to log2 - borrowed from OpenNTPD
-	int b = CLOCK_SECOND;// * (OCR2A + 1); // CLOCK_SECOND * OCR2A - HOW IS IT COMPILED?
+	int b = CLOCK_SECOND * (32768/8/CLOCK_CONF_SECOND);// * (OCR2A + 1); // CLOCK_SECOND * OCR2A
 	int a;
 	for (a = 0; b > 1; a--, b >>= 1)
 		{}
 	msg.precision = a;
 	
-#if 1 // initial setting of time 6s after startup
-	// wait for ip to settle
-	etimer_set(&et, 6*CLOCK_SECOND);
+#if 1 // initial setting of time after startup
+	// wait 6s for ip to settle
+	etimer_set(&et, 6 * CLOCK_SECOND);
 	PROCESS_WAIT_EVENT();
 	
-	// ask for time and wait for response
+	// ask for time
 	msg.refid = UIP_HTONL(0x494e4954); // INIT string in ASCII
 	timeout_handler();
 	msg.refid = 0;
