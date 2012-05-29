@@ -40,7 +40,8 @@ This approach does not fit for use with memory constrained systems.
 
 Chrony
 
-OpenNTPD - OpenBSD - secure, less robust, easy to configure
+OpenNTPD - OpenBSD - secure, less robust, easy to configure - for converting between NTP and local timestamps uses double
+data type and floating point arithmetic operations including division (util.c)
 	/*
 	 * Send out a random 64-bit number as our transmit time.  The NTP
 	 * server will copy said number into the originate field on the
@@ -59,6 +60,7 @@ dntpd - DragonflyBSD
 only sends seconds
 %wmsg.xmttime.int_partl = time(NULL) + JAN_1970;
 %wmsg.xmttime.fractionl = random();
+For converting between NTP and local timestamps uses division and modulo in convert.c.
 
 
 clockspeed

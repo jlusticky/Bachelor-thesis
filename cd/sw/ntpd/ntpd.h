@@ -46,14 +46,14 @@
 
 
 /*
- * NTP Packet sizes - borrowed from OpenNTPD 4.6
+ * NTP Packet sizes
  */
 #define	NTP_DIGESTSIZE		16
 #define	NTP_MSGSIZE_NOAUTH	48
 #define	NTP_MSGSIZE		(NTP_MSGSIZE_NOAUTH + 4 + NTP_DIGESTSIZE)
 
 /*
- * NTP structures - borrowed from OpenNTPD 4.6
+ * NTP structures
  */
 struct l_fixedpt {
 	uint32_t int_partl;
@@ -83,9 +83,8 @@ struct ntp_msg {
 };
 
 
-
 /*
- * Macros for packet - borrowed from DragonflyBSD's dntpd
+ * Macros for packet
  */
 
 /* Leap Second Codes (high order two bits) */
@@ -114,11 +113,11 @@ struct ntp_msg {
  * Convert between NTP and local timestamp
  */
 void
-ntp_to_ts(struct l_fixedpt *ntp, struct time_spec *ts)
+ntp_to_ts(const struct l_fixedpt *ntp, struct time_spec *ts)
 {
     ts->sec = ntp->int_partl - JAN_1970;
 
-	long nsec;
+	unsigned long nsec;
 	nsec = ntp->fractionl;
 #if 1 /* highest precision but slowest */
 	nsec = nsec >> 4;
