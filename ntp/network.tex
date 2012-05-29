@@ -22,6 +22,14 @@ $2^{-32}$ seconds (approx. 232 picoseconds)~\cite{rfc5905}.
 The short 32-bit timestamp includes a 16-bit unsigned seconds field
 and 16-bit fraction field.
 
+\begin{figure}
+	\centering
+	\includegraphics[width=13cm,keepaspectratio]{fig/ntp-timestamps.pdf}
+	\caption{Time formats used in NTP packet}
+	\label{fig:ntp-timestamps}
+	\bigskip
+\end{figure}
+
 Besides these two, there is one more NTP timestamp format - 128-bit NTP Date format.
 It includes a 64-bit signed seconds field and 64-bit fraction field.
 For convenience in mapping between formats,
@@ -37,75 +45,71 @@ requiring usage of NTP Date format.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=13cm,keepaspectratio]{fig/ntp-timestamps.pdf}
-	\caption{Time formats used in NTP packet}
-	\label{fig:ntp-timestamps}
-	\bigskip
-\end{figure}
-
-%! TODO
-Standard NTP packet structure without Autokey extension is shown on figure~\ref{fig:ntp-packet}.
-
-Leap Indicator (LI) is 2-bit integer warning of an impending leap
-second to be inserted or deleted in the last minute of the current
-month~\cite{rfc5905}.
-
-Version Number (VN) is 3-bit integer representing the NTP
-version number, currently 4.
-
-Mode 3-bit integer representing the mode...
-...In the unsymmetric mode the
-      client periodically sends an NTP message to the server, which then
-      responds within some interval.  Usually, the server simply
-      interchanges addresses and ports, fills in the required
-      information and sends the message right back. Servers operating in
-      the unsymmetric mode then need retain no state information between
-      client requests.
-% BROADCAST MODE - rfc1769
-
-Stratum is 8-bit integer representing the stratum as described in section~\ref{sec:ntp-topology}.
-If the Stratum field is 0, which implies unspecified or invalid, the
-Reference Identifier field can be used to convey messages useful for
-status reporting and access control.
-These are called Kiss-o'-Death (KoD)
-packets and the ASCII messages they convey are called kiss codes~\cite{rfc5905}.
-These codes are particularly used by server to tell the client to stop sending packets or to reduce
-its polling interval to that server.
-
-Poll is 8-bit signed integer representing the maximum interval between
-successive messages, in log2 seconds.
-Suggested default limits for minimum and maximum poll intervals are 6 and 10, respectively.
-
-Precision is 8-bit signed integer representing the precision of the
-system clock, in log2 seconds.
-For instance, a value of -18
-corresponds to a precision of about one microsecond. %! FALSE!
-The precision
-can be determined when the service first starts up as the minimum
-time of several iterations to read the system clock.
-   
-   
-   
-   Root Delay (rootdelay): Total round-trip delay to the reference
-   clock, in NTP short format.
-
-   Root Dispersion (rootdisp): Total dispersion to the reference clock,
-   in NTP short format.
-
-Reference ID (refid): 32-bit code identifying the particular server or reference clock.
-
-\begin{figure}
-	\centering
 	\includegraphics[width=9cm,keepaspectratio]{fig/ntp-packet.pdf}
 	\caption{Basic NTP packet structure by D. Mills}
 	\label{fig:ntp-packet}
 	\bigskip
 \end{figure}
 
+Standard NTP packet structure without extension fields and
+Autokey security protocol is shown on figure~\ref{fig:ntp-packet}.
+This structure is 48 bytes long and contains following fields:
+\begin{itemize}
+\item
+Leap Indicator is 2-bit integer warning of an impending leap
+second to be inserted or deleted in the last minute of the current
+month~\cite{rfc5905}.
+\item
+Version Number is 3-bit integer representing the NTP
+version number, currently~4.
+\item
+Mode is 3-bit integer representing protocol mode.
+This is the only field distinguish between server and client in NTP.
+In client-server communication model, the client sets this field to value 3 (client) in the request,
+and the server sets it to value 4 (server) in the reply.
+In broadcast communication model, the client sends no request
+and waits for a broadcast message from one or more servers.
+The server sets this field to value 5 (broadcast).
+Other modes are not used by SNTP servers and clients~\cite{rfc4330}.
+\item
+Stratum is 8-bit integer representing the stratum as described in section~\ref{sec:ntp-topology}.
+If the Stratum field is 0, which implies unspecified or invalid, the
+Reference Identifier field can be used to convey messages useful for
+status reporting and access control.
+These are called Kiss-o'-Death (KoD)
+packets and the ASCII messages they convey are called kiss codes~\cite{rfc5905}.
+\item
+Poll is 8-bit signed integer representing the maximum interval between
+successive messages, in log2 seconds.
+Suggested default limits for minimum and maximum poll intervals are 6 and 10, respectively~\cite{rfc5905}.
+\item
+Precision is 8-bit signed integer representing the precision of the
+system clock, in log2 seconds.
+For instance, a value of -20
+corresponds to a precision of about one microsecond ($2^{-20}$~s)~\cite{rfc5905}.
+\item
+Root Delay is total round-trip delay to the reference clock, in NTP short 32-bit format~\cite{rfc5905}.
+\item
+Root Dispersion is total dispersion to the reference clock, in NTP short 32-bit format~\cite{rfc5905}.
+\item
+Reference Identifier is 32-bit code identifying the particular server used for synchronisation
+or reference clock.
+For packet stratum 0, this is four-character ASCII string called kiss code.
+Kiss codes are particularly used by server to tell the client to stop sending packets or
+to increase its polling interval.
+For stratum 1, this is a four-octet, left-justified, zero-padded ASCII
+string assigned to the reference clock (e.g. "GPS" when synchronising against Global Position System clock).
+Above stratum 1, this is the reference identifier of the server used for synchronisation
+and can be used by client together with stratum field to detect loops in NTP hierarchy.
+If communicating over IPv4, the identifier is the IPv4 address.
+If communicating over IPv6, it is the first four octets of the MD5 hash of the IPv6 address~\cite{rfc5905}
+\item
+%!TODO
+TODO
+\end{itemize}
+
 Because Root dispersion and Root Delay fields do not need so big scope and precision,
 the short 32-bit format is used for them.
-Root dispersion express accumulated total dispersion from primary server
-and Root Delay express accumulated roundtrip delay via primary server~\cite{ntp-arch}.
 
 % RFC 1769
 The Originate Timestamp field is copied
@@ -120,7 +124,3 @@ The Originate Timestamp field is copied
 There exists approx. 232-picosecond interval, henceforth ignored, every 136 years when
 the 64-bit field will be zero, which by convention is interpreted as an invalid timestamp.
 %TODO
-
-Because of network latency the timestamp received will never be exactly corresponding to
-the current time.
-One of the main goals of NTP is to deal with the network latency~\cite{ntp-overview}.

@@ -2,17 +2,24 @@
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \section{Algorithms}
-As the figure~\ref{fig:ntp-packet} shows, there are four 64-bit long timestamps
-in NTP packet: Reference, Origin, Receive and Transmit timestamp.
+Because of network latency the timestamp received will never be exactly
+corresponding to the current time.
+One of the main goals of NTP is to deal with the network latency~\cite{ntp-overview}.
+
+As the figure~\ref{fig:ntp-packet} shows and section~\ref{sec:ntp-network} describes,
+there are three 64-bit long timestamps in NTP packet: Origin, Receive and Transmit Timestamp.
 %The Reference timestamp is when server was synchronised
 %! TODO ->
+Upon NTP packet arrival, the client determines another timestamp called
+Destination Timestamp~\cite{rfc5905}.
+
 Using these four timestamps, NTP client can compute
 the local clock offset which is given by $\theta = \frac{1}{2}[(t_2 - t_1) + (t_3 - t_4)]$,
-where $t_1$ is the time of the request packet transmission,
-$t_2$ is the time of the request packet reception,
-$t_3$ is the time of the response packet transmission and
-$t_4$ is the time of the response packet reception~\cite{ntp-algor,rfc5905}.
-%! t_4 is not packet XX
+where $t_1$ is the time of the request packet transmission (Origin Timestamp),
+$t_2$ is the time of the request packet reception (Receive Timestamp),
+$t_3$ is the time of the response packet transmission (Transmit Timestamp) and
+$t_4$ is the time of the response packet reception (Destination Timestamp)~\cite{ntp-algor,rfc5905}.
+
 %! figure
 
 %! communication with one server - RFC958
