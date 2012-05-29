@@ -112,13 +112,11 @@ struct ntp_msg {
 /*
  * Convert between NTP and local timestamp
  */
-void
-ntp_to_ts(const struct l_fixedpt *ntp, struct time_spec *ts)
+unsigned long
+fractionl_to_nsec(uint32_t fractionl)
 {
-    ts->sec = ntp->int_partl - JAN_1970;
-
 	unsigned long nsec;
-	nsec = ntp->fractionl;
+	nsec = fractionl;
 #if 1 /* highest precision but slowest */
 	nsec = nsec >> 4;
 	nsec = nsec * 10;
@@ -151,7 +149,14 @@ ntp_to_ts(const struct l_fixedpt *ntp, struct time_spec *ts)
 	nsec = nsec >> 16;
 	nsec = nsec * 100000;
 #endif
-	ts->nsec = nsec;
+	return nsec;
+}
+
+void
+ntp_to_ts(const struct l_fixedpt *ntp, struct time_spec *ts)
+{
+    ts->sec = ntp->int_partl - JAN_1970;
+	ts->nsec = fractionl_to_nsec(ntp->fractionl);
 }
 
 #endif /* __NTPD_H__ */
