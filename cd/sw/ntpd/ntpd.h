@@ -109,4 +109,50 @@ struct ntp_msg {
 #define	MODE_RES1	6	/* reserved for NTP control message */
 #define	MODE_RES2	7	/* reserved for private use */
 
+
+/*
+ * Convert between NTP and local timestamp
+ */
+void
+ntp_to_ts(struct l_fixedpt *ntp, struct time_spec *ts)
+{
+    ts->sec = ntp->int_partl - JAN_1970;
+
+	long nsec;
+	nsec = ntp->fractionl;
+#if 1 /* highest precision but slowest */
+	nsec = nsec >> 4;
+	nsec = nsec * 10;
+	nsec = nsec >> 4;
+	nsec = nsec * 10;
+	nsec = nsec >> 4;
+	nsec = nsec * 10;
+	nsec = nsec >> 4;
+	nsec = nsec * 10;
+	nsec = nsec >> 4;
+	nsec = nsec * 10;
+	nsec = nsec >> 4;
+	nsec = nsec * 10;
+	nsec = nsec >> 4;
+	nsec = nsec * 10;
+	nsec = nsec >> 4;
+	nsec = nsec * 100;
+#elif 0
+	nsec = nsec >> 8;
+	nsec = nsec * 100;
+	nsec = nsec >> 8;
+	nsec = nsec * 100;
+	nsec = nsec >> 8;
+	nsec = nsec * 100;
+	nsec = nsec >> 8;
+	nsec = nsec * 1000;
+#else /* lowest precision but fastest */
+	nsec = nsec >> 16;
+	nsec = nsec * 10000;
+	nsec = nsec >> 16;
+	nsec = nsec * 100000;
+#endif
+	ts->nsec = nsec;
+}
+
 #endif /* __NTPD_H__ */

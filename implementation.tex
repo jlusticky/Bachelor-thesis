@@ -105,7 +105,7 @@ void
 clock_get_time(struct time_spec *ts)
 {
   ts->sec = boottime + seconds;
-  ts->nsec = (unsigned long) ((1000000000 / CLOCK_SECOND) * scount);
+  ts->nsec = (1000000000 / CLOCK_SECOND) * scount;
 }
 \end{lstlisting}
 %The interface for getting the time simply adds value when system was booted...
@@ -120,12 +120,6 @@ The timestamp provided is therefore not exact.
 However there is no correction to remove this inaccuracy,
 instead the application must be aware that the timestamp is not exactly accurate.
 
-
-\section{NTP values}
-Unlike the RFC 5905~\cite{rfc5905} shows, there are no 64 bit values. %! RFC - A.4. Kernel System Clock Interface
-No floating point numbers - library.
-Division of unsigned integer number by 2 is automatically translated by compiler to logical right shift,
-making it fast operation.
 
 \section{NTP client implementation}
 Structures representing NTP message were borrowed from OpenNTPD NTP Unix daemon.
@@ -170,7 +164,20 @@ But as NTP Era 0 ends 2036 the NTP client code must be changed in the future any
 
 %! TODO
 
-\section{Communication}
+\section{NTP values and converts}
+Unlike the RFC 5905~\cite{rfc5905} shows, there are no 64 bit values. %! RFC - A.4. Kernel System Clock Interface
+No floating point numbers - library.
+Division of unsigned integer number by 2 is automatically translated by compiler to logical right shift,
+making it fast operation.
+
+Converting between NTP and local timestamps requires floating point unit or 64-bit numbers.
+according to output from avr-size tool, using 64-int number for conversion
+uses 4~330 bytes more in program section of resulted binary file 
+and simulated floating point operation takes 3~474 bytes more
+than algorithm developed?
+
+
+\section{Network communication}
 % IEEE 802.15.4
 %as RFC~4944 written by 6lowpan working group of IETF
 %made the underlaying IEEE 802.15.4 layer
@@ -185,8 +192,6 @@ But as NTP Era 0 ends 2036 the NTP client code must be changed in the future any
 
 % There is no IPv4 support...
 
-
-\section{Network communication over UDP transport layer}
 The uIP packet buffer is accessed through
 the uip\_buf array and is used to hold incoming and outgoing packets.
 The device driver should place incoming data into this buffer.
