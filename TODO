@@ -52,3 +52,8 @@ FAQ-kernel discipline
 ----
 try broadcast - determine mode from incomming packet
 thus, the time is always a monotonically increasing function.
+----
+text
+measurement - graf + determine adjustments
+another platform
+compare my algo vs. real results
