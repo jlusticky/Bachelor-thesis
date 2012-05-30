@@ -81,12 +81,14 @@ Such time representation will wrap around in year 2038 and is facing the year 20
 %% CITE
 
 In case of nanoseconds part, the 32-bit signed long value was chosen because
-32-bit signed long type can express values from -$2^{31}$ (-2~147~483~648)
-to $2^{31}$-1 (2~147~483~647), and one second has 1~000~000~000 nanoseconds.
+one second has 1~000~000~000 nanoseconds and
+32-bit signed long type must be able to express values from -$2^{31}$-1 (-2~147~483~647)
+to $2^{31}$-1 (2~147~483~647)~\cite{c99}.
 Such representation will therefore never wrap around.
 %% Apart from?...
 Apart from that, there is also need of negative values for adjusting local clock.
-The nanosecond precision was chosen as modern systems also aim towards this precision~\cite{posix,ntp-precision} and
+The nanosecond precision was chosen as modern systems also aim towards this
+precision~\cite{posix,ntp-precision} and
 the microsecond precision would also require at least 32-bit data type -
 one second has 1~000~000 microseconds, which is more than maximum expressible value of unsigned 16-bit
 data type $2^{16}$-1 (65~535).
@@ -97,7 +99,7 @@ But as ISO C99 standard states, the maximum value for an object of type signed l
 shall be greater or equal $2^{31}$-1 (2~147~483~647)~\cite{c99}.
 %% LOOK AT C99
 This in fact results in at least 32-bit variable unless the compilation setting is changed.
-Next to this, as the already presented variable {\it{seconds}} is also of unsigned long type,
+Next to this, as the already presented variable {\it{seconds}} is of unsigned long type,
 the value {\it{sec}} in {\it{time\_spec}} structure and {\it{boottime}}
 shall be of the same data width as arithmetic operations are made on them.
 
