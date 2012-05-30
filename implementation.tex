@@ -63,34 +63,46 @@ was implemented for expressing exact time value.
 However name was changed to {\it{time\_spec}} to avoid collision with existing POSIX-compliant systems.
 \begin{lstlisting}
 struct time_spec {
-  unsigned long sec;
-  unsigned long nsec;
+  long sec;
+  long nsec;
 };
 \end{lstlisting}
-The structure representing time specification uses unsigned long values.
+The structure representing time specification uses signed long values.
 The value 0 seconds and 0 nanoseconds is equal to Unix prime epoch (1st January 1970).
-In case of seconds part, the 32-bit unsigned long value was chosen because the existing value
-{\it{seconds}}, representing uptime in Contiki, is of the same type.
-Such time representation will wrap around in year 2106.
-In case of nanoseconds part, the 32-bit unsigned long value was chosen because there is no need
-for negative values.
-As the 32-bit unsigned long type can express values from 0 to $2^{32}$-1 (4~294~967~295),
-and one second has 1~000~000~000 nanoseconds, this will never wrap around.
-Even negative results of subtraction work after casting the result to singed type
-because 1~000~000~000 is still less than maximum expressible value of signed long type $2^{31}$-1 (2~147~483~647).
+In case of seconds part, the 32-bit signed long value was chosen because
+it can
+
+convencely
+
+represent both values real-time and also values for local clock adjustement (negative).
+
+The existing value {\it{seconds}}, representing uptime in Contiki, is of the unsigned long type.
+Such time representation will wrap around in year 2038 and is facing the year 2038 problem.
+%% CITE
+
+In case of nanoseconds part, the 32-bit signed long value was chosen because
+32-bit signed long type can express values from -$2^{31}$ (-2~147~483~648)
+to $2^{31}$-1 (2~147~483~647), and one second has 1~000~000~000 nanoseconds.
+Such representation will therefore never wrap around.
+%% Apart from?...
+Apart from that, there is also need of negative values for adjusting local clock.
 The nanosecond precision was chosen as modern systems also aim towards this precision~\cite{posix,ntp-precision} and
 the microsecond precision would also require at least 32-bit data type -
-one second has 1~000~000 microseconds, which is more than maximum expressible value of signed 16-bit
-type $2^{16}$ (65~536).
+one second has 1~000~000 microseconds, which is more than maximum expressible value of unsigned 16-bit
+data type $2^{16}$-1 (65~535).
 
-It should be noted that unsigned long data type does not have to always result in 32-bit variable -
+It should be noted that signed long data type does not have to always result in 32-bit variable -
 it is up to compiler what data width it chooses for each data type.
-But as ISO C99 standard states, the maximum value for an object of type unsigned long
-shall be greater or equal $2^{32}$-1 (4~294~967~295)~\cite{c99}.
+But as ISO C99 standard states, the maximum value for an object of type signed long
+shall be greater or equal $2^{31}$-1 (2~147~483~647)~\cite{c99}.
+%% LOOK AT C99
 This in fact results in at least 32-bit variable unless the compilation setting is changed.
 Next to this, as the already presented variable {\it{seconds}} is also of unsigned long type,
 the value {\it{sec}} in {\it{time\_spec}} structure and {\it{boottime}}
-shall be of the same type as arithmetic operations are made on them.
+shall be of the same data width as arithmetic operations are made on them.
+
+Usage of unsigned data type would prolong the wrap around to year 2106, however will disable use of negative values
+needed for adjusting local clock.
 
 \begin{lstlisting}
 void
@@ -110,7 +122,7 @@ clock_get_time(struct time_spec *ts)
 \end{lstlisting}
 %The interface for getting the time simply adds value when system was booted...
 E.g. assuming the code is compiled using GCC version 4.3.5,
-multiplication of two unsigned long variable takes 33 instructions including {\it{call}} and {\it{ret}}
+multiplication of two 32-bit variables takes 33 instructions including {\it{call}} and {\it{ret}}
 instructions for entering and returning from the {\it{\_\_mulsi3}} routine, which computes
 the result of multiplication.
 %avr-objdump
@@ -163,6 +175,10 @@ between {\it{ts.sec}} and {\it{tmpts.sec}} greater than $2^{31}$-1 (2~147~483~64
 But as NTP Era 0 ends 2036 the NTP client code must be changed in the future anyway.
 
 %! TODO
+
+%Adjusting time
+%1/128/32 = 0.000244141
+%0.000244141x32x127+0.000244141x31 == smallest possible adjustement == 244us
 
 \section{NTP values and converts}
 Unlike the RFC 5905~\cite{rfc5905} shows, there are no 64 bit values. %! RFC - A.4. Kernel System Clock Interface

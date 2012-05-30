@@ -214,6 +214,8 @@ timeout_handler(void)
 #endif /* UIP_CONF_IPV6 */
 	PRINTF("\n");
 	
+	PRINTF("Sent timestamp: %ld sec %ld nsec\n", ts.sec, ts.nsec);
+	
 	uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
 }
 /*---------------------------------------------------------------------------*/
