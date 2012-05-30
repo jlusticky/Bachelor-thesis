@@ -164,8 +164,8 @@ tcpip_handler(void)
 		rects.sec = uip_htonl(pkt->rectime.int_partl) - JAN_1970;
 		xmtts.sec = uip_htonl(pkt->xmttime.int_partl) - JAN_1970;
 		
-		PRINTF("SECONDS: org = %lu, rec = %lu, xmt = %lu, dst = %lu\n", ts.sec, rects.sec, xmtts.sec, dstts.sec); 
-		PRINTF("THETA = ((%lu - %lu) + (%lu - %lu + 1)) / 2\n", rects.sec, ts.sec, xmtts.sec, dstts.sec);
+		PRINTF("SECONDS: org = %ld, rec = %ld, xmt = %ld, dst = %lu\n", ts.sec, rects.sec, xmtts.sec, dstts.sec); 
+		PRINTF("THETA = ((%ld - %ld) + (%ld - %ld)) / 2\n", rects.sec, ts.sec, xmtts.sec, dstts.sec);
 		
 		adjts.sec = ((rects.sec - ts.sec) // TODO look at assembly for DIV vs. shift
 					+ (xmtts.sec - dstts.sec)) / 2; // dstts.sec + 1 = 0
@@ -177,22 +177,22 @@ tcpip_handler(void)
 			rects.nsec = fractionl_to_nsec(uip_htonl(pkt->rectime.fractionl));
 			xmtts.nsec = fractionl_to_nsec(uip_htonl(pkt->xmttime.fractionl));
 			
-			PRINTF("THETA = ((%lu - %lu) + (%lu - %lu + 1)) / 2\n", rects.nsec, ts.nsec, xmtts.nsec, dstts.nsec);
+			PRINTF("THETA = ((%ld - %ld) + (%ld - %ld)) / 2\n", rects.nsec, ts.nsec, xmtts.nsec, dstts.nsec);
 			
-			adjts.nsec = ((rects.nsec - ts.nsec) + (xmtts.sec - dstts.sec)) / 2; // TODO as above
-			PRINTF("Local clock offset = %ld nsec\n", (long)adjts.nsec); /// unsigned
+			adjts.nsec = ((rects.nsec - ts.nsec) + (xmtts.nsec - dstts.nsec)) / 2; // TODO as above
+			PRINTF("Local clock offset = %ld nsec\n", adjts.nsec);
 		}
 	}
 
 	/* Set or adjust local clock */
-    if (labs((long)adjts.sec) > 5) /// do this only IF difference > 36min use settime, otherwise adjtime
+    if (labs(adjts.sec) > 5) /// do this only IF difference > 36min use settime, otherwise adjtime
     {
 		PRINTF("Setting the time to xmttime from server\n");
 		clock_set_time(uip_ntohl(pkt->xmttime.int_partl) - JAN_1970);
 	}
 	else
 	{
-		PRINTF("Adjusting the time for %ld and %ld\n", (long)adjts.sec, (long)adjts.nsec);
+		PRINTF("Adjusting the time for %ld and %ld\n", adjts.sec, adjts.nsec);
 		clock_adjust_time(&adjts);
 	}
   }
