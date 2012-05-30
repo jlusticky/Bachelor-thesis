@@ -34,12 +34,8 @@ describe ISR clock and timer interface on AVR
 read RFCs
 generate and read pdf docs
 citation for embedded systems - one binary
-contiki virtual - cooja
-look to RS232 output in AVR Studio
 
 dntpd - ntpreq.c
-
-COOJA?
 
 ipv4 - minimal-net platform and native
 
