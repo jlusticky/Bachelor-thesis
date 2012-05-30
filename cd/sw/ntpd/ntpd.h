@@ -35,6 +35,9 @@
 #ifndef __NTPD_H__
 #define __NTPD_H__
 
+#include "sys/clock.h"
+#include <inttypes.h>
+
 /*
  * Numbers and conversions according to RFC 5905
  */
