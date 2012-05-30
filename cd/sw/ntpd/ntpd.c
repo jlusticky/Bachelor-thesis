@@ -92,7 +92,7 @@ tcpip_handler(void)
   struct time_spec xmtts; // t3
   struct time_spec dstts; // t4
   
-  /* timestamp for local clock adjustement */
+  /* timestamp for local clock adjustment */
   struct time_spec adjts;
 
   if(uip_newdata())

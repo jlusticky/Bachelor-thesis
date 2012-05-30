@@ -74,7 +74,7 @@ it can
 
 convencely
 
-represent both values real-time and also values for local clock adjustement (negative).
+represent both values real-time and also values for local clock adjustment (negative).
 
 The existing value {\it{seconds}}, representing uptime in Contiki, is of the unsigned long type.
 Such time representation will wrap around in year 2038 and is facing the year 2038 problem.
@@ -85,8 +85,7 @@ one second has 1~000~000~000 nanoseconds and
 32-bit signed long type must be able to express values from -$2^{31}$-1 (-2~147~483~647)
 to $2^{31}$-1 (2~147~483~647)~\cite{c99}.
 Such representation will therefore never wrap around.
-%% Apart from?...
-Apart from that, there is also need of negative values for adjusting local clock.
+Apart from that, there is also need of negative values for local clock adjustment.
 The nanosecond precision was chosen as modern systems also aim towards this
 precision~\cite{posix,ntp-precision} and
 the microsecond precision would also require at least 32-bit data type -
@@ -97,10 +96,9 @@ It should be noted that signed long data type does not have to always result in 
 it is up to compiler what data width it chooses for each data type.
 But as ISO C99 standard states, the maximum value for an object of type signed long
 shall be greater or equal $2^{31}$-1 (2~147~483~647)~\cite{c99}.
-%% LOOK AT C99
 This in fact results in at least 32-bit variable unless the compilation setting is changed.
 Next to this, as the already presented variable {\it{seconds}} is of unsigned long type,
-the value {\it{sec}} in {\it{time\_spec}} structure and {\it{boottime}}
+the value {\it{sec}} in {\it{time\_spec}} structure %and {\it{boottime}}
 shall be of the same data width as arithmetic operations are made on them.
 
 Usage of unsigned data type would prolong the wrap around to year 2106, however will disable use of negative values
@@ -180,7 +178,7 @@ But as NTP Era 0 ends 2036 the NTP client code must be changed in the future any
 
 %Adjusting time
 %1/128/32 = 0.000244141
-%0.000244141x32x127+0.000244141x31 == smallest possible adjustement == 244us
+%0.000244141x32x127+0.000244141x31 == smallest possible adjustment == 244us
 
 \section{NTP values and converts}
 Unlike the RFC 5905~\cite{rfc5905} shows, there are no 64 bit values. %! RFC - A.4. Kernel System Clock Interface
