@@ -31,6 +31,7 @@ and the process control block remembers the actual state of execution of this fu
 in the same way as the local continuation works by Protothreads.
 Processes are therefore running quasi-parallely in Contiki.
 
+\bigskip
 \begin{lstlisting}[caption=Process control block in Contiki OS]
 struct process {
 	struct process *next;
@@ -40,6 +41,7 @@ struct process {
 	unsigned char state, needspoll;
 	};
 \end{lstlisting}
+\bigskip
 
 Process control block is not declared or defined directly,
 but through the {\it{PROCESS()}} macro.
