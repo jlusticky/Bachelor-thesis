@@ -20,8 +20,8 @@ contiki/timers.tex - work in progress
 ntp.tex - DONE
 ntp/topology.tex - DONE
 ntp/time.tex - DONE + vyhodit?
-ntp/network.tex - work in progress
-ntp/algorithms.tex
+ntp/network.tex - DONE + broadcast
+ntp/algorithms.tex - work in progress
 
 Tasks
 =====
