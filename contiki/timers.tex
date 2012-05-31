@@ -10,10 +10,9 @@ An application must manually check if its timers have expired - this is not done
 
 Contiki has one clock module and a set of timer modules: timer, stimer, ctimer, etimer, and rtimer~\cite{contiki-wiki-timers}.
 The clock module provides functionality to handle the system time and also to block the CPU for short time periods.
-The timer modules are implemented with the functionality of the clock module as base~\cite{contiki-wiki-timers}.
+The timer modules are implemented with the functionality of the clock module as a base~\cite{contiki-wiki-timers}.
 
 The timer and stimer modules provides the simplest form of timers and are used to check if a time period has passed.
-The applications need to ask the timers if they have expired.
 The difference between these two is the resolution of time -
 timers use system clock ticks, whose value is incremented when interrupt from hardware clock occurs,
 while stimers use seconds to offer much longer time periods~\cite{contiki-wiki-timers}.
