@@ -1,15 +1,13 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
-\section{Algorithms}
-Because of network latency the timestamp received will never be exactly
+\section{Algorithms}\label{sec:ntp-algorithms}
+Because of network latency the received Transmit Timestamp will never be exactly
 corresponding to the current time.
 One of the main goals of NTP is to deal with the network latency~\cite{ntp-overview}.
 
 As described in section~\ref{sec:ntp-network},
-there are three 64-bit long timestamps in NTP packet: Origin, Receive and Transmit Timestamp.
-%The Reference timestamp is when server was synchronised
-%! TODO ->
+there are following 64-bit long timestamps in NTP packet: Origin, Receive and Transmit Timestamp.
 Upon NTP packet arrival, the client determines another timestamp called
 Destination Timestamp~\cite{rfc5905}.
 
