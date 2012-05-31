@@ -15,7 +15,7 @@ contiki.tex - DONE
 contiki/protothreads.tex - DONE
 contiki/uip.tex - DONE
 contiki/kernel.tex - DONE + power-save?
-contiki/timers.tex - WIP + power-save?
+contiki/timers.tex - DONE + power-save?
 
 ntp.tex - DONE
 ntp/topology.tex - DONE
