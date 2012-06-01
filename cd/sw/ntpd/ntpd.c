@@ -44,7 +44,7 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
-#define DEBUG DEBUG_PRINT
+//#define DEBUG DEBUG_PRINT
 #include "net/uip-debug.h"
 
 
@@ -136,17 +136,12 @@ tcpip_handler(void)
     adjts.nsec = 0;
     if ((pkt->status & MODEMASK) == MODE_BROADCAST) // in broadcast mode set time to xmttime
     {
-	    /** Substract and cast to signed type.
-	     * This will work until 2038 when wrap around can occur,
-	     * but as NTP Era 0 ends 2036 this code must be in the future changed anyway.
-	     */
 	    // local clock offset THETA = t3 - t4
 	    adjts.sec = (uip_ntohl(pkt->xmttime.int_partl) - JAN_1970) - dstts.sec;
 	    
 	    if (adjts.sec == 0) // if seconds are the same calculate nsec offset
 	    {
-			///uip_ntohl(pkt->xmttime.fractionl);
-			///adjts.nsec =
+			adjts.nsec = fractionl_to_nsec(uip_htonl(pkt->xmttime.fractionl)) - dstts.nsec;
 		}
 	}
 	else // in client-server mode calculate local clock offset
@@ -192,7 +187,7 @@ tcpip_handler(void)
 	}
 	else
 	{
-		PRINTF("Adjusting the time for %ld and %ld\n", adjts.sec, adjts.nsec);
+		printf("Adjusting the time for %ld and %ld\n", adjts.sec, adjts.nsec);
 		clock_adjust_time(&adjts);
 	}
   }
