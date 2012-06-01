@@ -50,8 +50,8 @@
 
 // error if remote NTP server not defined in Makefile
 #ifndef REMOTE_HOST
-/// TODO : broadcast mode
-	#error "No REMOTE_HOST defined in Makefile!"
+/// TODO : broadcast mode - move to assigning addresses
+	#warning "No REMOTE_HOST defined in Makefile - only broadcast mode will work!"
 #endif
 
 // change ports to non-standard values - NTP_PORT is defined in ntpd.h
@@ -77,8 +77,6 @@ struct time_spec ts;
 #define SEND_INTERVAL POLL_INTERVAL * CLOCK_SECOND
 
 static struct uip_udp_conn *udpconn;
-
-static void timeout_handler(void);
 
 /*---------------------------------------------------------------------------*/
 static void
@@ -148,7 +146,7 @@ tcpip_handler(void)
 	{
 		if (ts.sec != (uip_ntohl(pkt->orgtime.int_partl) - JAN_1970))
 		{
-			PRINTF("Orgtime mismatch between received NTP packet and our sent timestamp\n");
+			PRINTF("Orgtime mismatch between received NTP packet and timestamp sent by us\n");
 			return;
 		}
 		
