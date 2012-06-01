@@ -14,14 +14,14 @@ This timestamp is represented as T4 on figure~\ref{fig:ntp-client-server}
 and is not part of NTP packet structure.
 
 Using these four timestamps, NTP client can compute
-the local clock offset which is given by $\theta = \frac{1}{2}[(T_2 - T_1) + (T_3 - T_4)]$,
-where $T_1$ is the time of the request packet transmission (Origin Timestamp),
-$T_2$ is the time of the request packet reception (Receive Timestamp),
-$T_3$ is the time of the response packet transmission (Transmit Timestamp) and
-$T_4$ is the time of the response packet reception (Destination Timestamp)~\cite{ntp-algor,rfc5905}.
+the local clock offset which is given by $\theta = \frac{1}{2}[(t_2 - t_1) + (t_3 - t_4)]$,
+where $t_1$ is the time of the request packet transmission (Origin Timestamp),
+$t_2$ is the time of the request packet reception (Receive Timestamp),
+$t_3$ is the time of the response packet transmission (Transmit Timestamp) and
+$t_4$ is the time of the response packet reception (Destination Timestamp)~\cite{ntp-algor,rfc5905}.
 The implicit assumption in the above is that one-way delay is
 statistically half of round-trip delay~\cite{rfc5905},
-which is given by $\delta = (T_4 - T_1) - (T_3 - T_2)$.
+which is given by $\delta = (t_4 - t_1) - (t_3 - t_2)$.
 
 When computing result from more servers the intersection algorithms is used
 for selecting the possible most exact timestamp received from various servers~\cite{rfc5905}.
