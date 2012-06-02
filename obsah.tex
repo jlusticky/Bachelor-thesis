@@ -45,3 +45,17 @@ Network Time Protocol version~4 and design and implementation of NTP client for 
 %! finish
 \chapter{Conclusion}
 The implemented clock interface and NTP client fits to Contiki OS...
+
+Future work:
+It is useful to provide an initial volley where the client operating in
+client mode exchanges several packets with the server, so as to
+calibrate the propagation delay and to run the Autokey security
+protocol, after which the client reverts to broadcast client mode~\cite{rfc5905}.
+
+Refid~\cite{rfc5905}?? - not necessary
+
+Ability to communicate with more servers. Requires clock selection algorithms.
+
+Advanced clock discipline algorithms -
+The clock discipline process is a system process that controls the
+time and frequency of the system clock~\cite{rfc5905},
