@@ -50,7 +50,7 @@
 
 // error if remote NTP server not defined in Makefile
 #ifndef REMOTE_HOST
-/// TODO : broadcast mode - move to assigning addresses
+/// TODO : broadcast mode - move to assigning addresses + remove TAU and POLL INTERVAL
 	#warning "No REMOTE_HOST defined in Makefile - only broadcast mode will work!"
 #endif
 
