@@ -192,6 +192,17 @@ uses 4~330 bytes more in program section of resulted binary file
 and simulated floating point operation takes 3~474 bytes more
 than algorithm developed?
 
+%
+% NEGATIVE result for the first time
+In some scenarios where the initial frequency offset of the client is
+  relatively large and the actual propagation time small, it is
+   possible for the delay computation to become negative.  For instance,
+   if the frequency difference is 100 ppm and the interval T4-T1 is 64
+   s, the apparent delay is -6.4 ms.  Since negative values are
+   misleading in subsequent computations, the value of delta should be
+   clamped not less than s.rho, where s.rho is the system precision
+   described in Section 11.1, expressed in seconds~\rfc{5905}.
+%
 
 \section{Network communication}
 % IEEE 802.15.4
