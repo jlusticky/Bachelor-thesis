@@ -33,3 +33,13 @@ kernel/sys.c - sys\_time() - CURRENT\_TIME returned
 Older x86 processors used an interrupt mechanism to switch from
 user-space to kernel-space, but new x86 processors provide instructions
 that optimize this transition (using sysenter and sysexit instructions)~\cite{ibm-linux-system-calls}.
+
+
+TICK - http://www.ntp.org/ntpfaq/NTP-s-sw-clocks-tick.htm
+
+
+- software:
+The Kernel Discipline =  kernel clock model RFC 1589
+
+However, some clock implementations do not allow small corrections to be applied to the system clock, and there is no standard interface to monitor the system clock's quality.
+=> divide problem (in RFC)
