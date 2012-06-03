@@ -44,6 +44,16 @@ In year 19xx /, Starting with Intel 386,
 Intel introduced
 Programmable Interrupt Controller (PIT) Intel 8253 and 8254 - 3 counters (counter 0 interrupt to OS)
 
+The problem with this device is that it only has
+8bit bus-width, so reading a 16 bit timestamp takes
+3 I/O operations: one to latch the count in an inter-
+nal register, and two to read the high and low parts
+of that register respectively~\cite{timecounters}.
+Obviously, on multi-CPU systems this cannot be
+done without some kind of locking mechanism
+preventing the other CPUs from trying to do the
+same thing at the same time~\cite{timecounters}.
+
 
 Used by historic versions of Linux
 => read initial time from RTC, setup PIT and interrupts (IRQ 0, INT 8), increment jiffies on every interrupt, provide application resolution of jiffies

@@ -26,7 +26,6 @@ hardware.tex - work in progress
 Tasks
 =====
 ?documentation for avr atmega1284p - 3timers and their usage
-study clock interface on POSIX systems - FreeBSD paper <- citation
 ?study clock hardware on x86 - hpet
 
 describe ISR clock and timer interface on AVR
