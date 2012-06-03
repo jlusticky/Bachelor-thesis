@@ -21,6 +21,8 @@ ntp/time.tex - DONE + vyhodit?
 ntp/network.tex - DONE + broadcast
 ntp/algorithms.tex - DONE
 
+hardware.tex - work in progress
+
 Tasks
 =====
 ?documentation for avr atmega1284p - 3timers and their usage
