@@ -1,6 +1,5 @@
 Thesis
 ======
-NTP - algorithms + history
 Timers
 Clock - figures
 Use more BOOKs not only MISC in citations
@@ -21,7 +20,7 @@ ntp.tex - DONE
 ntp/topology.tex - DONE
 ntp/time.tex - DONE + vyhodit?
 ntp/network.tex - DONE + broadcast
-ntp/algorithms.tex - estimates get from RFC
+ntp/algorithms.tex - DONE
 
 Tasks
 =====
@@ -43,8 +42,6 @@ try new dir layout + more processes
 document uip - app has to act on incomming data, overwrite
 ---
 adjtime - wip
-----
-FAQ-kernel discipline
 ----
 try broadcast - determine mode from incomming packet
 thus, the time is always a monotonically increasing function.
