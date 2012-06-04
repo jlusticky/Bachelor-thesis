@@ -6,7 +6,7 @@
 
 For implementation of a reasonably useful NTP client
 operating system must meet conditions listed in appendix~\ref{app:requirements}.
-The main problem for NTP client implementation in Contiki is a total
+The main problem for NTP client implementation in Contiki is total
 lack of time support.
 Not only no common interface availability but also
 almost no platform-specific code has been implemented towards time support yet.
@@ -31,7 +31,7 @@ Specific implementations of this common interface are located in {\it{/cpu}} dir
 The interface provides call for initialising CPU's clock system - {\it{clock\_init}}, that is automatically called during
 boot sequence of Contiki.
 The goal of the {\it{clock\_init}} call is to set up
-appropriate timer/counter registers and interrupt service routines.
+appropriate counter registers and interrupt service routines. %! TODO .. as described in chapter..
 On AVR CPU this call is implemented as C macro which evaluates to specific setup code for each CPU
 when compiling.
 The setup code is not common to all CPUs because of differences among them - e.g. there are usually
@@ -62,85 +62,7 @@ FREQ = 32768/8 / 33
 Each TCNT2 increment is $1/128*32 s  approx= 0,000244 s$
 2,44ms minimum clock slew
 
-
-\section{Operating system clock interface}
-There is no way of setting the time in Contiki OS.
-The interface for setting, getting and adjusting time was developed in this thesis.
-
-The structure similar to POSIX {\it{timespec}} structure (described in section~\ref{sec:others-posix})
-was implemented for expressing exact time value.
-However name was changed to {\it{time\_spec}} to avoid collision with existing POSIX-compliant systems.
-\begin{lstlisting}
-struct time_spec {
-  long sec;
-  long nsec;
-};
-\end{lstlisting}
-The structure representing time specification uses signed long values.
-The value 0 seconds and 0 nanoseconds is equal to Unix prime epoch (1st January 1970).
-In case of seconds part, the 32-bit signed long value was chosen because
-it can
-
-convencely
-
-represent both values real-time and also values for local clock adjustment (negative).
-
-The existing value {\it{seconds}}, representing uptime in Contiki, is of the unsigned long type.
-Such time representation will wrap around in year 2038 and is facing the year 2038 problem.
-%% CITE
-
-In case of nanoseconds part, the 32-bit signed long value was chosen because
-one second has 1~000~000~000 nanoseconds and
-32-bit signed long type must be able to express values from -$2^{31}$-1 (-2~147~483~647)
-to $2^{31}$-1 (2~147~483~647)~\cite{c99}.
-Such representation will therefore never wrap around.
-Apart from that, there is also need of negative values for local clock adjustment.
-The nanosecond precision was chosen as modern systems also aim towards this
-precision~\cite{posix,ntp-precision} and
-the microsecond precision would also require at least 32-bit data type -
-one second has 1~000~000 microseconds, which is more than maximum expressible value of unsigned 16-bit
-data type $2^{16}$-1 (65~535).
-
-It should be noted that signed long data type does not have to always result in 32-bit variable -
-it is up to compiler what data width it chooses for each data type.
-But as ISO C99 standard states, the maximum value for an object of type signed long
-shall be greater or equal $2^{31}$-1 (2~147~483~647)~\cite{c99}.
-This in fact results in at least 32-bit variable unless the compilation setting is changed.
-Next to this, as the already presented variable {\it{seconds}} is of unsigned long type,
-the value {\it{sec}} in {\it{time\_spec}} structure %and {\it{boottime}}
-shall be of the same data width as arithmetic operations are made on them.
-
-Usage of unsigned data type would prolong the wrap around to year 2106, however will disable use of negative values
-needed for adjusting local clock.
-
-\begin{lstlisting}
-void
-clock_set_time(unsigned long sec)
-{
-  boottime = sec - seconds;
-}
-\end{lstlisting}
-
-\begin{lstlisting}
-void
-clock_get_time(struct time_spec *ts)
-{
-  ts->sec = boottime + seconds;
-  ts->nsec = (1000000000 / CLOCK_SECOND) * scount;
-}
-\end{lstlisting}
-%The interface for getting the time simply adds value when system was booted...
-E.g. assuming the code is compiled using GCC version 4.3.5,
-multiplication of two 32-bit variables takes 33 instructions including {\it{call}} and {\it{ret}}
-instructions for entering and returning from the {\it{\_\_mulsi3}} routine, which computes
-the result of multiplication.
-%avr-objdump
-According to AVR Instruction Set manual~\cite{avr-instruction-set} this results in 48 clock cycles overhead,
-which takes 3~000 nanoseconds assuming 16MHz CPU clock.
-The timestamp provided is therefore not exact.
-However there is no correction to remove this inaccuracy,
-instead the application must be aware that the timestamp is not exactly accurate.
-
+\input{implementation/interface.tex}
 
 \section{NTP client implementation}
 Structures representing NTP message were borrowed from OpenNTPD NTP Unix daemon.
