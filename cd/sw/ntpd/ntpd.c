@@ -58,11 +58,6 @@
 #define REMOTE_PORT NTP_PORT
 #define LOCAL_PORT NTP_PORT
 
-
-// Pointer to a single global uIP buffer for packets
-// UIP_LLH_LEN is Lower-Layer-Header Length (14 for ethernet)
-#define UIP_IP_BUF   ((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])
-
 static struct ntp_msg msg;
 
 struct time_spec ts;

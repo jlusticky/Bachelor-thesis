@@ -50,8 +50,11 @@ This is however enough for implementing a reasonable time interface and using it
 %!!AVR
 
 Adjusting time - COMPARE\_REGISTER = 31 => 128Hz => 1s = 1s
-COMPARE\_REGISTER = 31 => ca132.129Hz => 1s = ca1.032258s
-COMPARE\_REGISTER = 33 => 124.12per => 1s = 0.96p
+FREQ = 32768/8 / 32
+COMPARE\_REGISTER = 30 => ca132.129Hz => 1s = ca1.032258s
+FREQ = 32768/8 / 31
+COMPARE\_REGISTER = 32 => 124.12per => 1s = 0.96p
+FREQ = 32768/8 / 33
 
 => fastest adjust is 0,03s / s
 
