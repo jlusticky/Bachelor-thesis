@@ -50,3 +50,6 @@ text
 measurement - graf + determine adjustments
 another platform
 compare my algo vs. real results
+----
+DTS - Digital Time Service - rfc1305
+adjust treshold - max we can adjust 32767*(1/128/32) with int16_t
