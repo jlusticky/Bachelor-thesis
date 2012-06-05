@@ -142,9 +142,9 @@ In some scenarios where the initial frequency offset of the client is
 
 \section{Network communication}
 % IEEE 802.15.4
-%as RFC~4944 written by 6lowpan working group of IETF
-%made the underlaying IEEE 802.15.4 layer
-%look like an IPv6 link~\cite{6lowpan} and
+as RFC~4944 written by 6lowpan working group of IETF
+made the underlaying IEEE 802.15.4 layer
+look like an IPv6 link~\cite{6lowpan} and
 \begin{figure}
   \centering
   \includegraphics[width=9cm,keepaspectratio]{fig/6lowpan.pdf}
@@ -153,16 +153,23 @@ In some scenarios where the initial frequency offset of the client is
   \bigskip
 \end{figure}
 
+NTP server can be specified in Makefile or
+during compilate time using {\it{REMOTE_HOST}} define.
+%! TODO
+TODO: If no host is specified,
+NTP client assumes NTP broadcast communication mode.
+
+
 % There is no IPv4 support...
 
-The uIP packet buffer is accessed through
-the uip\_buf array and is used to hold incoming and outgoing packets.
-The device driver should place incoming data into this buffer.
-When sending data, the device driver should read the link
-level headers and the TCP/IP headers from this buffer.
-The size of the link level headers is configured by the UIP\_LLH\_LEN
-define and in case of ethernet it is 14.
+%The uIP packet buffer is accessed through
+%the uip\_buf array and is used to hold incoming and outgoing packets.
+%The device driver should place incoming data into this buffer.
+%When sending data, the device driver should read the link
+%level headers and the TCP/IP headers from this buffer.
+%The size of the link level headers is configured by the UIP\_LLH\_LEN
+%define and in case of ethernet it is 14.
 
-The application data need not be placed in this buffer, so
-the device driver must read it from the place pointed to by the
-uip\_appdata pointer %as illustrated by the following example:
+%The application data need not be placed in this buffer, so
+%the device driver must read it from the place pointed to by the
+%uip\_appdata pointer %as illustrated by the following example:
