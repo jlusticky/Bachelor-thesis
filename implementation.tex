@@ -63,9 +63,15 @@ FREQ = 32768/8 / 33
 => fastest adjust is 0,03s / s
 
 
-Each TCNT2 increment is $1/128*32 s  approx= 0,000244 s$
+Each TCNT2 increment is $\frac{1}{128 \times 32} \doteq 0,000244$ s
 2,44ms minimum clock slew
 This is also minimal possible clock adjustment.
+
+
+Adjustments will influence the timers.
+Applications requiring ...TODO...
+are therefore advised to use rtimers,
+because they have its own clock module as described in section~\ref{sec:contiki-timers}.
 
 \input{implementation/interface.tex}
 
