@@ -5,12 +5,14 @@
 For implementation of a reasonably useful NTP client
 operating system must be able to set, get
 and eventually adjust time.
-Apart from that ability of communicating over UDP is also required.
-%TODO DNS no IPV6
+Apart from that, ability of communicating over UDP is also required.
 
 Thanks to uIP, described in section~\ref{sec:contiki-uip}, communication is
 not a matter for Contiki OS.
-However main problem for NTP client implementation in Contiki is total
+Contiki is also able to use Domain Name System for IPv4 address resolution.
+DNS resolution of IPv6 addresses was not implemented in Contiki OS
+at the time of writing~\cite{contiki-docs}.
+The main problem of NTP client implementation for Contiki is therefore total
 lack of real-time support.
 Not only no common interface availability but also
 almost no platform-specific code has been implemented towards time support yet.
