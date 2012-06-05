@@ -101,10 +101,11 @@ multiplication of two 32-bit variables takes 33 instructions including {\it{call
 instructions for entering and returning from the {\it{\_\_mulsi3}} routine, which computes
 the result of multiplication.
 %avr-objdump
-According to AVR Instruction Set manual~\cite{avr-instruction-set} this results in 48 clock cycles overhead,
+According to AVR Instruction Set manual~\cite{avr-instruction-set},
+this results in 48 clock cycles overhead,
 which takes 3~000 nanoseconds assuming 16MHz CPU clock.
 The timestamp provided is therefore not exact.
-Since this consumed time strongly depends on architecture and compiler specifications,
+However, since this consumed time strongly depends on architecture and compiler specifications,
 no correction was implemented to remove this inaccuracy.
 The application must be instead aware that the timestamp is not exactly accurate.
 
