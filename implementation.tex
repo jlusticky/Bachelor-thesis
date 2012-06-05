@@ -2,12 +2,16 @@
 % (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
 
 \chapter{NTP client in Contiki OS}
-%!Distinguish between TIME and CLOCK
-
 For implementation of a reasonably useful NTP client
-operating system must meet conditions listed in appendix~\ref{app:requirements}.
-The main problem for NTP client implementation in Contiki is total
-lack of time support.
+operating system must be able to set, get
+and eventually adjust time.
+Apart from that ability of communicating over UDP is also required.
+%TODO DNS no IPV6
+
+Thanks to uIP, described in section~\ref{sec:contiki-uip}, communication is
+not a matter for Contiki OS.
+However main problem for NTP client implementation in Contiki is total
+lack of real-time support.
 Not only no common interface availability but also
 almost no platform-specific code has been implemented towards time support yet.
 Contiki provides basic clock interface particularly for use of timers though.
