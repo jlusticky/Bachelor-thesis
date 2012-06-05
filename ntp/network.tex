@@ -33,15 +33,14 @@ and 16-bit fraction field.
 Besides these two, there is one more NTP timestamp format - 128-bit NTP Date format.
 It includes a 64-bit signed seconds field and 64-bit fraction field.
 For convenience in mapping between formats,
-the seconds field is divided into a 32-bit Era Number field
-and a 32-bit Era Offset field.
+the seconds field is divided into 32-bit Era Number field
+and 32-bit Era Offset field.
 This 128-bit NTP Date format is however not transmitted over the network
 and is only used where sufficient storage and word size is available~\cite{rfc5905}.
 There is practically no need of knowing about this format for embedded systems
-at least until year 2036, when the Era Number will be incremented from zero to one.
+at least until year 2036, when 64-bit long timestamp wraps around and
+the Era Number will be incremented from zero to one.
 But strictly speaking an NTP timestamp is a truncated NTP Date format~\cite{rfc5905}.
-Refer to appendix~\ref{app:dates} for a short list of some dates
-requiring usage of NTP Date format.
 
 \begin{figure}
 	\centering

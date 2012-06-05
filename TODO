@@ -17,7 +17,7 @@ contiki/timers.tex - DONE + power-save?
 
 ntp.tex - DONE
 ntp/topology.tex - DONE
-ntp/time.tex - DONE + vyhodit?
+ntp/time.tex - DONE
 ntp/network.tex - DONE + broadcast
 ntp/algorithms.tex - DONE
 
