@@ -170,7 +170,7 @@ tcpip_handler(void)
 	}
 
 	/* Set or adjust local clock */
-    if (labs(adjts.sec) > 5) /// do this only IF difference > 36min use settime, otherwise adjtime
+    if (labs(adjts.sec) > 3) /// do this only IF difference > 36min use settime, otherwise adjtime
     {
 		PRINTF("Setting the time to xmttime from server\n");
 		clock_set_time(uip_ntohl(pkt->xmttime.int_partl) - JAN_1970);
