@@ -35,8 +35,9 @@
 #ifndef __NTPD_H__
 #define __NTPD_H__
 
-#include "sys/clock.h"
 #include <inttypes.h>
+
+#include "sys/clock.h"
 
 /*
  * Numbers and conversions according to RFC 5905
@@ -113,53 +114,9 @@ struct ntp_msg {
 
 
 /*
- * Convert between NTP and local timestamp
+ * Convert functions between NTP and local timestamp
  */
-unsigned long
-fractionl_to_nsec(uint32_t fractionl)
-{
-	unsigned long nsec;
-	nsec = fractionl;
-#if 1 /* highest precision but slowest */
-	nsec = nsec >> 4;
-	nsec = nsec * 10;
-	nsec = nsec >> 4;
-	nsec = nsec * 10;
-	nsec = nsec >> 4;
-	nsec = nsec * 10;
-	nsec = nsec >> 4;
-	nsec = nsec * 10;
-	nsec = nsec >> 4;
-	nsec = nsec * 100; // now we can multiply by 100 without overflow
-	nsec = nsec >> 4;
-	nsec = nsec * 10;
-	nsec = nsec >> 4;
-	nsec = nsec * 10;
-	nsec = nsec >> 4;
-	nsec = nsec * 10;
-#elif 0
-	nsec = nsec >> 8;
-	nsec = nsec * 100;
-	nsec = nsec >> 8;
-	nsec = nsec * 100;
-	nsec = nsec >> 8;
-	nsec = nsec * 100;
-	nsec = nsec >> 8;
-	nsec = nsec * 1000;
-#else /* lowest precision but fastest */
-	nsec = nsec >> 16;
-	nsec = nsec * 10000;
-	nsec = nsec >> 16;
-	nsec = nsec * 100000;
-#endif
-	return nsec;
-}
-
-void
-ntp_to_ts(const struct l_fixedpt *ntp, struct time_spec *ts)
-{
-    ts->sec = ntp->int_partl - JAN_1970;
-	ts->nsec = fractionl_to_nsec(ntp->fractionl);
-}
+void ntp_to_ts(const struct l_fixedpt *ntp, struct time_spec *ts);
+unsigned long fractionl_to_nsec(uint32_t fractionl);
 
 #endif /* __NTPD_H__ */

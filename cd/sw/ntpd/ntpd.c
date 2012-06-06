@@ -32,15 +32,14 @@
  * 
  */
 
+#include <stdlib.h>
+
 #include "contiki.h"
 #include "contiki-lib.h"
 #include "contiki-net.h"
 #include "sys/clock.h"
 
 #include "ntpd.h"
-
-#include <string.h>
-#include <stdlib.h>
 
 //#define DEBUG DEBUG_PRINT
 #include "net/uip-debug.h"

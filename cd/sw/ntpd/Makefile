@@ -7,6 +7,8 @@ CFLAGS+=-D'REMOTE_HOST="aaaa::1"'
 #CFLAGS+=-D'REMOTE_HOST="bbbb::260:6eff:fe7a:d4b8"'
 #CFLAGS+=-D'HARD_CODED_ADDRESS="aaaa::11:22ff:fe33:4455"' # try it
 
+PROJECT_SOURCEFILES = convert.c
+
 CONTIKI=${HOME}/contiki
 include $(CONTIKI)/Makefile.include
 
