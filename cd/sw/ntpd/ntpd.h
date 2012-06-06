@@ -130,13 +130,13 @@ fractionl_to_nsec(uint32_t fractionl)
 	nsec = nsec >> 4;
 	nsec = nsec * 10;
 	nsec = nsec >> 4;
-	nsec = nsec * 10;
+	nsec = nsec * 100; // now we can multiply by 100 without overflow
 	nsec = nsec >> 4;
 	nsec = nsec * 10;
 	nsec = nsec >> 4;
 	nsec = nsec * 10;
 	nsec = nsec >> 4;
-	nsec = nsec * 100;
+	nsec = nsec * 10;
 #elif 0
 	nsec = nsec >> 8;
 	nsec = nsec * 100;
