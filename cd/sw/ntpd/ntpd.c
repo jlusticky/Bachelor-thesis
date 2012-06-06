@@ -40,8 +40,6 @@
 #include "ntpd.h"
 
 #include <string.h>
-#define __STDC_FORMAT_MACROS
-#include <inttypes.h>
 #include <stdlib.h>
 
 //#define DEBUG DEBUG_PRINT
@@ -253,11 +251,11 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	msg.ppoll = TAU; // log2(poll_interval)
 	
 	// set clock precision - convert Hz to log2 - borrowed from OpenNTPD
-	int b = CLOCK_SECOND * (32768/8/CLOCK_CONF_SECOND);// * (OCR2A + 1); // CLOCK_SECOND * OCR2A
+	/**int b = CLOCK_SECOND;// * (OCR2A + 1); // CLOCK_SECOND * OCR2A
 	int a;
 	for (a = 0; b > 1; a--, b >>= 1)
 		{}
-	msg.precision = a;
+	msg.precision = a;*/
 	
 #if 1 // initial setting of time after startup
 	// wait 6s for ip to settle
