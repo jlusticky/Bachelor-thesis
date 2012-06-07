@@ -26,7 +26,7 @@ However the experience with rewriting event-driven state machines to Protothread
 the importance of an unconditional blocking wait {\it{PT\_YIELD()}}~\cite{thesis-programming},
 which temporarily blocks the Protothread until the next time the Protothread is invoked.
 After invocation the Protothread continues executing the code following the {\it{PT\_YIELD()}} statement.
-To understand how Protothreads are implemented and how do they actually work,
+To understand implementation of Protothreads and how do they actually work,
 please refer to appendix~\ref{app:protothreads}, where an example of usage is shown.
 
 Since Protothreads are implemented using standard C, library providing Protothreads can be used everywhere C toolchain is available.
