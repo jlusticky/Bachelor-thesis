@@ -1,0 +1,48 @@
+%=========================================================================
+% (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
+
+\section{Hardware clock interface}
+Contiki features a basic clock interface with a simple goal - measuring time.
+This interface provides needed calls for timers and its definition is to be found in {\it{/core/sys/clock.h}} file.
+Specific implementations of this common interface are located in {\it{/cpu}} directory of Contiki source code.
+The interface provides call for initialising CPU's clock system - {\it{clock\_init}}, that is automatically called during
+boot sequence of Contiki.
+The goal of the {\it{clock\_init}} call is to set up
+appropriate counter registers and interrupt service routines. %! TODO .. as described in chapter..
+On AVR CPU this call is implemented as C macro which evaluates to specific setup code for each CPU
+when compiling.
+The setup code is not common to all CPUs because of differences among them - e.g. there are usually
+only three Timer/Counter modules, but AVR ATmega1284P has four Timer/Counter modules~\cite{avr-datasheet}.
+
+%At least one of those is always 16 bit wide
+%This extra module on AVR ATmega1284P is used for
+% three vs. 3
+
+%clock\_seconds
+%CLOCK\_SECOND
+This is however enough for implementing a reasonable time interface and using it for NTP client later.
+
+% ntp interface extending the clock library, similar to posix calls
+
+%!!AVR
+
+Adjusting time - COMPARE\_REGISTER = 31 => 128Hz => 1s = 1s
+FREQ = 32768/8 / 32
+COMPARE\_REGISTER = 30 => ca132.129Hz => 1s = ca1.032258s
+FREQ = 32768/8 / 31
+COMPARE\_REGISTER = 32 => 124.12per => 1s = 0.96p
+FREQ = 32768/8 / 33
+
+=> fastest adjust is 0,03s / s
+
+
+Each TCNT2 increment is $\frac{1}{128 \times 32} \doteq 0,000244$ s
+2,44ms minimum clock slew
+This is also minimal possible clock adjustment.
+
+
+Adjustments will influence the timers.
+Applications requiring uninfluenced timers
+are therefore advised to use rtimers, described in section~\ref{sec:contiki-timers},
+because they use separate hardware clock
+unaffected by NTP client.
