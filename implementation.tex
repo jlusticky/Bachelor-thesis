@@ -30,7 +30,7 @@ How to get a working setup with Contiki on this platform is described in
 docs/setup.pdf file on the CD enclosed to this thesis.
 %%% CHECK THIS %%%
 
-\section{Required hardware clock interface}
+\section{Hardware clock interface}
 Contiki features a basic clock interface with a simple goal - measuring time.
 This interface provides needed calls for timers and its definition is to be found in {\it{/core/sys/clock.h}} file.
 Specific implementations of this common interface are located in {\it{/cpu}} directory of Contiki source code.
@@ -125,17 +125,20 @@ But as NTP Era 0 ends 2036 the NTP client code must be changed in the future any
 %1/128/32 = 0.000244141
 %0.000244141x32x127+0.000244141x31 == smallest possible adjustment == 244us
 
-\section{NTP values and converts}
+%\section{NTP values and convertions}
 Unlike the RFC 5905~\cite{rfc5905} shows, there are no 64 bit values. %! RFC - A.4. Kernel System Clock Interface
 No floating point numbers - library.
 Division of unsigned integer number by 2 is automatically translated by compiler to logical right shift,
 making it fast operation.
 
-Converting between NTP and local timestamps requires floating point unit or 64-bit numbers.
-according to output from avr-size tool, using 64-int number for conversion
+Converting between NTP and local timestamps requires floating point operations or 64-bit numbers.
+According to output from avr-size tool, using 64-int number for conversion
 uses 4~330 bytes more in program section of resulted binary file 
-and simulated floating point operation takes 3~474 bytes more
+and floating point operation takes 3~474 bytes more
 than algorithm developed?
+
+In case of floating point operations, the libgcc is used.
+\url{http://gcc.gnu.org/onlinedocs/gccint/Libgcc.html}
 
 %
 % NEGATIVE result for the first time
@@ -182,3 +185,6 @@ NTP client assumes NTP broadcast communication mode.
 %The application data need not be placed in this buffer, so
 %the device driver must read it from the place pointed to by the
 %uip\_appdata pointer %as illustrated by the following example:
+
+Routing to Meinberg NTP primary server.
+Measurements made using this setup are discussed in chapter~\ref{chap:measurements}.
