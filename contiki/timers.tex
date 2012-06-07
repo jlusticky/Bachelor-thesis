@@ -45,7 +45,7 @@ The rtimer library provides real-time task support through callback functions -
 the rtimer immediately preempt any running Contiki process in order to let the real-time tasks
 execute at the scheduled time~\cite{contiki-wiki-timers}.
 This behaviour illustrates figure~\ref{fig:contiki-execution-context}.
-The rtimer library uses its own clock module for scheduling
+The rtimer library uses separate hardware clock
 to allow higher clock resolution~\cite{contiki-wiki-timers}.
 The small part of rtimer module is architecture-agnostic,
 but the particular implementation is platform-specific.

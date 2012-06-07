@@ -71,9 +71,10 @@ This is also minimal possible clock adjustment.
 
 
 Adjustments will influence the timers.
-Applications requiring ...TODO...
-are therefore advised to use rtimers,
-because they have its own clock module as described in section~\ref{sec:contiki-timers}.
+Applications requiring uninfluenced timers
+are therefore advised to use rtimers, described in section~\ref{sec:contiki-timers},
+because they use separate hardware clock
+unaffected by NTP client.
 
 \input{implementation/interface.tex}
 
