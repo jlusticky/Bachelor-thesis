@@ -99,8 +99,9 @@ int main(void)
 		xmf = (xmf >> 1) + (xmf >> 3); // xmf = (5*xmf) / 8 = (25*i) / 64
 		xmf = (xmf >> 1) + (xmf >> 3); // (125*i) / 512 = (5^3*i) / 2^9
 		
-		/* Now we can multiply by 5^2 because then the total factor
-		 * will be (1/(2^3)^4)*5^5 = 0.762939453
+		/* Now we can multiply by 5^2 because then the total
+		 * multiplication coefficient for the original number i
+		 * will be: i * (1/(2^3)^4)*5^5 = i * 0.762939453,
 		 * which is less then 1, so it can not overflow.
 		 */
 		xmf = (xmf << 1) + xmf + (xmf >> 3); // xmf*3 + xmf/8 = (25*xmf) / 8
@@ -108,13 +109,13 @@ int main(void)
 		xmf = (xmf >> 1) + (xmf >> 3);
 		xmf = (xmf >> 1) + (xmf >> 3);
 		
-		/* Again we can multiply by 5^2
-		 * factor will be (1/(2^3)^7)*5^9 = 0.931322575
+		/* Again we can multiply by 5^2.
+		 * Total coefficient will be i * (1/(2^3)^7)*5^9 = i * 0.931322575
 		 */
 		xmf = (xmf << 1) + xmf + (xmf >> 3); // xmf*3 + xmf/8 = (25*xmf) / 8
 
 		/* Last shift to agree with division by 2^23 can not be
-		 * done earlier since factor would always be greater than 1.
+		 * done earlier since coefficient would always be greater than 1.
 		 */
 		xmf = xmf >> 2;
 /// end	
