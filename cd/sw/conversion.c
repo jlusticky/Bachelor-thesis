@@ -7,7 +7,7 @@
  *
  * First conversion is done using casting to double data type and division.
  * This gives correct result, but requires floating point support and 64 bit
- * dat type (double).
+ * data type (double).
  *
  * Second conversion uses 32 bit, no floating point numbers, logical shift
  * (which effectively divides number) and logical shift with addition
