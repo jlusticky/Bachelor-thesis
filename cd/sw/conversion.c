@@ -118,9 +118,9 @@ int main(void)
 		 * done earlier since coefficient would always be greater than 1.
 		 */
 		xmf = xmf >> 2;
-/// end	
+/// end
 		verbose("\t\t%" PRIu32, xmf); // output from our conversion
-		
+
 		int delta = correct - xmf;
 		verbose("\t\t%d\n", delta);  // difference between FPU and our conversion
 		

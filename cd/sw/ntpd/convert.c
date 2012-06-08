@@ -50,37 +50,42 @@ fractionl_to_nsec(uint32_t fractionl)
 {
 	unsigned long nsec;
 	nsec = fractionl;
-#if 1 /* highest precision but slowest */
-	nsec = nsec >> 4;
-	nsec = nsec * 10;
-	nsec = nsec >> 4;
-	nsec = nsec * 10;
-	nsec = nsec >> 4;
-	nsec = nsec * 10;
-	nsec = nsec >> 4;
-	nsec = nsec * 10;
-	nsec = nsec >> 4;
-	nsec = nsec * 100; // now we can multiply by 100 without overflow
-	nsec = nsec >> 4;
-	nsec = nsec * 10;
-	nsec = nsec >> 4;
-	nsec = nsec * 10;
-	nsec = nsec >> 4;
-	nsec = nsec * 10;
+#if 0
+	/*
+	 * We need to compute i * 1000000000 / 2^32.
+	 * Greatest common divisor of 1000000000 and 2^32 is 2^9, therefore
+	 * i * (1000000000 / 2^9) / (2^32 / 2^9) = i * 1953125 / 8388608,
+	 * which is equal to i * 5^9 / 2^23.
+	 * This can be done using sequential division and multiplication,
+	 * which in turn can be done using shifts and additions.
+	 */
+	nsec = (nsec >> 1) + (nsec >> 3); // nsec = nsec/2 + nsec/8 = (5*nsec) / 8
+	nsec = (nsec >> 1) + (nsec >> 3); // nsec = (5*nsec) / 8 = (25*i) / 64
+	nsec = (nsec >> 1) + (nsec >> 3); // (125*i) / 512 = (5^3*i) / 2^9
+	
+	/* Now we can multiply by 5^2 because then the total
+	 * multiplication coefficient for the original number i
+	 * will be: i * (1/(2^3)^4)*5^5 = i * 0.762939453,
+	 * which is less then 1, so it can not overflow.
+	 */
+	nsec = (nsec << 1) + nsec + (nsec >> 3); // nsec*3 + nsec/8 = (25*nsec) / 8
+
+	nsec = (nsec >> 1) + (nsec >> 3);
+	nsec = (nsec >> 1) + (nsec >> 3);
+	
+	/* Again we can multiply by 5^2.
+	 * Total coefficient will be i * (1/(2^3)^7)*5^9 = i * 0.931322575
+	 */
+	nsec = (nsec << 1) + nsec + (nsec >> 3); // nsec*3 + nsec/8 = (25*nsec) / 8
+
+	/* Last shift to agree with division by 2^23 can not be
+	 * done earlier since coefficient would always be greater than 1.
+	 */
+	nsec = nsec >> 2;
 #elif 0
-	nsec = nsec >> 8;
-	nsec = nsec * 100;
-	nsec = nsec >> 8;
-	nsec = nsec * 100;
-	nsec = nsec >> 8;
-	nsec = nsec * 100;
-	nsec = nsec >> 8;
-	nsec = nsec * 1000;
-#else /* lowest precision but fastest */
-	nsec = nsec >> 16;
-	nsec = nsec * 10000;
-	nsec = nsec >> 16;
-	nsec = nsec * 100000;
+	nsec = ((double)nsec * 1000000000) / 0xFFFFFFFF;
+#else
+	nsec = ((uint64_t)nsec * 1000000000) >> 32;
 #endif
 	return nsec;
 }
