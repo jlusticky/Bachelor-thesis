@@ -91,7 +91,7 @@ int main(void)
 		 * which is equal to i * 5^9 / 2^23.
 		 * This can be done using sequential shifts and multiplication.
 		 */
-#if 0 /* highest precision but slowest */
+#if 1 /* highest precision but slowest */
 		xmf = i >> 3;
 		xmf = xmf * 5;
 		xmf = xmf >> 3;
@@ -126,15 +126,6 @@ int main(void)
 		xmf = xmf * 125; // (1/((2^(6*4)))*(25^5) = 0.582076609
 		xmf = xmf >> 6;
 		xmf = xmf * 25;
-/**
-		xmf = i >> 8;
-		xmf = xmf * 100;
-		xmf = xmf >> 8;
-		xmf = xmf * 100;
-		xmf = xmf >> 8;
-		xmf = xmf * 100;
-		xmf = xmf >> 8;
-		xmf = xmf * 1000;*/
 #else /* lowest precision but fastest */
 		xmf = i >> 10;
 		xmf = xmf * 625;
