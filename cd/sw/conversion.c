@@ -82,7 +82,7 @@ int main(void)
 		/*
 		 * Compute the correct result using FPU
 		 */
-		correct = (double)i * 1000000000 / 0xFFFFFFFF; // >> 32
+		correct = (double)i * 1000000000 / 0xFFFFFFFF;
 		verbose("\t\t%" PRIu32, correct); // FLOAT - correct result using FPU
 
 		/*
