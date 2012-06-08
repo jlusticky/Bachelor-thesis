@@ -10,8 +10,9 @@
  * dat type (double).
  *
  * Second conversion uses 32 bit, no floating point numbers, logical shift
- * (which effectively divides number) and multiplication.
- * Such conversion gives biggest error of 27 nanoseconds in it's most precise form,
+ * (which effectively divides number) and logical shift with addition
+ * (which effectively multiplicates number).
+ * Such conversion gives maximum error of 5 nanoseconds,
  * which is totaly adequate for most platforms without floating point unit or
  * for platforms where usage of 64bit is expansive (embedded systems).
  *
@@ -51,7 +52,7 @@
 #include <inttypes.h>
 
 /*
- * By default this program outputs only if bigger error is found.
+ * By default this program outputs only if greater error is found.
  * Use define VERBOSE to get output for all ntp timestamps.
  */
 
@@ -69,7 +70,7 @@
 
 int main(void)
 {
-	int biggestdelta = 0;
+	int maxdelta = 0;
 
 	printf("NTP\t\tFLOAT\t\tOUR\t\tDELTA\n");
 
@@ -86,66 +87,49 @@ int main(void)
 
 		/*
 		 * We need to compute i * 1000000000 / 2^32.
-		 * Greatest common divisor of 1000000000 and 2^32 is 2^9
-		 * i * (1000000000 / 2^9) / (2^32 / 2^9) = i * 1953125 / 8388608
+		 * Greatest common divisor of 1000000000 and 2^32 is 2^9, therefore
+		 * i * (1000000000 / 2^9) / (2^32 / 2^9) = i * 1953125 / 8388608,
 		 * which is equal to i * 5^9 / 2^23.
-		 * This can be done using sequential shifts and multiplication.
+		 * This can be done using sequential division and multiplication,
+		 * which in turn can be done using shifts and additions.
 		 */
 		xmf = i;
-#if 1 /* highest precision but slowest */
-		xmf = xmf >> 3;
-		xmf = xmf * 5;
-		xmf = xmf >> 3;
-		xmf = xmf * 5;
-		xmf = xmf >> 3;
-		xmf = xmf * 5;
-		xmf = xmf >> 3;
+/// start
+		xmf = (xmf >> 1) + (xmf >> 3); // xmf = xmf/2 + xmf/8 = (5*xmf) / 8
+		xmf = (xmf >> 1) + (xmf >> 3); // xmf = (5*xmf) / 8 = (25*i) / 64
+		xmf = (xmf >> 1) + (xmf >> 3); // (125*i) / 512 = (5^3*i) / 2^9
+		
 		/* Now we can multiply by 5^2 because then the total factor
 		 * will be (1/(2^3)^4)*5^5 = 0.762939453
 		 * which is less then 1, so it can not overflow.
 		 */
-		xmf = xmf * 25;
-		xmf = xmf >> 3;
-		xmf = xmf * 5;
-		xmf = xmf >> 3;
-		xmf = xmf * 5;
-		xmf = xmf >> 3;
+		xmf = (xmf << 1) + xmf + (xmf >> 3); // xmf*3 + xmf/8 = (25*xmf) / 8
+
+		xmf = (xmf >> 1) + (xmf >> 3);
+		xmf = (xmf >> 1) + (xmf >> 3);
+		
 		/* Again we can multiply by 5^2
 		 * factor will be (1/(2^3)^7)*5^9 = 0.931322575
 		 */
-		xmf = xmf * 25;
+		xmf = (xmf << 1) + xmf + (xmf >> 3); // xmf*3 + xmf/8 = (25*xmf) / 8
+
 		/* Last shift to agree with division by 2^23 can not be
 		 * done earlier since factor would always be greater than 1.
 		 */
 		xmf = xmf >> 2;
-#elif 0
-		xmf = xmf >> 5;
-		xmf = xmf * 25;
-		xmf = xmf >> 6;
-		xmf = xmf * 25;
-		xmf = xmf >> 6;
-		xmf = xmf * 125; // (1/((2^(6*4)))*(25^5) = 0.582076609
-		xmf = xmf >> 6;
-		xmf = xmf * 25;
-#else /* lowest precision but fastest */
-		xmf = xmf >> 10;
-		xmf = xmf * 625;
-		xmf = xmf >> 13;
-		xmf = xmf * 3125;
-#endif
-	
+/// end	
 		verbose("\t\t%" PRIu32, xmf); // output from our conversion
 		
 		int delta = correct - xmf;
 		verbose("\t\t%d\n", delta);  // difference between FPU and our conversion
 		
-		if (abs(delta) > biggestdelta) // always output if difference is the biggest
+		if (abs(delta) > maxdelta) // if maximum difference found
 		{
-			biggestdelta = delta;
-			printf("%" PRIu64, i);
+			maxdelta = delta;
+			printf("%" PRIu64, i); // always output  = printf
 			printf("\t\t%" PRIu32, correct);
 			printf("\t\t%" PRIu32, xmf);
-			printf("\t\t%d\n", biggestdelta);
+			printf("\t\t%d\n", maxdelta);
 		}
 	}
 	return 0;
