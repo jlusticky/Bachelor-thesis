@@ -11,7 +11,7 @@
  *
  * Second conversion uses 32 bit, no floating point numbers, logical shift
  * (which effectively divides number) and multiplication.
- * Such conversion gives biggest error of 96 nanosecond in it's slowest form,
+ * Such conversion gives biggest error of 27 nanoseconds in it's most precise form,
  * which is totaly adequate for most platforms without floating point unit or
  * for platforms where usage of 64bit is expansive (embedded systems).
  *
@@ -78,27 +78,55 @@ int main(void)
 	{
 		verbose("%" PRIu64, i); // NTP
 		uint32_t correct, xmf;
+		/*
+		 * Compute the correct result using FPU
+		 */
 		correct = (double)i * 1000000000 / 0xFFFFFFFF; // >> 32
 		verbose("\t\t%" PRIu32, correct); // FLOAT - correct result using FPU
 
-#if 1 /* highest precision but slowest */
-		xmf = i >> 4;
-		xmf = xmf * 10;
-		xmf = xmf >> 4;
-		xmf = xmf * 10;
-		xmf = xmf >> 4;
-		xmf = xmf * 10;
-		xmf = xmf >> 4;
-		xmf = xmf * 10;
-		xmf = xmf >> 4;
-		xmf = xmf * 100; // now we can multiply by 100 without overflow
-		xmf = xmf >> 4;
-		xmf = xmf * 10;
-		xmf = xmf >> 4;
-		xmf = xmf * 10;
-		xmf = xmf >> 4;
-		xmf = xmf * 10;
+		/*
+		 * We need to compute i * 1000000000 / 2^32.
+		 * Greatest common divisor of 1000000000 and 2^32 is 2^9
+		 * i * (1000000000 / 2^9) / (2^32 / 2^9) = i * 1953125 / 8388608
+		 * which is equal to i * 5^9 / 2^23.
+		 * This can be done using sequential shifts and multiplication.
+		 */
+#if 0 /* highest precision but slowest */
+		xmf = i >> 3;
+		xmf = xmf * 5;
+		xmf = xmf >> 3;
+		xmf = xmf * 5;
+		xmf = xmf >> 3;
+		xmf = xmf * 5;
+		xmf = xmf >> 3;
+		/* Now we can multiply by 5^2 because then the total factor
+		 * will be (1/(2^3)^4)*5^5 = 0.762939453
+		 * which is less then 1, so it can not overflow.
+		 */
+		xmf = xmf * 25;
+		xmf = xmf >> 3;
+		xmf = xmf * 5;
+		xmf = xmf >> 3;
+		xmf = xmf * 5;
+		xmf = xmf >> 3;
+		/* Again we can multiply by 5^2
+		 * factor will be (1/(2^3)^7)*5^9 = 0.931322575
+		 */
+		xmf = xmf * 25;
+		/* Last shift to agree with division by 2^23 can not be
+		 * done earlier since factor would always be greater than 1.
+		 */
+		xmf = xmf >> 2;
 #elif 0
+		xmf = i >> 5;
+		xmf = xmf * 25;
+		xmf = xmf >> 6;
+		xmf = xmf * 25;
+		xmf = xmf >> 6;
+		xmf = xmf * 125; // (1/((2^(6*4)))*(25^5) = 0.582076609
+		xmf = xmf >> 6;
+		xmf = xmf * 25;
+/**
 		xmf = i >> 8;
 		xmf = xmf * 100;
 		xmf = xmf >> 8;
@@ -106,12 +134,12 @@ int main(void)
 		xmf = xmf >> 8;
 		xmf = xmf * 100;
 		xmf = xmf >> 8;
-		xmf = xmf * 1000;
+		xmf = xmf * 1000;*/
 #else /* lowest precision but fastest */
-		xmf = i >> 16;
-		xmf = xmf * 10000;
-		xmf = xmf >> 16;
-		xmf = xmf * 100000;
+		xmf = i >> 10;
+		xmf = xmf * 625;
+		xmf = xmf >> 13;
+		xmf = xmf * 3125;
 #endif
 	
 		verbose("\t\t%" PRIu32, xmf); // output from our conversion
