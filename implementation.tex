@@ -35,7 +35,9 @@ In unicast mode packet loss might occur either for client's query to server
 or for server's response to client.
 If client's query loss occurs, no server response will be sent.
 Similarly, if server's response loss occurs, no message will be received by the client.
-It is therefore important not to block whole system till response arrives.
+Not to block whole system till response arrives
+is therefore desired behaviour of the client.
+
 %TO COMMUNICATION: In Contiki the application is invoked in response to certain events
 %... This can be effectively solved by NTP Poll Interval.
 
