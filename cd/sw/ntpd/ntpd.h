@@ -39,6 +39,8 @@
 
 #include "sys/clock.h"
 
+PROCESS_NAME(ntpd_process);
+
 /*
  * Numbers and conversions according to RFC 5905
  */
