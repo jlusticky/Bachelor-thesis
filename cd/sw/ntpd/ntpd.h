@@ -37,6 +37,7 @@
 
 #include <inttypes.h>
 
+#include "contiki.h"
 #include "sys/clock.h"
 
 PROCESS_NAME(ntpd_process);
