@@ -231,7 +231,9 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	
 	PROCESS_BEGIN();
 
+#if 0
 	print_local_addresses();
+#endif
 
 	// set the NTP server address
 #ifdef UIP_CONF_IPV6
