@@ -180,6 +180,9 @@ tcpip_handler(void)
 		printf("Adjusting the time for %ld and %ld\n", adjts.sec, adjts.nsec);
 		clock_adjust_time(&adjts);
 	}
+
+	/* Set our timestamp to zero to avoid processing the same packet more than once */
+	ts.sec = 0;
   }
 }
 /*---------------------------------------------------------------------------*/
