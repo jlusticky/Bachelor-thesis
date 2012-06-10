@@ -203,6 +203,7 @@ timeout_handler(void)
 	
 	uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
 }
+#if 0
 /*---------------------------------------------------------------------------*/
 static void
 print_local_addresses(void)
@@ -220,6 +221,7 @@ print_local_addresses(void)
     }
   }
 }
+#endif
 /*---------------------------------------------------------------------------*/
 PROCESS(ntpd_process, "ntpd");
 AUTOSTART_PROCESSES(&ntpd_process);
