@@ -61,3 +61,24 @@ Ability to communicate with more servers. Requires clock selection algorithms.
 Advanced clock discipline algorithms -
 The clock discipline process is a system process that controls the
 time and frequency of the system clock~\cite{rfc5905},
+
+--
+ntpv4.pdf:
+SNTP is intended for primary
+servers equipped with a single reference clock, as well as clients with a single upstream server
+and no dependent clients.
+
+It is useful to provide an
+initial volley where the client operating in mode 3 exchanges several packets with the server in
+order to calibrate the propagation delay
+
+The operating system is assumed to provide two functions, one to set the time
+directly, for example the Unix settimeofday()1 function, and another to adjust the time in small
+increments advancing or retarding the time by a designated amount, for example the Unix
+adjtime() function. In the intended design the clock discipline process uses the adjtime() function
+if the adjustment is less than a designated threshold, and the settimeofday() function if above the
+threshold.
+
+
+--
+rfc5905:
