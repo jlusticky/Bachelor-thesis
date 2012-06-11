@@ -1,6 +1,6 @@
-/* 
+/*
  * NTP client implementation for Contiki
- * 
+ *
  * NTPv4 - RFC 5905
  *
  * Copyright (c) 2011, 2012 Josef Lusticky
@@ -29,7 +29,7 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- * 
+ *
  */
 
 #include <inttypes.h>
@@ -50,7 +50,7 @@ fractionl_to_nsec(uint32_t fractionl)
 {
 	unsigned long nsec;
 	nsec = fractionl;
-#if 0
+#if 1
 	/*
 	 * We need to compute i * 1000000000 / 2^32.
 	 * Greatest common divisor of 1000000000 and 2^32 is 2^9, therefore
@@ -62,7 +62,7 @@ fractionl_to_nsec(uint32_t fractionl)
 	nsec = (nsec >> 1) + (nsec >> 3); // nsec = nsec/2 + nsec/8 = (5*nsec) / 8
 	nsec = (nsec >> 1) + (nsec >> 3); // nsec = (5*nsec) / 8 = (25*i) / 64
 	nsec = (nsec >> 1) + (nsec >> 3); // (125*i) / 512 = (5^3*i) / 2^9
-	
+
 	/* Now we can multiply by 5^2 because then the total
 	 * multiplication coefficient for the original number i
 	 * will be: i * (1/(2^3)^4)*5^5 = i * 0.762939453,
@@ -72,7 +72,7 @@ fractionl_to_nsec(uint32_t fractionl)
 
 	nsec = (nsec >> 1) + (nsec >> 3);
 	nsec = (nsec >> 1) + (nsec >> 3);
-	
+
 	/* Again we can multiply by 5^2.
 	 * Total coefficient will be i * (1/(2^3)^7)*5^9 = i * 0.931322575
 	 */

@@ -46,7 +46,6 @@ document uip - app has to act on incomming data, overwrite
 ---
 adjtime - wip
 ----
-try broadcast - determine mode from incomming packet
 thus, the time is always a monotonically increasing function.
 ----
 text
@@ -56,3 +55,5 @@ compare my algo vs. real results
 ----
 DTS - Digital Time Service - rfc1305
 adjust treshold - max we can adjust 32767*(1/128/32) with int16_t
+----
+uIP current supports broadcast packets as well as sending multicast packets. Joining multicast groups (IGMP) and receiving non-local multicast packets is not currently supported.
