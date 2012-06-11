@@ -89,17 +89,6 @@ tcpip_handler(void)
 
     pkt = uip_appdata;
 
-#if 0 // NTP_SERVER_SUPPORT - can only communicate with REMOTE_HOST
-	if ((pkt->status & MODEMASK) == MODE_CLIENT)
-	{
-		// set server mode and send our time
-		pkt->status = MODE_SERVER | (NTP_VERSION << 3) | LI_ALARM;
-		pkt->xmttime.int_partl = uip_htonl(dstts.sec + JAN_1970);
-		uip_udp_packet_send(udpconn, pkt, sizeof(struct ntp_msg));
-		return;
-	}
-#endif
-
 	// check if the server is synchronised
 #if 0 // change to 1 for strict check
     if (((pkt->status & LI_ALARM) == LI_ALARM) || (pkt->stratum > NTP_MAXSTRATUM) ||
