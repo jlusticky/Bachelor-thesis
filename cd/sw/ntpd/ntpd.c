@@ -1,6 +1,6 @@
-/* 
+/*
  * NTP client implementation for Contiki
- * 
+ *
  * NTPv4 - RFC 5905
  *
  * Copyright (c) 2011, 2012 Josef Lusticky
@@ -29,7 +29,7 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- * 
+ *
  */
 
 #include <stdlib.h>
@@ -41,7 +41,7 @@
 
 #include "ntpd.h"
 
-//#define DEBUG DEBUG_PRINT
+#define DEBUG DEBUG_PRINT
 #include "net/uip-debug.h"
 
 
@@ -75,13 +75,13 @@ static void
 tcpip_handler(void)
 {
   struct ntp_msg *pkt; // pointer to incomming packet
-  
+
   /* timestamps for offset calculation */
   ///struct time_spec orgts; // t1 == ts
   struct time_spec rects; // t2
   struct time_spec xmtts; // t3
   struct time_spec dstts; // t4
-  
+
   /* timestamp for local clock adjustment */
   struct time_spec adjts;
 
@@ -89,14 +89,14 @@ tcpip_handler(void)
   {
 	// get destination (t4) timestamp
 	clock_get_time(&dstts);
-	
+
     // check if received packet is complete
     if ((uip_datalen() != NTP_MSGSIZE_NOAUTH) && (uip_datalen() != NTP_MSGSIZE))
     {
 		PRINTF("Received malformed NTP packet\n");
 		return;
 	}
-	
+
     pkt = uip_appdata;
 
 #if 0 // NTP_SERVER_SUPPORT - can only communicate with REMOTE_HOST
@@ -121,14 +121,14 @@ tcpip_handler(void)
 		PRINTF("Received NTP packet from unsynchronised server\n");
 		return;
 	}
-    
+
     /* Compute adjustment */
     adjts.nsec = 0;
     if ((pkt->status & MODEMASK) == MODE_BROADCAST) // in broadcast mode set time to xmttime
     {
 	    // local clock offset THETA = t3 - t4
 	    adjts.sec = (uip_ntohl(pkt->xmttime.int_partl) - JAN_1970) - dstts.sec;
-	    
+
 	    if (adjts.sec == 0) // if seconds are the same calculate nsec offset
 	    {
 			adjts.nsec = fractionl_to_nsec(uip_htonl(pkt->xmttime.fractionl)) - dstts.nsec;
@@ -141,29 +141,29 @@ tcpip_handler(void)
 			PRINTF("Orgtime mismatch between received NTP packet and timestamp sent by us\n");
 			return;
 		}
-		
+
 		/* Compute local clock offset THETA = ((t2 - t1) + (t3 - t4)) / 2
 		 * only for seconds part.
 		 * If seconds offset is zero, compute nsec offset later.
 		 */
 		rects.sec = uip_htonl(pkt->rectime.int_partl) - JAN_1970;
 		xmtts.sec = uip_htonl(pkt->xmttime.int_partl) - JAN_1970;
-		
+
 		PRINTF("SECONDS: org = %ld, rec = %ld, xmt = %ld, dst = %lu\n", ts.sec, rects.sec, xmtts.sec, dstts.sec); 
 		PRINTF("THETA = ((%ld - %ld) + (%ld - %ld)) / 2\n", rects.sec, ts.sec, xmtts.sec, dstts.sec);
-		
+
 		adjts.sec = ((rects.sec - ts.sec) // TODO look at assembly for DIV vs. shift
 					+ (xmtts.sec - dstts.sec)) / 2; // dstts.sec + 1 = 0
-		
+
 		PRINTF("Local clock offset = %ld sec\n",  adjts.sec);
-		
+
 		if (adjts.sec == 0) // if seconds offset is zero calculate nsec offset
 		{
 			rects.nsec = fractionl_to_nsec(uip_htonl(pkt->rectime.fractionl));
 			xmtts.nsec = fractionl_to_nsec(uip_htonl(pkt->xmttime.fractionl));
-			
+
 			PRINTF("THETA = ((%ld - %ld) + (%ld - %ld)) / 2\n", rects.nsec, ts.nsec, xmtts.nsec, dstts.nsec);
-			
+
 			adjts.nsec = ((rects.nsec - ts.nsec) + (xmtts.nsec - dstts.nsec)) / 2; // TODO as above
 			PRINTF("Local clock offset = %ld nsec\n", adjts.nsec);
 		}
@@ -190,10 +190,10 @@ static void
 timeout_handler(void)
 {
 	msg.status = MODE_CLIENT | (NTP_VERSION << 3) | LI_ALARM;
-	
+
 	clock_get_time(&ts);
 	msg.xmttime.int_partl = uip_htonl(ts.sec + JAN_1970);
-	
+
 	PRINTF("Sending NTP packet to server ");
 #ifdef UIP_CONF_IPV6
 	PRINT6ADDR(&udpconn->ripaddr);
@@ -201,9 +201,9 @@ timeout_handler(void)
 	PRINTLLADDR(&udpconn->ripaddr);
 #endif /* UIP_CONF_IPV6 */
 	PRINTF("\n");
-	
+
 	PRINTF("Sent timestamp: %ld sec %ld nsec\n", ts.sec, ts.nsec);
-	
+
 	uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
 }
 #if 0
@@ -230,10 +230,10 @@ PROCESS(ntpd_process, "ntpd");
 AUTOSTART_PROCESSES(&ntpd_process);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(ntpd_process, ev, data)
-{	
+{
 	static struct etimer et;
-	uip_ipaddr_t ipaddr;	
-	
+	uip_ipaddr_t ipaddr;
+
 	PROCESS_BEGIN();
 
 #if 0
@@ -255,19 +255,19 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	udp_bind(udpconn, UIP_HTONS(LOCAL_PORT)); // local client port
 
 	msg.ppoll = TAU; // log2(poll_interval)
-	
+
 	// set clock precision - convert Hz to log2 - borrowed from OpenNTPD
 	/**int b = CLOCK_SECOND;// * (OCR2A + 1); // CLOCK_SECOND * OCR2A
 	int a;
 	for (a = 0; b > 1; a--, b >>= 1)
 		{}
 	msg.precision = a;*/
-	
+
 #if 1 // initial setting of time after startup
 	// wait 6s for ip to settle
 	etimer_set(&et, 6 * CLOCK_SECOND);
 	PROCESS_WAIT_EVENT();
-	
+
 	// ask for time
 	msg.refid = UIP_HTONL(0x494e4954); // INIT string in ASCII
 	timeout_handler();
