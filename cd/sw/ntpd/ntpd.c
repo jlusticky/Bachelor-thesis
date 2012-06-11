@@ -44,29 +44,17 @@
 #define DEBUG DEBUG_PRINT
 #include "net/uip-debug.h"
 
-
-// error if remote NTP server not defined in Makefile
-#ifndef REMOTE_HOST
-/// TODO : broadcast mode - move to assigning addresses + remove TAU and POLL INTERVAL
-	#warning "No REMOTE_HOST defined in Makefile - only broadcast mode will work!"
-#endif
-
-// change ports to non-standard values - NTP_PORT is defined in ntpd.h
+/* Change ports to non-standard values - NTP_PORT is defined in ntpd.h */
 #define REMOTE_PORT NTP_PORT
 #define LOCAL_PORT NTP_PORT
 
+/* If remote host is defined, assuming NTP unicast mode.
+ * Client is active and sends ntp_msg to NTP server, otherwise no ntp_msg is needed.
+ */
+#ifdef REMOTE_HOST
 static struct ntp_msg msg;
-
 struct time_spec ts;
-
-// NTP Poll interval in seconds = 2^TAU
-/// TAU ranges from 4 (Poll interval 16 s) to 17 ( Poll interval 36 h) - multiply as in RFC1361?
-/// - timer is limited in Contiki to xx s - use etimer vs. stimer
-#define TAU 4
-#define POLL_INTERVAL (1 << TAU)
-
-// Send interval in clock ticks
-#define SEND_INTERVAL POLL_INTERVAL * CLOCK_SECOND
+#endif
 
 static struct uip_udp_conn *udpconn;
 
@@ -78,8 +66,10 @@ tcpip_handler(void)
 
   /* timestamps for offset calculation */
   ///struct time_spec orgts; // t1 == ts
+#ifdef REMOTE_HOST // variables needed only for NTP unicast mode
   struct time_spec rects; // t2
   struct time_spec xmtts; // t3
+#endif /* REMOTE_HOST */
   struct time_spec dstts; // t4
 
   /* timestamp for local clock adjustment */
@@ -134,6 +124,13 @@ tcpip_handler(void)
 			adjts.nsec = fractionl_to_nsec(uip_htonl(pkt->xmttime.fractionl)) - dstts.nsec;
 		}
 	}
+#ifndef REMOTE_HOST // if only NTP broadcast mode supported
+	else // in broadcast only mode, no other calcualtion is possible
+	{
+		PRINTF("Received NTP non-broadcast mode message\n");
+		return;
+	}
+#else
 	else // in client-server mode calculate local clock offset
 	{
 		if (ts.sec != (uip_ntohl(pkt->orgtime.int_partl) - JAN_1970))
@@ -149,7 +146,7 @@ tcpip_handler(void)
 		rects.sec = uip_htonl(pkt->rectime.int_partl) - JAN_1970;
 		xmtts.sec = uip_htonl(pkt->xmttime.int_partl) - JAN_1970;
 
-		PRINTF("SECONDS: org = %ld, rec = %ld, xmt = %ld, dst = %lu\n", ts.sec, rects.sec, xmtts.sec, dstts.sec); 
+		PRINTF("SECONDS: org = %ld, rec = %ld, xmt = %ld, dst = %lu\n", ts.sec, rects.sec, xmtts.sec, dstts.sec);
 		PRINTF("THETA = ((%ld - %ld) + (%ld - %ld)) / 2\n", rects.sec, ts.sec, xmtts.sec, dstts.sec);
 
 		adjts.sec = ((rects.sec - ts.sec) // TODO look at assembly for DIV vs. shift
@@ -169,6 +166,10 @@ tcpip_handler(void)
 		}
 	}
 
+	/* Set our timestamp to zero to avoid processing the same packet more than once */
+	ts.sec = 0;
+#endif /* ! REMOTE_HOST */
+
 	/* Set or adjust local clock */
     if (labs(adjts.sec) > 3) /// do this only IF difference > 36min use settime, otherwise adjtime
     {
@@ -180,12 +181,10 @@ tcpip_handler(void)
 		printf("Adjusting the time for %ld and %ld\n", adjts.sec, adjts.nsec);
 		clock_adjust_time(&adjts);
 	}
-
-	/* Set our timestamp to zero to avoid processing the same packet more than once */
-	ts.sec = 0;
   }
 }
 /*---------------------------------------------------------------------------*/
+#ifdef REMOTE_HOST // this function sends NTP client message to REMOTE_HOST
 static void
 timeout_handler(void)
 {
@@ -194,77 +193,52 @@ timeout_handler(void)
 	clock_get_time(&ts);
 	msg.xmttime.int_partl = uip_htonl(ts.sec + JAN_1970);
 
-	PRINTF("Sending NTP packet to server ");
+	uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
+
+	PRINTF("Sent timestamp: %ld sec %ld nsec to ", ts.sec, ts.nsec);
 #ifdef UIP_CONF_IPV6
 	PRINT6ADDR(&udpconn->ripaddr);
 #else
 	PRINTLLADDR(&udpconn->ripaddr);
 #endif /* UIP_CONF_IPV6 */
 	PRINTF("\n");
-
-	PRINTF("Sent timestamp: %ld sec %ld nsec\n", ts.sec, ts.nsec);
-
-	uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
 }
-#if 0
-/*---------------------------------------------------------------------------*/
-static void
-print_local_addresses(void)
-{
-  int i;
-  uint8_t state;
-
-  PRINTF("NTP Client IPv6 addresses: ");
-  for(i = 0; i < UIP_DS6_ADDR_NB; i++) {
-    state = uip_ds6_if.addr_list[i].state;
-    if(uip_ds6_if.addr_list[i].isused &&
-       (state == ADDR_TENTATIVE || state == ADDR_PREFERRED)) {
-      PRINT6ADDR(&uip_ds6_if.addr_list[i].ipaddr);
-      PRINTF("\n");
-    }
-  }
-}
-#endif
+#endif /* REMOTE_HOST */
 /*---------------------------------------------------------------------------*/
 PROCESS(ntpd_process, "ntpd");
 AUTOSTART_PROCESSES(&ntpd_process);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(ntpd_process, ev, data)
 {
-	static struct etimer et;
-	uip_ipaddr_t ipaddr;
-
 	PROCESS_BEGIN();
 
-#if 0
-	print_local_addresses();
-#endif
-
-	// set the NTP server address
-#ifdef UIP_CONF_IPV6
-	//uip_ip6addr(&ipaddr,0xaaaa,0,0,0,0,0,0,0x1);
-	uiplib_ipaddrconv(REMOTE_HOST, &ipaddr);
-	//#error "WTF"
+#ifndef REMOTE_HOST
+	#warning "No REMOTE_HOST defined - only NTP broadcast messages will be processed!"
+	udpconn = udp_new(NULL, UIP_HTONS(REMOTE_PORT), NULL); // remote server port
 #else
-	#error "IPv4 support not implemented"
-#endif /* UIP_CONF_IPV6 */
+	// set the NTP server address
+	uip_ipaddr_t ipaddr;
+	uiplib_ipaddrconv(REMOTE_HOST, &ipaddr);
 
 	/* new connection with remote host */
 	udpconn = udp_new(&ipaddr, UIP_HTONS(REMOTE_PORT), NULL); // remote server port
 
-	udp_bind(udpconn, UIP_HTONS(LOCAL_PORT)); // local client port
-
+	// NTP Poll interval in seconds = 2^TAU
+	/// TAU ranges from 4 (Poll interval 16 s) to 17 ( Poll interval 36 h) - multiply as in RFC1361?
+	/// - timer is limited in Contiki to xx s - use etimer vs. stimer
+	#define TAU 4
+	#define POLL_INTERVAL (1 << TAU)
 	msg.ppoll = TAU; // log2(poll_interval)
 
-	// set clock precision - convert Hz to log2 - borrowed from OpenNTPD
-	/**int b = CLOCK_SECOND;// * (OCR2A + 1); // CLOCK_SECOND * OCR2A
-	int a;
-	for (a = 0; b > 1; a--, b >>= 1)
-		{}
-	msg.precision = a;*/
+	// Send interval in clock ticks
+	#define SEND_INTERVAL POLL_INTERVAL * CLOCK_SECOND
+#endif /* ! REMOTE_HOST */
 
-#if 1 // initial setting of time after startup
+	udp_bind(udpconn, UIP_HTONS(LOCAL_PORT)); // local client port
+
+#ifdef REMOTE_HOST // initial setting of time after startup
 	// wait 6s for ip to settle
+	static struct etimer et;
 	etimer_set(&et, 6 * CLOCK_SECOND);
 	PROCESS_WAIT_EVENT();
 
@@ -272,20 +246,23 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	msg.refid = UIP_HTONL(0x494e4954); // INIT string in ASCII
 	timeout_handler();
 	msg.refid = 0;
+
+	etimer_set(&et, SEND_INTERVAL); // wait SEND_INTERVAL before sending next request
 #endif
 
-	etimer_set(&et, SEND_INTERVAL);
 	for(;;) {
 		PROCESS_WAIT_EVENT();
-		if(etimer_expired(&et))
-		{
-			timeout_handler();
-			etimer_restart(&et);
-		}
-		else if(ev == tcpip_event)
+		if(ev == tcpip_event)
 		{
 			tcpip_handler();
 		}
+#ifdef REMOTE_HOST
+		else if(etimer_expired(&et))
+		{
+			timeout_handler();
+			etimer_restart(&et); // wait again SEND_INTERVAL seconds
+		}
+#endif
 	}
 
 	PROCESS_END();
