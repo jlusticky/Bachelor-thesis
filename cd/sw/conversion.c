@@ -17,7 +17,7 @@
  * for platforms where usage of 64bit is expansive (embedded systems).
  *
  *
- * Copyright (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>.
+ * Copyright (c) 2011, 2012 Josef Lusticky
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -3,7 +3,7 @@
  * 
  * NTPv4 - RFC 5905
  *
- * Copyright (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>.
+ * Copyright (c) 2011, 2012 Josef Lusticky
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,10 @@
 
 #include <inttypes.h>
 
+#include "contiki.h"
 #include "sys/clock.h"
+
+PROCESS_NAME(ntpd_process);
 
 /*
  * Numbers and conversions according to RFC 5905

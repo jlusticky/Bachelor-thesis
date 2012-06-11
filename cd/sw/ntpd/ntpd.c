@@ -3,7 +3,7 @@
  * 
  * NTPv4 - RFC 5905
  *
- * Copyright (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>.
+ * Copyright (c) 2011, 2012 Josef Lusticky
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -180,6 +180,9 @@ tcpip_handler(void)
 		printf("Adjusting the time for %ld and %ld\n", adjts.sec, adjts.nsec);
 		clock_adjust_time(&adjts);
 	}
+
+	/* Set our timestamp to zero to avoid processing the same packet more than once */
+	ts.sec = 0;
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -203,6 +206,7 @@ timeout_handler(void)
 	
 	uip_udp_packet_send(udpconn, &msg, sizeof(struct ntp_msg));
 }
+#if 0
 /*---------------------------------------------------------------------------*/
 static void
 print_local_addresses(void)
@@ -220,6 +224,7 @@ print_local_addresses(void)
     }
   }
 }
+#endif
 /*---------------------------------------------------------------------------*/
 PROCESS(ntpd_process, "ntpd");
 AUTOSTART_PROCESSES(&ntpd_process);
@@ -231,7 +236,9 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	
 	PROCESS_BEGIN();
 
+#if 0
 	print_local_addresses();
+#endif
 
 	// set the NTP server address
 #ifdef UIP_CONF_IPV6

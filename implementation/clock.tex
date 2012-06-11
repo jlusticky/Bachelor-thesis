@@ -1,18 +1,59 @@
 %=========================================================================
-% (c) 2011, 2012 Josef Lusticky <xlusti00@stud.fit.vutbr.cz>
+% (c) 2011, 2012 Josef Lusticky
 
 \section{Hardware clock interface}
 Contiki features a basic clock interface with a simple goal - measuring time.
 This interface provides needed calls for timers and its definition is to be found in {\it{/core/sys/clock.h}} file.
 Specific implementations of this common interface are located in {\it{/cpu}} directory of Contiki source code.
-The interface provides call for initialising CPU's clock system - {\it{clock\_init}}, that is automatically called during
+The interface provides call for initialising CPU's clock system {\it{clock\_init}} that is automatically called during
 boot sequence of Contiki.
 The goal of the {\it{clock\_init}} call is to set up
 appropriate counter registers and interrupt service routines. %! TODO .. as described in chapter..
-On AVR CPU this call is implemented as C macro which evaluates to specific setup code for each CPU
-when compiling.
+For AVR CPU this call is implemented as C macro, which evaluates to specific setup code for each
+different type of AVR CPU during compilation, and is defined in {\it{cpu/avr/dev/clock-avr.h}} file.
 The setup code is not common to all CPUs because of differences among them - e.g. there are usually
 only three Timer/Counter modules, but AVR ATmega1284P has four Timer/Counter modules~\cite{avr-datasheet}.
+
+On AVR Raven, 8 bit Timer/Counter~2 clocked from 32~768~Hz watch crystal
+is used by Contiki clock interface,
+which is in turn used by dependent timers - refer to section~\ref{sec:contiki-timers} for details.
+This 32~768~Hz watch crystal is independent of the I/O clock, can be only used
+with Timer/Counter~2 and it
+enables use of Timer/Counter2 as a Real Time Counter~\ref{avr-datasheet}.
+%Unlike I/O clock used for clocking other Timers/Counters,
+%this asynchronous crystal is also active in power-save mode~\ref{avr-datasheet}.
+If Timer/Counter2 is enabled, it will keep running during sleep. The device can wake up from
+either Timer Overflow or Output Compare event from Timer/Counter2 if the corresponding
+Timer/Counter2 interrupt enable bits are set in TIMSK2, and the Global Interrupt Enable bit in
+SREG is set.
+If Timer/Counter2 is not running, Power-down mode is recommended instead of Power-save
+mode.
+The Timer/Counter2 can be clocked both synchronously and asynchronously in Power-save
+mode. If the Timer/Counter2 is not using the asynchronous clock, the Timer/Counter Oscillator is
+stopped during sleep. If the Timer/Counter2 is not using the synchronous clock, the clock source
+is stopped during sleep. Note that even if the synchronous clock is running in Power-save, this
+clock is only available for the Timer/Counter2.
+
+
+Timer/Counter~2 is used in Clear Timer on Compare Match (CTC) mode by Contiki.
+In this mode the counter register (TCNT2) is cleared to zero when the counter
+value matches the value in output compare register (OCR2A).
+The OCR2A register defines the top value for the counter, hence also its resolution.
+
+% PRESCALER
+For Timer/Counter2, the possible prescaled selections are: clk T2S /8, clk T2S /32, clk T2S /64,
+clkT2S/128, clkT2S/256, and clkT2S/1024. Additionally, clkT2S as well as 0 (stop) may be selected.
+
+% write to OCR2A
+If the interrupt is enabled, the interrupt handler routine can be used for updating
+the TOP value. However, changing TOP to a value close to BOTTOM when the counter is run-
+ning with none or a low prescaler value must be done with care since the CTC mode does not
+have the double buffering feature. If the new value written to OCR2A is lower than the current
+value of TCNT2, the counter will miss the compare match.
+
+CTC
+
+$f = $
 
 %At least one of those is always 16 bit wide
 %This extra module on AVR ATmega1284P is used for
