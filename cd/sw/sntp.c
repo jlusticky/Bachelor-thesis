@@ -1,15 +1,16 @@
-/* 
+/*
  * Testing program for sending NTP messages to specified host
  * by IPv6 or IPv4 address.
- * 
+ *
  * Program send client, server or broadcast NTP message.
  * In client mode program waits for NTP server response.
- * Client message is default.
+ * Client mode is default.
  * Broadcast mode message is sent only to specified host.
- * 
+ *
  * Unprivileged port is used by default unless -p given,
  * which uses NTP_PORT (123) then.
- * 
+ *
+ *
  * NTPv4 - RFC 5905
  *
  * Copyright (c) 2011, 2012 Josef Lusticky
@@ -38,7 +39,7 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- * 
+ *
  */
 
 #include <stdio.h>
@@ -129,15 +130,16 @@ struct ntp_msg {
 #define	MODE_RES2	7	/* reserved for private use */
 
 
-int bflag, cflag, pflag, sflag;
+int bflag, cflag, ival, pflag, sflag;
 struct ntp_msg ntpmsg;
 
 void
 usage(void)
 {
-	fprintf(stderr, "%s\n%s\n%s\n%s\n%s\n", 
-		"Usage: sntp [-p] [-b | -c | -s] address",
+	fprintf(stderr, "%s\n%s\n%s\n%s\n%s\n%s\n", 
+		"Usage: sntp [-p] [-i n] [-b | -c | -s] address",
 		"\t-p\tuse privileged NTP port",
+		"\t-i n\tcontinue sending NTP messsage every i seconds",
 		"\t-b\tbroadcast NTP message to address",
 		"\t-c\tclient NTP message to address (default)",
 		"\t-s\tserver NTP message to address");
@@ -148,7 +150,7 @@ int
 main(int argc, char *argv[])
 {
 	int ch;
-	while ((ch = getopt(argc, argv, "bcps")) != -1)
+	while ((ch = getopt(argc, argv, "bci:ps")) != -1)
 	{
 		switch (ch)
 		{
@@ -158,7 +160,10 @@ main(int argc, char *argv[])
 			case 'c': // NTP client mode (default)
 				cflag = 1;
 				break;
-			case 'p':
+			case 'i': // repeat sending message every i seconds
+				ival = (int) strtol(optarg, NULL, 10);
+				break;
+			case 'p': // privileged port NTP_PORT
 				pflag = 1;
 				break;
 			case 's': // NTP server mode
@@ -240,56 +245,67 @@ main(int argc, char *argv[])
 		}
 	}
 
-	struct timespec ts;
-	clock_gettime(CLOCK_REALTIME, &ts);
-
-	ntpmsg.xmttime.int_partl = htonl(ts.tv_sec + JAN_1970);
-	ntpmsg.xmttime.fractionl = htonl((double) ts.tv_nsec * 0xFFFFFFFF / 1000000000);
-	
-	printf("Sending time %ld sec %ld nsec to %s\n", ts.tv_sec, ts.tv_nsec, host);
-	
-	if (family == AF_INET6)
+	for (;;) // repeat every i seconds
 	{
-		memset(&sin6, 0, sizeof(sin6));
-		sin6.sin6_family = AF_INET6;
-		sin6.sin6_port = htons(NTP_PORT);
-		inet_pton(AF_INET6, host, &sin6.sin6_addr);
+		struct timespec ts;
+		clock_gettime(CLOCK_REALTIME, &ts);
+	
+		ntpmsg.xmttime.int_partl = htonl(ts.tv_sec + JAN_1970);
+		ntpmsg.xmttime.fractionl = htonl((double) ts.tv_nsec * 0xFFFFFFFF / 1000000000);
 		
-		if (sendto(sockfd, &ntpmsg, sizeof(ntpmsg), 0, (const struct sockaddr *) &sin6, sizeof(struct sockaddr_in6)) == -1)
+		printf("Sending time %ld sec %ld nsec to %s\n", ts.tv_sec, ts.tv_nsec, host);
+		
+		if (family == AF_INET6)
 		{
-			perror("sendto");
-			close(sockfd);
-			return 1;
-		}
-	}
-	else
-	{
-		memset(&sin4, 0, sizeof(sin4));
-		sin4.sin_family = AF_INET;
-		sin4.sin_port = htons(NTP_PORT);
-		inet_pton(AF_INET, host, &sin4.sin_addr);
+			memset(&sin6, 0, sizeof(sin6));
+			sin6.sin6_family = AF_INET6;
+			sin6.sin6_port = htons(NTP_PORT);
+			inet_pton(AF_INET6, host, &sin6.sin6_addr);
 			
-		if (sendto(sockfd, &ntpmsg, sizeof(ntpmsg), 0, (const struct sockaddr *) &sin4, sizeof(struct sockaddr_in)) == -1)
-		{
-			perror("sendto");
-			close(sockfd);
-			return 1;
+			if (sendto(sockfd, &ntpmsg, sizeof(ntpmsg), 0, (const struct sockaddr *) &sin6, sizeof(struct sockaddr_in6)) == -1)
+			{
+				perror("sendto");
+				close(sockfd);
+				return 1;
+			}
 		}
-	}
-
-	if ((ntpmsg.status & MODEMASK) == MODE_CLIENT) // wait for response
-	{
-		struct ntp_msg recvmsg;
-		if (recv(sockfd, &recvmsg, sizeof(recvmsg), 0) == -1)
+		else
 		{
-			perror("recv");
-			close(sockfd);
-			return 1;
+			memset(&sin4, 0, sizeof(sin4));
+			sin4.sin_family = AF_INET;
+			sin4.sin_port = htons(NTP_PORT);
+			inet_pton(AF_INET, host, &sin4.sin_addr);
+				
+			if (sendto(sockfd, &ntpmsg, sizeof(ntpmsg), 0, (const struct sockaddr *) &sin4, sizeof(struct sockaddr_in)) == -1)
+			{
+				perror("sendto");
+				close(sockfd);
+				return 1;
+			}
+		}
+	
+		if ((ntpmsg.status & MODEMASK) == MODE_CLIENT) // wait for response
+		{
+			struct ntp_msg recvmsg;
+			if (recv(sockfd, &recvmsg, sizeof(recvmsg), 0) == -1)
+			{
+				perror("recv");
+				close(sockfd);
+				return 1;
+			}
+			
+			printf("NTP time got from %s: %lu sec %lu nsec\n", host, ntohl(recvmsg.xmttime.int_partl) - JAN_1970,
+				(unsigned long) (((double) ntohl(recvmsg.xmttime.fractionl) * 1000000000) / 0xFFFFFFFF));
 		}
 		
-		printf("NTP time got from %s: %lu sec %lu nsec\n", host, ntohl(recvmsg.xmttime.int_partl) - JAN_1970,
-			(unsigned long) (((double) ntohl(recvmsg.xmttime.fractionl) * 1000000000) / 0xFFFFFFFF));
+		if (ival == 0) // if i was not specified, terminate after one packet
+		{
+			return 0;
+		}
+		else
+		{
+			sleep(ival);
+		}
 	}
-
 	return 0;
 }
