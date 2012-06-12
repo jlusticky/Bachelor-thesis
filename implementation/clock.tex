@@ -20,29 +20,40 @@ which is in turn used by dependent timers - refer to section~\ref{sec:contiki-ti
 This 32~768~Hz watch crystal is independent of the I/O clock, can be only used
 with Timer/Counter~2 and it
 enables use of Timer/Counter2 as a Real Time Counter~\ref{avr-datasheet}.
-%Unlike I/O clock used for clocking other Timers/Counters,
-%this asynchronous crystal is also active in power-save mode~\ref{avr-datasheet}.
-If Timer/Counter2 is enabled, it will keep running during sleep. The device can wake up from
-either Timer Overflow or Output Compare event from Timer/Counter2 if the corresponding
-Timer/Counter2 interrupt enable bits are set in TIMSK2, and the Global Interrupt Enable bit in
-SREG is set.
-If Timer/Counter2 is not running, Power-down mode is recommended instead of Power-save
-mode.
-The Timer/Counter2 can be clocked both synchronously and asynchronously in Power-save
-mode. If the Timer/Counter2 is not using the asynchronous clock, the Timer/Counter Oscillator is
-stopped during sleep. If the Timer/Counter2 is not using the synchronous clock, the clock source
-is stopped during sleep. Note that even if the synchronous clock is running in Power-save, this
-clock is only available for the Timer/Counter2.
 
+%%Unlike I/O clock used for clocking other Timers/Counters,
+%%this asynchronous crystal is also active in power-save mode~\ref{avr-datasheet}.
+%CITATION: If Timer/Counter2 is enabled, it will keep running during sleep. The device can wake up from
+%either Timer Overflow or Output Compare event from Timer/Counter2.
+%If Timer/Counter2 is not running, Power-down mode is recommended instead of Power-save
+%mode.
+%The Timer/Counter2 can be clocked both synchronously and asynchronously in Power-save
+%mode. If the Timer/Counter2 is not using the asynchronous clock, the Timer/Counter Oscillator is
+%stopped during sleep. If the Timer/Counter2 is not using the synchronous clock, the clock source
+%is stopped during sleep. Note that even if the synchronous clock is running in Power-save, this
+%clock is only available for the Timer/Counter2.
 
 Timer/Counter~2 is used in Clear Timer on Compare Match (CTC) mode by Contiki.
-In this mode the counter register (TCNT2) is cleared to zero when the counter
-value matches the value in output compare register (OCR2A).
-The OCR2A register defines the top value for the counter, hence also its resolution.
+In this mode, the counter register {\it{TCNT2}} is cleared to zero when the counter
+value matches the value in output compare register {\it{OCR2A}}~\cite{avr-datasheet}.
+Additionally, when compare match between counter register and compare register occurs,
+interrupt is raised and interrupt service routine {\it{AVR\_OUTPUT\_COMPARE\_INT}},
+defined in {\it{cpu/avr/dev/clock.c}} file, is called.
+% TO INTERFACE - The OCR2A register defines the top value for the counter, hence also its resolution. %% WHY THEN -1 ?
 
-% PRESCALER
-For Timer/Counter2, the possible prescaled selections are: clk T2S /8, clk T2S /32, clk T2S /64,
-clkT2S/128, clkT2S/256, and clkT2S/1024. Additionally, clkT2S as well as 0 (stop) may be selected.
+% The goal of interrupt service routine is to increment ...
+
+For Timer/Counter2 prescale value is 8 in Contiki on AVR Raven platform,
+so that 32~768~Hz frequency of clock source is effectively divided by 8.
+Counter register is hence incremented with frequency
+$f = {\frac{f_{clk}}{prescaler}} = {\frac{32768}{8}} = 4096$ Hz.
+%TODO FROM HERE
+As described in section~\ref{sec:contiki-timers}, there is
+{\it{CLOCK\_SECOND}} macro expressing number of clock interrupts per second.
+To obtain {\it{CLOCK\_SECOND}} interrupts per second, the compare register value
+must be ${\frac{f}{CLOCK\_SECOND}}$, which is equal to ${\frac{4096}{128}} = 32$
+by default for AVR Raven platform in Contiki.
+% -1 for CTC
 
 % write to OCR2A
 If the interrupt is enabled, the interrupt handler routine can be used for updating
@@ -51,13 +62,7 @@ ning with none or a low prescaler value must be done with care since the CTC mod
 have the double buffering feature. If the new value written to OCR2A is lower than the current
 value of TCNT2, the counter will miss the compare match.
 
-CTC
 
-$f = $
-
-%At least one of those is always 16 bit wide
-%This extra module on AVR ATmega1284P is used for
-% three vs. 3
 
 %clock\_seconds
 %CLOCK\_SECOND
@@ -65,13 +70,12 @@ This is however enough for implementing a reasonable time interface and using it
 
 % ntp interface extending the clock library, similar to posix calls
 
-%!!AVR
 
-Adjusting time - COMPARE\_REGISTER = 31 => 128Hz => 1s = 1s
+Adjusting time - CLOCK\_COMPARE\_REGISTER = 31 => 128Hz => 1s = 1s
 FREQ = 32768/8 / 32
-COMPARE\_REGISTER = 30 => ca132.129Hz => 1s = ca1.032258s
+CLOCK\_COMPARE\_REGISTER = 30 => ca132.129Hz => 1s = ca1.032258s
 FREQ = 32768/8 / 31
-COMPARE\_REGISTER = 32 => 124.12per => 1s = 0.96p
+CLOCK\_COMPARE\_REGISTER = 32 => 124.12per => 1s = 0.96p
 FREQ = 32768/8 / 33
 
 => fastest adjust is 0,03s / s
@@ -82,8 +86,8 @@ Each TCNT2 increment is $\frac{1}{128 \times 32} \doteq 0,000244$ s
 This is also minimal possible clock adjustment.
 
 
-Adjustments will influence the timers.
+Please note, that these adjustments will influence Contiki timers.
 Applications requiring uninfluenced timers
 are therefore advised to use rtimers, described in section~\ref{sec:contiki-timers},
-because they use separate hardware clock
-unaffected by NTP client.
+because they use separate hardware clock unaffected by NTP client
+(Timer/Counter~3 on AVR Raven platform).
