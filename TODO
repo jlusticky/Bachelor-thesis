@@ -57,3 +57,5 @@ DTS - Digital Time Service - rfc1305
 adjust treshold - max we can adjust 32767*(1/128/32) with int16_t
 ----
 uIP current supports broadcast packets as well as sending multicast packets. Joining multicast groups (IGMP) and receiving non-local multicast packets is not currently supported.
+---
+equations, commas, grammar
