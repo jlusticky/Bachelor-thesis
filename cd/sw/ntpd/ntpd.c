@@ -65,7 +65,7 @@ tcpip_handler(void)
   struct ntp_msg *pkt; // pointer to incomming packet
 
   /* timestamps for offset calculation */
-  ///struct time_spec orgts; // t1 == ts
+  // t1 == ts
 #ifdef REMOTE_HOST // variables needed only for NTP unicast mode
   struct time_spec rects; // t2
   struct time_spec xmtts; // t3
