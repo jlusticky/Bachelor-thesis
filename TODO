@@ -59,3 +59,5 @@ adjust treshold - max we can adjust 32767*(1/128/32) with int16_t
 uIP current supports broadcast packets as well as sending multicast packets. Joining multicast groups (IGMP) and receiving non-local multicast packets is not currently supported.
 ---
 equations, commas, grammar
+---
+TEST Write to OCR2A and busy bit - 17.9. and 17.11.6
