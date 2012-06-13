@@ -48,7 +48,7 @@ Usage of unsigned data type delays the wrap around problem to year 2106,
 however will disable use of negative values needed for adjusting local clock.
 %As current NTP Era ends 2036~\cite{rfc5905} code has to be changed anyway...
 
-Setting the current real-time is only possible within one second precision -
+Setting the current time is only possible within one second precision -
 finer time setting must be made through time adjustments described further.
 Implemented {\it{clock\_set\_time}} function computes when the system started
 in seconds since the Epoch and saves the result in newly implemented {\it{boottime}} variable.
@@ -56,13 +56,13 @@ in seconds since the Epoch and saves the result in newly implemented {\it{bootti
 Not only no variables incremented every interrupt nor any internal clock registers
 are affected, but also already presented variable {\it{seconds}} is not modified.
 This variable, counting uptime in seconds,
-is particularly used by Contiki timers.
-It is therefore desired to not modify it, as this would lead to misbehaviour of timer modules
+is particularly used by stimers in Contiki
+and modifying it would lead to misbehaviour of stimer library
 described in section~\ref{sec:contiki-timers}.
 
-Thanks to this newly implemented function and variable,
-running Contiki system is then able to tell uptime, current real-time and
-when the system was booted.
+Thanks to this newly implemented {\it{clock\_set\_time}} function and {\it{boottime}} variable,
+running Contiki system is able to tell uptime, current time and
+time when was the system booted.
 \begin{lstlisting}
 volatile unsigned long boottime;
 
@@ -73,9 +73,9 @@ clock_set_time(unsigned long sec)
 }
 \end{lstlisting}
 
-Getting the correct real-time is only possible if set using
+Getting the correct current time is only possible if it was set using
 the {\it{clock\_set\_time}} function before.
-Implemented function called {\it{clock\_get\_time}} is able to tell the
+Newly implemented function {\it{clock\_get\_time}} is then able to tell the
 current time in seconds since the Epoch by simply adding {\it{boottime}},
 and {\it{seconds}}.
 %! TODO
