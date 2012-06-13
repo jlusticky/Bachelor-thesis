@@ -54,7 +54,9 @@
 #ifdef REMOTE_HOST
 static struct ntp_msg msg;
 struct time_spec ts;
-#endif
+#else
+	#warning "No REMOTE_HOST defined - only NTP broadcast messages will be processed!"
+#endif /* REMOTE_HOST */
 
 static struct uip_udp_conn *udpconn;
 
@@ -202,7 +204,6 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	PROCESS_BEGIN();
 
 #ifndef REMOTE_HOST
-	#warning "No REMOTE_HOST defined - only NTP broadcast messages will be processed!"
 	udpconn = udp_new(NULL, UIP_HTONS(REMOTE_PORT), NULL); // remote server port
 #else
 	// set the NTP server address
