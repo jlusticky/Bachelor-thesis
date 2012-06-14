@@ -57,7 +57,7 @@ making it fast operation.
 Converting between NTP and local timestamps requires floating point operations or 64-bit numbers.
 According to output from avr-size tool, using 64-int number for conversion
 uses 4~330 bytes more in %program section of
-resulted binary file 
+resulted binary file
 and floating point operation takes 3~474 bytes more
 than algorithm developed.
 uint64\_t with shift 728 bytes more.
@@ -81,3 +81,8 @@ In some scenarios where the initial frequency offset of the client is
    clamped not less than s.rho, where s.rho is the system precision
    described in Section 11.1, expressed in seconds~\cite{rfc5905}.
 %
+
+
+To protect against replay of the last transmitted packet,
+   the xmt state variable is set to zero immediately after a successful
+   bogus check~\cite{rfc5905}.
