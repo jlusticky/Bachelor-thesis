@@ -2,8 +2,18 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{POSIX-compliant systems}\label{sec:others-posix}
-The POSIX standard specifies that
-the system header file {\it{time.h}} shall declare the following timespec structure.
+Traditionally, {\it{gettimeofday}} call can be used get current time on Unix systems.
+Setting the time can be done using {\it{settimeofday}} call.
+Both calls manipulate with microsecond precision and
+are widely supported among current Unix-like operating systems.
+POSIX 2001 describes {\it{gettimeofday}} but not {\it{settimeofday}}.
+POSIX 2008 marks {\it{gettimeofday}} as obsolete, recommending instead the use
+of {\it{clock\_gettime}}, which is capable of nanosecond precision.
+Next to this, {\it{clock\_settime}} for setting the time and {\it{clock\_getres}}
+for getting clock resolution are specified in POSIX 2008 standard~\cite{posix}.
+This standard further specifies that
+the system header file {\it{time.h}} shall declare {\it{timespec}} structure
+capable of expressing nanosecond precision.
 \begin{lstlisting}[morekeywords={clockid_t,time_t}]
 clock_gettime(clockid_t clock_id, struct timespec *res);
 clock_settime(clockid_t clock_id, const struct timespec *res);
@@ -14,14 +24,12 @@ struct timespec {
   long    tv_nsec;
 }
 \end{lstlisting}
-A clock may be system-wide (that is, visible to all processes)
-or per-process (measuring time that is meaningful only within a process).
-All implementations shall support a clock\_id of CLOCK\_REALTIME as
+All implementations shall support a clock\_id of {\it{CLOCK\_REALTIME}} as
 defined in header file {\it{time.h}}.
 This clock represents the clock measuring real time for the system.
-For this clock, the values returned by clock\_gettime() and specified
-by clock\_settime() represent the amount
-of time (in seconds and nanoseconds) since the Epoch.
+For this clock, the values returned by {\it{clock\_gettime}} and specified
+by {\it{clock\_settime}} represent the amount
+of time in seconds and nanoseconds since the Epoch.
 
 
 Operating systems:
