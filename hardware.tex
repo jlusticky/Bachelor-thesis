@@ -3,8 +3,7 @@
 
 \chapter{Hardware real-time support}
 %! TODO
-TODO: Distinguish between TIME and CLOCK
-
+%TODO: Distinguish between TIME and CLOCK
 %We need clock~\cite{timecounters}.
 \begin{figure}
 	\centering
@@ -13,10 +12,12 @@ TODO: Distinguish between TIME and CLOCK
 	\label{fig:hw-clock}
 	%\bigskip
 \end{figure}
+For keeping, measuring and resolving time computer needs a clock.
+Computer clock is an electronic device that counts oscillations in a
+quartz crystal oscillator with a particular frequency~\cite{thesis-sync}.
+These clocks are essentially timers associated with counter register and
+compare register.
 
-A computer clock is an electronic device that counts oscillations in a
-quartz crystal with a particular frequency~\cite{thesis-sync}.
-These clocks are essentially timers.
 The timer counts the oscillations of the crystal, which is associated with
 a counter register and a holding register.
 For each oscillation in the crystal, the counter is decremented by one.
@@ -28,7 +29,7 @@ the holding register, where each interrupt is called a clock tick.
 At each clock tick,
 the interrupt procedure increments the clock value stored in memory~\cite{thesis-sync}.
 
-In typical computer clock designs the clock oscillator drives a counter that produces processor interrupts at
+In a typical computer clock design, the clock oscillator drives a counter that produces processor interrupts at
 fixed tick intervals in the range 1-20 ms.
 At each tick interrupt a software clock variable is updated by the
 number of microseconds or nanoseconds in the tick interval~\cite{timecounters}.
@@ -39,9 +40,9 @@ There are two different types of interrupts - hardware and software interrupts.
 A typical desktop computer today includes CPU based on Intel x86 architecture.
 Real-Time Clock (RTC) in CMOS memory that is battery powered
 
-Unfortunately Intel x86 architecture is heavily influenced by backwards compatibility,
-and many hardware configurations are in use today.
-E.g. the time value can also be stored in Binary Code Digit (BCD) encoding in RTC.
+Unfortunately Intel x86 architecture is heavily influenced by backward compatibility,
+and many hardware configurations are in use today -
+e.g. the time value can also be stored in Binary Code Digit (BCD) encoding in RTC.
 
 In year 19xx /, Starting with Intel 386,
 Intel introduced
@@ -49,8 +50,8 @@ Programmable Interrupt Controller (PIT) Intel 8253 and 8254 - 3 counters (counte
 
 The problem with this device is that it only has
 8bit bus-width, so reading a 16 bit timestamp takes
-3 I/O operations: one to latch the count in an inter-
-nal register, and two to read the high and low parts
+3 I/O operations: one to latch the count in an internal register,
+and two to read the high and low parts
 of that register respectively~\cite{timecounters}.
 Obviously, on multi-CPU systems this cannot be
 done without some kind of locking mechanism
