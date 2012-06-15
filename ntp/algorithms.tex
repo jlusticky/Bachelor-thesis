@@ -7,7 +7,7 @@ corresponding to the current time.
 One of the main goals of NTP is to deal with the network latency~\cite{ntp-overview}.
 
 As described in section~\ref{sec:ntp-network},
-there are following 64-bit long timestamps in NTP packet: Origin, Receive and Transmit Timestamp.
+there are the following 64-bit long timestamps in NTP packet: Origin, Receive and Transmit Timestamp.
 Upon NTP packet arrival, the client determines another timestamp called
 Destination Timestamp~\cite{rfc5905}.
 This timestamp is represented as T4 on figure~\ref{fig:ntp-client-server}
@@ -23,14 +23,14 @@ The implicit assumption in the above is that one-way delay is
 statistically half of round-trip delay~\cite{rfc5905},
 which is given by $\delta = (t_4 - t_1) - (t_3 - t_2)$.
 
-When computing result from more servers the intersection algorithms is used
+When computing the result from more servers the intersection algorithm is used
 for selecting the possible most exact timestamp received from various servers~\cite{ntp-improved-algor,rfc5905}.
 Intersection algorithm is derived from Murzollo algorithm but the basic
 computation remains the same~\cite{ntp-history}.
-First of all a set of bad and good servers must be made.
+First of all a selection of bad and good servers must be made.
 Bad servers are called Falsetickers and good are called Truechimers~\cite{rfc5905}.
 The division to these sets is based on their response.
-As one can assume for sensible result there must be more Truechimers than Falsetickers~\cite{rfc5905}.
+As one can assume for a sensible result there must be more Truechimers than Falsetickers~\cite{rfc5905}.
 
 After selecting a set of reliable servers, NTP clock algorithms compute resulting exact timestamp.
 The resulting exact timestamp does not have to be the same
@@ -42,7 +42,7 @@ Figure~\ref{fig:ntp-intersection} shows the computation for the following exampl
 If we have the estimates $10 \pm 2$, $12 \pm 1$ and $11 \pm 1$
 then these intervals are $<8; 12>$, $<11; 13>$ and $<10; 12>$ which
 intersect to form $<11; 12>$ or $11.5 \pm 0.5$ as consistent with all three values.
-The arithmetic mean is used as a value of result.
+The arithmetic mean is used as the result value.
 When querying servers again, the algorithm repeats but the new result computation
 also depends on the previous result~\cite{rfc5905,ntp-history}.
 This eliminates possible jitter which can be caused by repeatedly querying the servers

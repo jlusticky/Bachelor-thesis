@@ -5,8 +5,8 @@
 Contiki features a basic clock interface with a simple goal - measuring time.
 This interface provides needed calls for timers and its definition is to be found in {\it{/core/sys/clock.h}} file.
 Specific implementations of this common interface are located in {\it{/cpu}} directory of Contiki source code.
-The interface provides call for initialising hardware clock {\it{clock\_init}} that is automatically called during
-boot sequence of Contiki.
+The interface provides {\it{clock\_init}} call for initialising hardware clock,
+that is automatically called during boot sequence of Contiki.
 The goal of the {\it{clock\_init}} call is to set up
 appropriate counter registers and interrupt service routines. %! TODO .. as described in chapter..
 For AVR CPU this call is implemented as C macro, which evaluates to specific setup code for each
@@ -97,8 +97,8 @@ This is enough for implementing a reasonable time interface and using it for NTP
 % ntp interface extending the clock library, similar to posix calls
 
 
-Each TCNT2 increment is $\frac{1}{128 \times 32} \doteq 0,000244$ s
-2,44ms minimum clock slew
+Each TCNT2 increment is $\frac{1}{128 \times 32} \doteq 0,000244$s
+0,244ms
 This is also minimal possible clock adjustment.
 
 

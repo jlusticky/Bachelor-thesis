@@ -3,10 +3,10 @@
 
 \section{uIP}\label{sec:contiki-uip}
 The TCP/IP protocol suite is often used for communication over the Internet as well as local networks.
-uIP (micro IP) is a complete TCP/IP communicating stack developed by Adam Dunkels
+uIP (micro IP) is a complete TCP/IP communication stack developed by Adam Dunkels
 for memory constrained systems such as embedded systems.
 
-Before uIP, the TCP/IP architecture was considered to be a heavyweight
+Before uIP, the TCP/IP architecture was considered to be heavyweight
 due to its perceived need for processing power and memory.
 IP protocol was seen as too large to fit into the constrained environment -
 existing implementations of the IP protocol family for general purpose computers would need hundreds
@@ -17,14 +17,14 @@ In early 2000s, however, this view was challenged by lightweight implementations
 protocol family for smart objects such as the uIP stack~\cite{interconnecting}.
 uIP showed that the IP architecture would fit nicely into the typical constrained systems,
 without removing any of the essential mechanisms from IP.
-Note that these resources, which are consider constrained today, are fairly close to the
+Note that these resources, which are considered constrained today, are fairly close to the
 resources of general purpose computers that were available when IP was designed~\cite{interconnecting}.
 Since its initial release, the uIP stack has become widely used in networked
 embedded systems~\cite{interconnecting, thesis-programming}.
 
 uIP provides two different application programming interfaces to programmers:
 a BSD sockets-like API called Protosockets and raw event-driven API.
-Protosockets are based on Protothreads putting the same limitation on them - such as 
+Protosockets are based on Protothreads putting the same limitation on them - such as
 no way of storing automatic local variables and an impossibility of using the C {\it switch} statement.
 Protosockets only work with TCP connections~\cite{contiki-docs}.
 Since NTP uses UDP, Protosockets will not be further
@@ -33,12 +33,12 @@ please refer to Contiki documentation~\cite{contiki-docs}.
 
 uIP contains only the absolute minimum of required features to fulfill the protocol standard.
 It can only handle a single network interface and contains the IP, ICMP, UDP and TCP protocols~\cite{contiki-docs}.
-In order to reduce amount of memory requirements and code size,
+In order to reduce memory requirements and code size,
 the uIP implementation uses an event-based API, which is fundamentally different
-from the most common TCP/IP API, the BSD sockets API present on Unix-like systems
+from the most common TCP/IP API, the BSD sockets API, present on Unix-like systems
 and defined by POSIX standard~\cite{thesis-programming,posix}.
-The application is invoked in response to certain events and
-it is up to application that is receiving events from uIP to handle all
+An application is invoked in response to certain events and
+it is up to the application that is receiving events from uIP to handle all
 work with data to be transmitted. E.g. if the data is lost in the network,
 the application will be invoked and then has to resend the data.
 This approach is based on the fact that it should be an easy work for application
@@ -58,22 +58,22 @@ The packet buffer will not be overwritten by new packets before the application 
 Packets that arrive when the application is processing the data must be queued,
 either by the network device or by the device driver.
 That means uIP relies on the hardware when it comes to buffering.
-Most single-chip ethernet controllers have on-chip buffers
+Most single-chip Ethernet controllers have on-chip buffers
 that are large enough to contain at least 4 maximum sized Ethernet frames~\cite{contiki-docs}.
 This way uIP does not have to have its own buffer structures and thus
 needs only minimal memory amount.
 Possible packet loss is a trade-off for minimalism and ability to communicate using TCP/IP.
 It is not such a big deal for communication using TCP on transport layer
-because of acknowledgement system used in TCP to prevent data loss.
+because of acknowledgement scheme used in TCP to prevent data loss.
 However data carried on UDP can be irrecoverably lost.
 
-As was expected the measurements shows that uIP implementation provides very low
+As was expected, measurements show that uIP implementation provides very low
 throughput, particularly when communicating with a PC host~\cite{thesis-towards}.
 However small systems that uIP is targeting usually do not produce enough data
 to make the performance degradation a serious problem~\cite{thesis-towards}.
 
 Despite being so small uIP is not only RFC compliant but also IPv6 Ready Phase 1 certified.
 uIP is written in C programming language and it is fully integrated to Contiki operating system.
-In uIP, there are even some more tricks to smaller the stack
+In uIP, there are even some more tricks to shrink the stack
 but complete uIP description is outside the scope of this thesis.
 Please refer to Contiki documentation for more details~\cite{contiki-docs}.

@@ -3,12 +3,12 @@
 %
 % Autor:    Simon Lehmann <simon.lehmann@gmx.de>
 % Version:  2.0 (2009-09-10)
-% 
-% Versionshistorie: 
+%
+% Versionshistorie:
 % | 2.0 | 2009-09-10 | Umbenennung FH Wiesbaden in Hochschule RheinMain
 % | 1.1 | 2008-11-15 | Layout verbessert
 % | 1.0 | 2008-06-19 | Urversion
-% 
+%
 % Das Template verwendet die KOMA-Script Dokumentenklassen und setzt einige
 % LaTeX Pakete voraus, die unter Umständen nicht im Standardumfang der lokalen
 % LaTeX Distribution enthalten sind. Erhältlich sind diese Pakete über das CTAN
@@ -22,7 +22,7 @@
 % Es sind für die variablen Felder auf der Titelseite und den formalen Erklär-
 % ungen Befehle definiert, mit denen diese gesetzt werden können. Siehe dazu
 % weiter unten den Abschnitt 'Vorspann'.
-% 
+%
 % Für die Glossarerstellung wird das glossaries Paket als Nachfolger von
 % glossary verwendet. Das Paket ist leider noch nicht in den meisten Distribu-
 % tionen von Haus aus verfügbar und muss eventuell manuell über das CTAN (s.o.)
@@ -51,7 +51,7 @@
 
 %\usepackage{graphics}
 %\usepackage{epsfig}
-  
+
 \usepackage[pdftex]{graphicx}
 \usepackage{fancyhdr}
 \usepackage{multirow}
@@ -93,7 +93,7 @@ morekeywords={*,...}               % if you want to add more keywords to the set
 }
 
 % Laden von weiteren, nützlichen Paketen (je nach Bedarf)
-%\usepackage{subfigure} 
+%\usepackage{subfigure}
 %\usepackage{varioref}
 %\usepackage{framed}
 %\usepackage{longtable}
@@ -193,13 +193,6 @@ morekeywords={*,...}               % if you want to add more keywords to the set
 
 % und so weiter ...
 
-% ---------------------------------- Anhänge -----------------------------------
-% In diesem Teil werden alle Anhänge eingefügt, die auch als ganz normale Kapi-
-% tel abgelegt werden.
-\appendix
-
-\include{prilohy}
-
 % Ausgabe des Glossars (oder der Glossare, wenn mehrere definiert sind)
 \printglossaries
 
@@ -207,5 +200,12 @@ morekeywords={*,...}               % if you want to add more keywords to the set
 %\bibliographystyle{geralpha}
 \bibliographystyle{alpha}
 \bibliography{literatura}
+
+% ---------------------------------- Anhänge -----------------------------------
+% In diesem Teil werden alle Anhänge eingefügt, die auch als ganz normale Kapi-
+% tel abgelegt werden.
+\appendix
+
+\include{prilohy}
 
 \end{document}

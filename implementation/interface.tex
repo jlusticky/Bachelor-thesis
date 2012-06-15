@@ -4,16 +4,18 @@
 \section{Operating system time interface}
 %Since there is no way of setting, getting and adjusting the time in Contiki OS,
 %the interface for setting, getting and adjusting time was developed in this thesis.
-The structure similar to POSIX {\it{timespec}} structure (described in section~\ref{sec:others-posix})
-was implemented for expressing time values.
-However name was chosen {\it{time\_spec}} to avoid collision with existing POSIX-compliant systems.
+New structure for expressing time values was implemented.
+This structure is similar to POSIX {\it{timespec}} structure,
+described in section~\ref{sec:others-posix}.
+However, name was chosen {\it{time\_spec}} to avoid collision with
+existing POSIX-compliant systems.
 \begin{lstlisting}
 struct time_spec {
   long sec;
   long nsec;
 };
 \end{lstlisting}
-The structure representing time specification uses signed long values.
+This structure consists of two signed long values for expressing seconds and nanoseconds.
 The value 0 seconds and 0 nanoseconds is equal to Unix prime epoch (1st January 1970).
 In case of seconds part, the 32-bit signed long value was chosen because
 it can conveniently
@@ -34,7 +36,7 @@ the microsecond precision would also require at least 32-bit data type -
 one second has 1~000~000 microseconds, which is more than maximum expressible value of unsigned 16-bit
 data type $2^{16}$-1 (65~535).
 
-It should be noted that signed long data type does not have to always result in 32-bit variable -
+It should be noted that signed long data type does not have to always result in a 32-bit variable -
 it is up to compiler what data width it chooses for each data type.
 But as ISO C99 standard states, the maximum value for an object of type signed long
 shall be greater or equal $2^{31}$-1 (2~147~483~647)~\cite{c99}.
@@ -91,7 +93,7 @@ clock_get_time(struct time_spec *ts)
   ts->nsec = (1000000000 / CLOCK_SECOND) * scount;
 }
 \end{lstlisting}
-Because {\it{1000000000}} and {\it{CLOCK\_SECOND}} are both constants, compiler is able to
+Because {\it{1000000000}} and {\it{CLOCK\_SECOND}} are both constants, the compiler is able to
 calculate the result of division during compile time.
 Furthermore as both numbers are integers, the result is integer as well~\cite{c99}.
 The most of CPU time is therefore spent on multiplication.

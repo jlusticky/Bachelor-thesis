@@ -4,9 +4,9 @@
 \section{Protothreads}\label{sec:contiki-protothreads}
 Protothreads provide a way to run C functions quasi-parallely,
 that is, a C functions work in a way similar to thread~\cite{paper-protothreads}.
-In Contiki Protothreads allow process to wait for incoming events and
+In Contiki, Protothreads allow a process to wait for incoming events and
 while waiting for an event to occur, another function could be run.
-The core of this solution is C {\it switch} statement used in conjunction with variable (called local continuation)
+The core of this solution is C {\it switch} statement used in conjunction with a variable (called local continuation)
 containing position, where the function was interrupted~\cite{paper-protothreads}.
 Next time the function continues from this point.
 
@@ -29,10 +29,10 @@ After invocation the Protothread continues executing the code following the {\it
 To understand implementation of Protothreads and how do they actually work,
 please refer to appendix~\ref{app:protothreads}, where an example of usage is shown.
 
-Since Protothreads are implemented using standard C, library providing Protothreads can be used everywhere C toolchain is available.
+Since Protothreads are implemented using standard C, a library providing Protothreads can be used everywhere C toolchain is available.
 But there are some cons to consider. Because Protothreads are stackless, a Protothread can only run within a single C function.
 There is also no way of storing automatic local variables~\cite{contiki-docs}.
 And since Protothreads are implemented using C {\it switch} statement, and these can
 not be nested, the code that uses Protothreads cannot use {\it switch} statements itself.
-Workaround for storing local variables is to prepend them with the {\it static} keyword, which make them being put into data segment
+A workaround for storing local variables is to prepend them with the {\it static} keyword, which makes them being put into data segment
 by compiler and thus remembering the value between the function calls~\cite{paper-protothreads}.

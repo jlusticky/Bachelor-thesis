@@ -3,10 +3,11 @@
 
 \chapter{Network Time Protocol}
 Network Time Protocol provides mechanism for synchronising systems' clocks over the variable-latency data network.
-NTP was introduced and is still developed by David Mills at University of Delaware in Newark, United States~\cite{ntp-history}.
+NTP was introduced and is still developed by
+David Mills at University of Delaware in Newark, United States of America~\cite{ntp-history}.
 NTP is arguably the longest running, continuously operating,
 ubiquitously available protocol in the Internet~\cite{ntp-overview}.
-Despite being one of the oldest surviving protocol on the Internet, it is not old-fashioned at all.
+Despite being one of the oldest surviving protocols on the Internet, it is not old-fashioned at all.
 NTP version 4 described in RFC~5905~\cite{rfc5905} is an update to older NTPv3 to accommodate NTP to IPv6.
 Version 4 also includes improvements in
 mitigation and clock discipline algorithms that extend
@@ -21,7 +22,7 @@ for authenticating servers to clients.
 Simple Network Time Protocol is simplified NTP implementation lacking complex
 synchronisation algorithms used by NTP~\cite{rfc5905}.
 SNTP is also described in RFC 5905.
-The packet of SNTP has the same structure and content as packet of NTP~\cite{rfc5905}.
+The packets of SNTP have the same structure and content as packets of NTP~\cite{rfc5905}.
 From observing the network communication, one can not tell, whether the client
 is full blown NTP implementation or just SNTP.
 SNTP is a simplified sub-set of algorithms used by the NTP protocol

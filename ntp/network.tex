@@ -4,7 +4,7 @@
 \section{Network and timestamps}\label{sec:ntp-network}
 Network specification of NTP defines that
 the protocol uses the User Datagram Protocol (UDP) on port number 123~\cite{ianna-ports,rfc5905}.
-Reliable message delivery such as TCP can actually make the delivered of
+Reliable message delivery such as TCP can actually make the delivery of
 NTP packet less reliable since retries
 would increase the delay value and other errors~\cite{rfc5905}.
 This is mostly due to overhead of communication with TCP on transport layer.
@@ -12,8 +12,8 @@ This is mostly due to overhead of communication with TCP on transport layer.
 NTP manipulates with the time through timestamps - a record of time.
 NTP timestamp has two fields: the seconds field expressing the number of seconds
 and the fraction field expressing fraction of a second~\cite{rfc5905}.
-All NTP timestamps are represented in twos-complement format, with
-bits numbered in big-endian fashion from zero starting at the left, or high-order, position~\cite{rfc5905}.
+All NTP timestamps are represented in 2-complement format, with
+bits numbered in big-endian fashion from zero starting at the left, or high-order position~\cite{rfc5905}.
 There are two formats of timestamp in NTP packet structure:
 long 64-bit and short 32-bit as shown on figure~\ref{fig:ntp-timestamps}.
 The 64-bit long timestamp used by NTP consists of a 32-bit unsigned seconds
@@ -52,35 +52,35 @@ But strictly speaking an NTP timestamp is a truncated NTP Date format~\cite{rfc5
 
 Standard NTP packet structure without extension fields and
 Autokey security protocol is shown on figure~\ref{fig:ntp-packet}.
-This structure is 48 bytes long and contains following thirteen fields:
+This structure is 48 bytes long and contains the following thirteen fields:
 \begin{itemize}
 \item
-Leap Indicator is 2-bit integer warning of an impending leap
+Leap Indicator is a 2-bit integer warning of an impending leap
 second to be inserted or deleted in the last minute of the current
 month~\cite{rfc5905}.
 \item
-Version Number is 3-bit integer representing the NTP
+Version Number is a 3-bit integer representing the NTP
 version number, currently~4.
 \item
-Mode is 3-bit integer representing protocol mode.
-This is the only field distinguish between server and client in NTP.
-In client-server communication model, the client sets this field to value 3 (client) in the request,
+Mode is a 3-bit integer representing protocol mode.
+This is the only field distinguishing between server and client in NTP.
+In the client-server communication model, the client sets this field to value 3 (client) in the request,
 and the server sets it to value 4 (server) in the reply.
 In broadcast communication model, the server sets this field to value 5 (broadcast).
 Other modes are not used by SNTP servers and clients~\cite{rfc4330}.
 \item
-Stratum is 8-bit integer representing the stratum as described in section~\ref{sec:ntp-topology}.
+Stratum is an 8-bit integer representing the stratum as described in section~\ref{sec:ntp-topology}.
 If the Stratum field is 0, which implies unspecified or invalid, the
 Reference Identifier field can be used to convey messages useful for
 status reporting and access control.
 These are called Kiss-o'-Death (KoD)
 packets and the ASCII messages they convey are called kiss codes~\cite{rfc5905}.
 \item
-Poll is 8-bit signed integer representing the maximum interval between
+Poll is an 8-bit signed integer representing the maximum interval between
 successive messages, in log2 seconds.
 Suggested default limits for minimum and maximum poll intervals are 6 and 10, respectively~\cite{rfc5905}.
 \item
-Precision is 8-bit signed integer representing the precision of the
+Precision is an 8-bit signed integer representing the precision of the
 system clock, in log2 seconds.
 For instance, a value of -20
 corresponds to a precision of about one microsecond ($2^{-20}$~s)~\cite{rfc5905}.
@@ -91,9 +91,9 @@ total round-trip delay to the reference clock~\cite{rfc5905}.
 Root Dispersion is short 32-bit NTP timestamp expressing
 total dispersion to the reference clock~\cite{rfc5905}.
 \item
-Reference Identifier is 32-bit code identifying the particular server used for synchronisation
+Reference Identifier is a 32-bit code identifying the particular server used for synchronisation
 or reference clock.
-For packet stratum 0, this is four-character ASCII string called kiss code.
+For packet stratum 0, this is a four-character ASCII string called kiss code.
 Kiss codes are particularly used by server to tell the client to stop sending packets or
 to increase its polling interval.
 For stratum 1, this is a four-octet, left-justified, zero-padded ASCII
@@ -104,7 +104,7 @@ If communicating over IPv4, the identifier is IPv4 address.
 If communicating over IPv6, it is the first four octets of the MD5 hash of the IPv6 address~\cite{rfc5905}.
 \item
 Reference Timestamp is long 64-bit NTP timestamp expressing the time
-when system clock was last synchronised against reference clock~\cite{rfc5905}.
+when the system clock was last synchronised against reference clock~\cite{rfc5905}.
 \item
 Originate Timestamp (or Origin Timestamp) is long 64-bit NTP timestamp expressing the time
 at the client when the request departed for the server~\cite{rfc5905}.

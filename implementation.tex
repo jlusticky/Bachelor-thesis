@@ -16,13 +16,13 @@ DNS resolution of IPv6 addresses was not implemented in Contiki OS
 at the time of writing~\cite{contiki-docs}.
 The main problem of NTP client implementation for Contiki is therefore total
 lack of real-time support.
-Not only no common interface availability, but also
+Not only no common interface is available, but also
 almost no platform-specific code has been implemented towards time support yet.
 Contiki provides basic clock interface particularly for use of timers though.
 This interface is common for all supported platforms,
 but the particular implementation is platform specific.
 
-Another deal might be possible packet loss if communication uses UDP on transport layer.
+Another problem might be a possible packet loss if communication uses UDP on transport layer.
 The reason why this can happen often is explained in section~\ref{sec:contiki-uip}.
 However, packet loss is not a matter for NTP if using either broadcast or unicast mode.
 In broadcast mode, lost server packet causes no setting or adjusting time of client's

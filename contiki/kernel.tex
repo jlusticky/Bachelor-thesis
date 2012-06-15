@@ -21,7 +21,7 @@ Every Contiki process consists of a process control block and a process thread~\
 The process control block contains run-time information about the process and
 the process thread contains the code of the process.
 Among other things, the process control block contains
-textual name of the process, pointer to the process thread and state of the process.
+textual name of the process, a pointer to the process thread and state of the process.
 The process thread is implemented as a single Protothread,
 that is invoked from the process scheduler in the Contiki kernel~\cite{contiki-wiki-processes}.
 
@@ -53,7 +53,7 @@ that acts like a simple dispatcher calling these functions~\cite{contiki-docs}.
 Just like Protothreads, processes are also implemented using macros,
 making them fully standard C compatible.
 
-In Contiki, code run in either of two execution contexts:
+In Contiki, code runs in either of two execution contexts:
 cooperative, in which code never preempts other code, and preemptive,
 which preempts the execution of cooperative code and returns control
 when preemptive code is finished.
@@ -83,7 +83,7 @@ Asynchronous events are delivered to the receiving process
 some time after they have been posted~\cite{contiki-wiki-processes}.
 Before delivery, the asynchronous events are held on event queue inside Contiki kernel.
 The kernel loops through this event queue and delivers
-the event to the process by invoking the process. 
+the event to the process by invoking the process.
 The receiver of an asynchronous event can be either a specific process
 or all running processes~\cite{contiki-wiki-processes}.
 

@@ -8,12 +8,12 @@ In unicast communication mode, NTP client sends request and NTP server sends res
 In broadcast communication mode, the client sends no request
 and waits for a broadcast message from one or more servers~\cite{rfc5905}.
 
-NTP servers are rated with stratum (plural form strata) number which represents their position
+NTP servers are rated with stratum (plural form strata) number representing their level
 in an NTP hierarchy and their possible accuracy~\cite{rfc5905}.
 Primary (stratum 1) servers synchronise to the reference clock directly traceable to UTC via
 radio, satellite or modem.
 The stratum 2 servers synchronise to stratum 1
-servers via hierarchical subnet.
+servers via a hierarchical subnet.
 The stratum 3 servers synchronise to stratum 2 servers, and so on.
 The maximum stratum is 15, number 16 means unsynchronised server
 and higher numbers (up to 255) are reserved~\cite{rfc5905}.
