@@ -15,19 +15,13 @@
 For keeping, measuring and resolving time computer needs a clock.
 Computer clock is an electronic device that counts oscillations in a
 quartz crystal oscillator with a particular frequency~\cite{thesis-sync}.
-These clocks are essentially timers associated with counter register and
-compare register.
-
-The timer counts the oscillations of the crystal, which is associated with
-a counter register and a holding register.
-For each oscillation in the crystal, the counter is decremented by one.
-When the counter becomes zero, an interrupt is generated and the
-counter is reloaded from the holding register.
-Therefore, it is possible to
-program a timer to generate an interrupt by setting an appropriate value in
-the holding register, where each interrupt is called a clock tick.
-At each clock tick,
-the interrupt procedure increments the clock value stored in memory~\cite{thesis-sync}.
+These clocks are essentially timers associated with a counter register and
+are capable of generating a hardware interrupt.
+The counter register counts the oscillations of the crystal.
+When the counter registers reaches a specific value,
+an interrupt is generated.
+Such interrupt is called a clock tick and at each clock tick,
+interrupt service routine increments a system clock value stored in memory~\cite{thesis-sync}.
 
 In a typical computer clock design, the clock oscillator drives a counter that produces processor interrupts at
 fixed tick intervals in the range 1-20 ms.
@@ -69,6 +63,7 @@ kernel/system\_call.s - timer\_interrupt() in assembly - increments jiffies
 The current real time is provided by CURRENT\_TIME (startup\_time+jiffies/HZ) => since jiffies is integer and HZ is 100 => resolution of 10ms.
 kernel/sys.c - sys\_time() - CURRENT\_TIME returned
 
+\section{Clock quality}
 
 \section{Interrupts}
 Older x86 processors used an interrupt mechanism to switch from
