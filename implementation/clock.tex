@@ -81,6 +81,8 @@ The interrupt service routine can be used for updating the value in compare regi
 %have the double buffering feature. If the new value written to OCR2A is lower than the current
 %value of TCNT2, the counter will miss the compare match.
 
+
+% TO NTP INTERFACE
 Adjusting time - CLOCK\_COMPARE\_REGISTER = 31 => 128Hz => 1s = 1s
 FREQ = 32768/8 / 32
 CLOCK\_COMPARE\_REGISTER = 30 => ca132.129Hz => 1s = ca1.032258s
@@ -90,7 +92,17 @@ FREQ = 32768/8 / 33
 
 => fastest adjust is 0,03s / s
 
-% READ - datasheet - 17.9. and 17.11.6 BUSY bit
+% TO NTP INTERFACE
+When writing to compare register, the value is transferred to a
+temporary register, and latched after two positive edges of a source clock~\cite{avr-datasheet}.
+The user should not write a new value before the contents
+of the temporary register have been transferred to its destination.
+To detect that a transfer to the destination register has taken place,
+the Asynchronous Status Register - ASSR has been implemented.
+Since writing to compare register occurs only once within interrupt CONTEXT, % context?
+this detection is not mandatory.
+
+
 
 This is enough for implementing a reasonable time interface and using it for NTP client later.
 
