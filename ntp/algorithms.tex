@@ -13,7 +13,7 @@ Destination Timestamp~\cite{rfc5905}.
 This timestamp is represented as T4 on figure~\ref{fig:ntp-client-server}
 and is not part of NTP packet structure.
 
-Using these four timestamps, NTP client can compute
+Using these four timestamps, NTP client using unicast communication mode can compute
 the local clock offset which is given by $\theta = \frac{1}{2}[(t_2 - t_1) + (t_3 - t_4)]$,
 where $t_1$ is the time of the request packet transmission (Origin Timestamp),
 $t_2$ is the time of the request packet reception (Receive Timestamp),
@@ -23,7 +23,14 @@ The implicit assumption in the above is that one-way delay is
 statistically half of round-trip delay~\cite{rfc5905},
 which is given by $\delta = (t_4 - t_1) - (t_3 - t_2)$.
 
-When computing the result from more servers the intersection algorithm is used
+In broadcast communication mode, Origin and Receive Timestamps are not accounted.
+The client computes its local clock offset which is given by $\theta = t_3 - t_4$.
+The implicit assumption in the above is that one-way delay from server to client is zero.
+Since this is never the case, it is useful to provide an
+initial volley where the client exchanges several packets with the server in
+order to calibrate the propagation delay~\cite{rfc5905}.
+
+When computing the result from more servers, the intersection algorithm is used
 for selecting the possible most exact timestamp received from various servers~\cite{ntp-improved-algor,rfc5905}.
 Intersection algorithm is derived from Murzollo algorithm but the basic
 computation remains the same~\cite{ntp-history}.

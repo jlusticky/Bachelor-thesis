@@ -72,7 +72,7 @@ and no dependent clients.
 
 It is useful to provide an
 initial volley where the client operating in mode 3 exchanges several packets with the server in
-order to calibrate the propagation delay
+order to calibrate the propagation delay % ntp/algorithms.tex
 
 The operating system is assumed to provide two functions, one to set the time
 directly, for example the Unix settimeofday()1 function, and another to adjust the time in small
@@ -80,6 +80,11 @@ increments advancing or retarding the time by a designated amount, for example t
 adjtime() function. In the intended design the clock discipline process uses the adjtime() function
 if the adjustment is less than a designated threshold, and the settimeofday() function if above the
 threshold.
+
+A SNTP client using the on-wire protocol has a single server and no downstream clients. It can
+operate with any subset of the NTP on-wire protocol, the simplest using only the transmit
+timestamp of the server packet and ignoring all other fields. However, the additional complexity
+to implement the full on-wire protocol is minimal and is encouraged.
 
 
 --
