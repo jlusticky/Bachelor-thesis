@@ -1,7 +1,7 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky
 
-\chapter{Hardware real-time support}
+\chapter{Hardware time support}
 \begin{figure}
 	\centering
 	\includegraphics[width=6cm,keepaspectratio]{fig/clock.png}
@@ -23,9 +23,12 @@ interrupt service routine increments a system clock value stored in memory~\cite
 \section{Time handling}
 The original IBM PC did know what time it was, provided you typed it in when you booted it,
 but it forgot when you turned it off~\cite{timecounters}.
-Later desktop computers %with CPU based on Intel x86 architecture
+Newer desktop computers %with CPU based on Intel x86 architecture
 have Real-Time Clock (RTC) in CMOS chip that is battery powered,
 so it keeps time when the computer is powered off~\cite{timecounters}.
+
+%Precision of RTC is small - 1s.
+%Therefore keeps an operating systems its own clock inside the kernel - the system clock.
 
 %Therefore a usual process of time handling
 %used by first Unix-like operating systems on x86 architecture
@@ -75,13 +78,14 @@ The Kernel Discipline =  kernel clock model RFC 1589
 However, some clock implementations do not allow small corrections to be applied to the system clock, and there is no standard interface to monitor the system clock's quality.
 => divide problem (in RFC)
 
-
 In a typical computer clock design, interrupts are produced at
 fixed tick intervals in the range 1-20~ms~\cite{nanokernel}.
 
-There are many possible hardware configurations among these computers today.
-HPET, ... %nasleduje TODO-...
-
+There are many possible hardware configurations among desktop computers today,
+that an operating system can use for a real-time support -
+Programmable Interval Timer,
+Time Stamp Counter register or High Precision Event Timer.
+The concept described above applies more or less to them as well
 and its description is outside the scope of this thesis.
 Moreover, a new design called {\it{tickless}} or {\it{dynamic ticks}}
 has been in development in recent years~\cite{kernel-timer-systems}.
@@ -133,6 +137,6 @@ but it could also be air pressure or magnetic fields~\cite{ntp-faq}.
 For keeping an accurate time a clock not only needs to be read, it must be also set.
 However, simply setting the clock to remove the offset would cause unpredictable time steps.
 Since time is an always monotonically increasing function, this is not a desired behaviour.
-Minimising the time offset and frequency difference between
-the reference clock and the local clock without any time step
-is one of the main goals of Network Time Protocol and its algorithms.
+For minimising the time offset and frequency difference between
+the reference clock and the local clock without any time step,
+an NTP client is often used.
