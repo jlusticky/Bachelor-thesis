@@ -35,20 +35,8 @@ Unfortunately Intel x86 architecture is heavily influenced by backward compatibi
 and many hardware configurations are in use today -
 e.g. the time value can also be stored in Binary Code Digit (BCD) encoding in RTC.
 
-In year 19xx /, Starting with Intel 386,
-Intel introduced
+Starting with Intel 386, Intel introduced
 Programmable Interrupt Controller (PIT) Intel 8253 and 8254 - 3 counters (counter 0 interrupt to OS)
-
-The problem with this device is that it only has
-8bit bus-width, so reading a 16 bit timestamp takes
-3 I/O operations: one to latch the count in an internal register,
-and two to read the high and low parts
-of that register respectively~\cite{timecounters}.
-Obviously, on multi-CPU systems this cannot be
-done without some kind of locking mechanism
-preventing the other CPUs from trying to do the
-same thing at the same time~\cite{timecounters}.
-
 
 Used by historic versions of Linux
 => read initial time from RTC, setup PIT and interrupts (IRQ 0, INT 8), increment jiffies on every interrupt, provide application resolution of jiffies
@@ -76,36 +64,46 @@ However, some clock implementations do not allow small corrections to be applied
 => divide problem (in RFC)
 
 \section{Clock quality factors}
-The smallest possible increase of time the clock model allows is called {\it{resolution}}~\cite{ntp-faq}.
-If a clock increments its value only once per second, its resolution is also one second.
-
-A high resolution does not help anything if the clock can not be read.
-Therefore the smallest possible increase of time that can be experienced
-by a program is called {\it{precision}}~\cite{ntp-faq}.
-
-When repeatedly reading the time, the difference may vary almost randomly.
-The difference of these differences (second derivation) is called {\it{jitter}}~\cite{ntp-faq}.
-
-A clock not only needs to be read, it must be also set.
-The {\it{accuracy}} determines how close the clock is to an official time reference like UTC~\cite{ntp-faq}.
-
 Unfortunately all the common clock hardware is not very accurate.
 This is simply because the frequency that makes time increase is never exactly right.
 Even an error of only 0.001\% would make a clock be off by almost one second per day~\cite{ntp-faq}.
+Almost every clock can have an unique behaviour depending on many conditions.
+The following factors are therefore used for expressing clock quality and behaviour:
+\begin{itemize}
+\item
+Frequency is the rate at which a clock progresses~\cite{thesis-sync}.
+\item
 It is sometimes convenient
 to express frequency offsets in parts-per-million~(PPM), where~1~PPM
 is equal to $10^{-6}$ $\frac{s}{s}$ (0.0001\%)~\cite{rfc5905}.
+\item
+From long-term observation one may also notice variations in the clock frequency.
+The difference of the frequency is called wander~\cite{ntp-faq}.
+There can be clocks with poor short-term stability, but with good long-term stability, and vice versa.
+\item
+Resolution is the smallest possible increase of time the clock model allows.
+If a clock increments its value only once per second, its resolution is also one second~\cite{ntp-faq}.
+\item
+Precision is the smallest possible increase of time that can be experienced
+by a program~\cite{ntp-faq}.
+\item
+When repeatedly reading the time, the difference may vary almost randomly.
+The difference of these differences (second derivation) is called jitter~\cite{ntp-faq}.
+\item
+Accuracy determines how close the clock is to an official time reference~\cite{ntp-faq}.
+\item
+Offset is the difference between the time reported by a clock and the reference time~\cite{thesis-sync}.
+\item
+Reliability determines the time a clock can keep within a specified accuracy~\cite{ntp-faq}.
+\end{itemize}
+
 Real clocks have a frequency error of several PPM quite frequently
 and some of the best clocks available still have errors of about $1^{-8}$PPM~\cite{ntp-faq}.
 
 Even if the systematic error of some clock model is known, the clock will never be perfect.
 This is because the frequency varies over time, mostly influenced by temperature,
 but it could also be air pressure or magnetic fields, etc.
-{\it{Reliability}} determines the time a clock can keep the time within a specified accuracy~\cite{ntp-faq}.
 
-For long-term observation one may also notice variations in the clock frequency.
-The difference of the frequency is called {\it{wander}}~\cite{ntp-faq}.
-Therefore there can be clocks with poor short-term stability, but with good long-term stability, and vice versa.
-
-The difference between the time reported by a clock and the
-is called {\it{offset}}~\cite{thesis-sync}.
+For keeping an accurate time a clock not only needs to be read, it must be also set.
+However, simply setting the clock to remove the offset would cause unpredictable time steps.
+Since time shall be an always monotonically increasing function, this is not a desired behaviour.
