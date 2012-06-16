@@ -56,7 +56,7 @@ fractionl_to_nsec(uint32_t fractionl)
 	 * Greatest common divisor of 1000000000 and 2^32 is 2^9, therefore
 	 * i * (1000000000 / 2^9) / (2^32 / 2^9) = i * 1953125 / 8388608,
 	 * which is equal to i * 5^9 / 2^23.
-	 * This can be done using sequential division and multiplication,
+	 * This can be computed using sequential division and multiplication,
 	 * which in turn can be done using shifts and additions.
 	 */
 	nsec = (nsec >> 1) + (nsec >> 3); // nsec = nsec/2 + nsec/8 = (5*nsec) / 8
@@ -83,11 +83,9 @@ fractionl_to_nsec(uint32_t fractionl)
 	 */
 	nsec = nsec >> 2;
 #elif 0
-	//nsec = ((double)nsec * 1000000000) / 0x100000000UL; // >> 32
-	nsec = ((double)nsec * 1000000000) / 0xFFFFFFFF;
+	nsec = ((double)nsec * 1000000000) / 0x100000000UL; // >> 32
 #else
-	//nsec = ((uint64_t)nsec * 1000000000) / 0x100000000UL; // >> 32
-	nsec = ((uint64_t)nsec * 1000000000) / 0xFFFFFFFF;
+	nsec = ((uint64_t)nsec * 1000000000) / 0x100000000UL; // >> 32
 #endif
 	return nsec;
 }
