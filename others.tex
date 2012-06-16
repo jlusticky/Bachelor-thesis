@@ -6,6 +6,10 @@ NTP daemon is an application running in user-space using kernel calls to set, ge
 adjust system time.
 The kernel interface is specified by POSIX standard on Unix-like operating systems~\cite{posix}.
 
+%Older x86 processors used an interrupt mechanism to switch from
+%user-space to kernel-space, but new x86 processors provide instructions
+%that optimize this transition (using sysenter and sysexit instructions)~\cite{ibm-linux-system-calls}.
+
 \input{others/posix.tex}
 
 \input{others/embedded.tex}

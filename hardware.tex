@@ -19,21 +19,18 @@ When the counter registers reaches a specific value,
 an interrupt is generated.
 Such interrupt is called a {\it{clock tick}} (or {\it{timer tick}}) and at each clock tick,
 interrupt service routine increments a system clock value stored in memory~\cite{thesis-sync}.
+
+\section{Time handling}
 In a typical computer clock design, interrupts are produced at
 fixed tick intervals in the range 1-20~ms~\cite{nanokernel}.
-In recent years, however, a new design called {\it{tickless}} or {\it{dynamic ticks}}
-has been in development~\cite{kernel-timer-systems}.
-This allows an operating system kernel to run without a regular timer tick.
-Such design is not used by Contiki OS~\cite{contiki-docs} and
-therefore not further discussed in this thesis.
-
 
 A typical desktop computer today includes CPU based on Intel x86 architecture.
 Real-Time Clock (RTC) in CMOS memory that is battery powered
 
-Unfortunately Intel x86 architecture is heavily influenced by backward compatibility,
-and many hardware configurations are in use today -
-e.g. the time value can also be stored in Binary Code Digit (BCD) encoding in RTC.
+Therefore a usual process of time handling
+used by first Unix-like operating systems on x86 architecture
+was as follows.
+The kernel read the current time from RTC and stored its value in memory during boot.
 
 Starting with Intel 386, Intel introduced
 Programmable Interrupt Controller (PIT) Intel 8253 and 8254 - 3 counters (counter 0 interrupt to OS)
@@ -48,11 +45,12 @@ kernel/system\_call.s - timer\_interrupt() in assembly - increments jiffies
 The current real time is provided by CURRENT\_TIME (startup\_time+jiffies/HZ) => since jiffies is integer and HZ is 100 => resolution of 10ms.
 kernel/sys.c - sys\_time() - CURRENT\_TIME returned
 
-\section{Interrupts}
-Older x86 processors used an interrupt mechanism to switch from
-user-space to kernel-space, but new x86 processors provide instructions
-that optimize this transition (using sysenter and sysexit instructions)~\cite{ibm-linux-system-calls}.
+Unfortunately Intel x86 architecture is heavily influenced by backward compatibility,
+and many hardware configurations are in use today -
+e.g. the time value can also be stored in Binary Code Digit (BCD) encoding in RTC.
 
+and there are many possible hardware configurations among these computers today.
+HPET, ... %nasleduje TODO-...
 
 TICK - http://www.ntp.org/ntpfaq/NTP-s-sw-clocks-tick.htm
 
@@ -62,6 +60,13 @@ The Kernel Discipline =  kernel clock model RFC 1589
 
 However, some clock implementations do not allow small corrections to be applied to the system clock, and there is no standard interface to monitor the system clock's quality.
 => divide problem (in RFC)
+
+%FROM HERE DONE
+In recent years, a new design called {\it{tickless}} or {\it{dynamic ticks}}
+has been in development~\cite{kernel-timer-systems}.
+This allows an operating system kernel to run without a regular timer tick.
+Such design is not used by Contiki OS~\cite{contiki-docs} and
+therefore not further discussed in this thesis.
 
 \section{Clock quality factors}
 Unfortunately all the common clock hardware is not very accurate.
@@ -90,20 +95,23 @@ by a program~\cite{ntp-faq}.
 When repeatedly reading the time, the difference may vary almost randomly.
 The difference of these differences (second derivation) is called jitter~\cite{ntp-faq}.
 \item
-Accuracy determines how close the clock is to an official time reference~\cite{ntp-faq}.
+Accuracy determines how close is the clock to an official time reference~\cite{ntp-faq}.
 \item
-Offset is the difference between the time reported by a clock and the reference time~\cite{thesis-sync}.
+Offset is the difference between the time read by the clock and the reference time~\cite{thesis-sync}.
 \item
 Reliability determines the time a clock can keep within a specified accuracy~\cite{ntp-faq}.
 \end{itemize}
 
+As mentioned before, all of the common hardware clock is not very accurate.
 Real clocks have a frequency error of several PPM quite frequently
 and some of the best clocks available still have errors of about $1^{-8}$PPM~\cite{ntp-faq}.
-
 Even if the systematic error of some clock model is known, the clock will never be perfect.
 This is because the frequency varies over time, mostly influenced by temperature,
-but it could also be air pressure or magnetic fields, etc.
+but it could also be air pressure or magnetic fields~\cite{ntp-faq}.
 
 For keeping an accurate time a clock not only needs to be read, it must be also set.
 However, simply setting the clock to remove the offset would cause unpredictable time steps.
-Since time shall be an always monotonically increasing function, this is not a desired behaviour.
+Since time is an always monotonically increasing function, this is not a desired behaviour.
+Minimising the time offset and frequency difference between
+the reference clock and the local clock without any time step
+is one of the main goals of Network Time Protocol and its algorithms.
