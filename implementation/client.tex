@@ -29,7 +29,9 @@ msg.precision = a;
 This will work for clock precision greater or equal 1s, i.e. CLOCK\_SECOND must be greater or equal 1.
 %refer to CLOCK\_SECOND - is always greater or equal 1
 
-The clock are set if the time difference is greater than XX seconds. %! TODO
+The clock are set if the time difference is equal or greater than
+treshold value. (3s)
+The reference NTP implementation uses 125 ms~\cite{rfc5905}.
 \begin{lstlisting}
 if (labs((signed long) (ts.sec - tmpts.sec)) > 2)
 {
