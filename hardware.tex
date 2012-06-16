@@ -2,9 +2,6 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \chapter{Hardware real-time support}
-%! TODO
-%TODO: Distinguish between TIME and CLOCK
-%We need clock~\cite{timecounters}.
 \begin{figure}
 	\centering
 	\includegraphics[width=6cm,keepaspectratio]{fig/clock.png}
@@ -20,16 +17,16 @@ are capable of generating hardware interrupts.
 The counter register counts the oscillations of the crystal.
 When the counter registers reaches a specific value,
 an interrupt is generated.
-Such interrupt is called a clock tick and at each clock tick,
+Such interrupt is called a {\it{clock tick}} (or {\it{timer tick}}) and at each clock tick,
 interrupt service routine increments a system clock value stored in memory~\cite{thesis-sync}.
+In a typical computer clock design, interrupts are produced at
+fixed tick intervals in the range 1-20~ms~\cite{nanokernel}.
+In recent years, however, a new design called {\it{tickless}} or {\it{dynamic ticks}}
+has been in development~\cite{kernel-timer-systems}.
+This allows an operating system kernel to run without a regular timer tick.
+Such design is not used by Contiki OS~\cite{contiki-docs} and
+therefore not further discussed in this thesis.
 
-In a typical computer clock design, the clock oscillator drives a counter that produces processor interrupts at
-fixed tick intervals in the range 1-20 ms.
-At each tick interrupt a software clock variable is updated by the
-number of microseconds or nanoseconds in the tick interval~\cite{timecounters}.
-
-
-There are two different types of interrupts - hardware and software interrupts.
 
 A typical desktop computer today includes CPU based on Intel x86 architecture.
 Real-Time Clock (RTC) in CMOS memory that is battery powered
@@ -80,13 +77,35 @@ However, some clock implementations do not allow small corrections to be applied
 
 \section{Clock quality factors}
 The smallest possible increase of time the clock model allows is called {\it{resolution}}~\cite{ntp-faq}.
-If your clock increments its value only once per second, your resolution is also one second.
-A high resolution does not help you anything if you can't read the clock.
+If a clock increments its value only once per second, its resolution is also one second.
+
+A high resolution does not help anything if the clock can not be read.
 Therefore the smallest possible increase of time that can be experienced
 by a program is called {\it{precision}}~\cite{ntp-faq}.
 
+When repeatedly reading the time, the difference may vary almost randomly.
+The difference of these differences (second derivation) is called {\it{jitter}}~\cite{ntp-faq}.
+
+A clock not only needs to be read, it must be also set.
+The {\it{accuracy}} determines how close the clock is to an official time reference like UTC~\cite{ntp-faq}.
+
+Unfortunately all the common clock hardware is not very accurate.
+This is simply because the frequency that makes time increase is never exactly right.
+Even an error of only 0.001\% would make a clock be off by almost one second per day~\cite{ntp-faq}.
 It is sometimes convenient
 to express frequency offsets in parts-per-million~(PPM), where~1~PPM
 is equal to $10^{-6}$ $\frac{s}{s}$ (0.0001\%)~\cite{rfc5905}.
 Real clocks have a frequency error of several PPM quite frequently
 and some of the best clocks available still have errors of about $1^{-8}$PPM~\cite{ntp-faq}.
+
+Even if the systematic error of some clock model is known, the clock will never be perfect.
+This is because the frequency varies over time, mostly influenced by temperature,
+but it could also be air pressure or magnetic fields, etc.
+{\it{Reliability}} determines the time a clock can keep the time within a specified accuracy~\cite{ntp-faq}.
+
+For long-term observation one may also notice variations in the clock frequency.
+The difference of the frequency is called {\it{wander}}~\cite{ntp-faq}.
+Therefore there can be clocks with poor short-term stability, but with good long-term stability, and vice versa.
+
+The difference between the time reported by a clock and the
+is called {\it{offset}}~\cite{thesis-sync}.
