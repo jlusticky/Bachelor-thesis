@@ -21,15 +21,36 @@ Such interrupt is called a {\it{clock tick}} (or {\it{timer tick}}) and at each 
 interrupt service routine increments a system clock value stored in memory~\cite{thesis-sync}.
 
 \section{Time handling}
-In a typical computer clock design, interrupts are produced at
-fixed tick intervals in the range 1-20~ms~\cite{nanokernel}.
+The original IBM PC did know what time it was, provided you typed it in when you booted it,
+but it forgot when you turned it off~\cite{timecounters}.
+Later desktop computers %with CPU based on Intel x86 architecture
+have Real-Time Clock (RTC) in CMOS chip that is battery powered,
+so it keeps time when the computer is powered off~\cite{timecounters}.
 
-A typical desktop computer today includes CPU based on Intel x86 architecture.
-Real-Time Clock (RTC) in CMOS memory that is battery powered
+%Therefore a usual process of time handling
+%used by first Unix-like operating systems on x86 architecture
+%was as follows.
+At each of these ticks the kernel then increases the internal variable called jiffies.
 
-Therefore a usual process of time handling
-used by first Unix-like operating systems on x86 architecture
-was as follows.
+---
+The kernel maintains the current time and advances it at every interrupt [2,16].
+The structure of the clock hardware of typical Intel PCs is shown in Figure 3.1.
+An oscillator generates clock pulses that drive a counter C.
+Every time the counter reaches the value of a programmable latch L,
+an interrupt is generated and the counter is reset.
+At each of these ticks the kernel then increases the internal variable jiffies,
+which simply counts clock ticks, as well as the variable xtime,
+which represents current time (as a struct timeval).
+
+Figure 3.1: PC clock hardware
+
+Time can be queried via the gettimeofday function.
+If it would simply return the value of xtime,
+just the accuracy of the timer interrupt frequency could be provided.
+However, gettimeofday queries the hardware counter C that is used for
+interrupt generation and includes the time passed since the last update of xtime.
+---~\cite{thesis-beat}.
+
 The kernel read the current time from RTC and stored its value in memory during boot.
 
 Starting with Intel 386, Intel introduced
@@ -45,13 +66,6 @@ kernel/system\_call.s - timer\_interrupt() in assembly - increments jiffies
 The current real time is provided by CURRENT\_TIME (startup\_time+jiffies/HZ) => since jiffies is integer and HZ is 100 => resolution of 10ms.
 kernel/sys.c - sys\_time() - CURRENT\_TIME returned
 
-Unfortunately Intel x86 architecture is heavily influenced by backward compatibility,
-and many hardware configurations are in use today -
-e.g. the time value can also be stored in Binary Code Digit (BCD) encoding in RTC.
-
-and there are many possible hardware configurations among these computers today.
-HPET, ... %nasleduje TODO-...
-
 TICK - http://www.ntp.org/ntpfaq/NTP-s-sw-clocks-tick.htm
 
 
@@ -61,9 +75,16 @@ The Kernel Discipline =  kernel clock model RFC 1589
 However, some clock implementations do not allow small corrections to be applied to the system clock, and there is no standard interface to monitor the system clock's quality.
 => divide problem (in RFC)
 
-%FROM HERE DONE
-In recent years, a new design called {\it{tickless}} or {\it{dynamic ticks}}
-has been in development~\cite{kernel-timer-systems}.
+
+In a typical computer clock design, interrupts are produced at
+fixed tick intervals in the range 1-20~ms~\cite{nanokernel}.
+
+There are many possible hardware configurations among these computers today.
+HPET, ... %nasleduje TODO-...
+
+and its description is outside the scope of this thesis.
+Moreover, a new design called {\it{tickless}} or {\it{dynamic ticks}}
+has been in development in recent years~\cite{kernel-timer-systems}.
 This allows an operating system kernel to run without a regular timer tick.
 Such design is not used by Contiki OS~\cite{contiki-docs} and
 therefore not further discussed in this thesis.
