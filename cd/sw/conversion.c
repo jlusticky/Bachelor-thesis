@@ -75,14 +75,14 @@ int main(void)
 	printf("NTP\t\tFLOAT\t\tOUR\t\tDELTA\n");
 
 	uint64_t i = 0; // current ntp fraction part (32 bit in packet)
-	for (i = 0; i <= 0xFFFFFFFF; i += 1) // try all possible ntp fraction values
+	for (i = 0; i <= 0xFFFFFFFFULL; i += 1) // try all possible ntp fraction values
 	{
 		verbose("%" PRIu64, i); // NTP
 		uint32_t correct, xmf;
 		/*
 		 * Compute the correct result using FPU
 		 */
-		correct = (double)i * 1000000000 / 0xFFFFFFFF;
+		correct = (double)i * 1000000000 / 0x100000000UL;
 		verbose("\t\t%" PRIu32, correct); // FLOAT - correct result using FPU
 
 		/*
@@ -90,7 +90,7 @@ int main(void)
 		 * Greatest common divisor of 1000000000 and 2^32 is 2^9, therefore
 		 * i * (1000000000 / 2^9) / (2^32 / 2^9) = i * 1953125 / 8388608,
 		 * which is equal to i * 5^9 / 2^23.
-		 * This can be done using sequential division and multiplication,
+		 * This can be computed using sequential division and multiplication,
 		 * which in turn can be done using shifts and additions.
 		 */
 		xmf = i;
@@ -98,7 +98,7 @@ int main(void)
 		xmf = (xmf >> 1) + (xmf >> 3); // xmf = xmf/2 + xmf/8 = (5*xmf) / 8
 		xmf = (xmf >> 1) + (xmf >> 3); // xmf = (5*xmf) / 8 = (25*i) / 64
 		xmf = (xmf >> 1) + (xmf >> 3); // (125*i) / 512 = (5^3*i) / 2^9
-		
+
 		/* Now we can multiply by 5^2 because then the total
 		 * multiplication coefficient for the original number i
 		 * will be: i * (1/(2^3)^4)*5^5 = i * 0.762939453,
@@ -108,7 +108,7 @@ int main(void)
 
 		xmf = (xmf >> 1) + (xmf >> 3);
 		xmf = (xmf >> 1) + (xmf >> 3);
-		
+
 		/* Again we can multiply by 5^2.
 		 * Total coefficient will be i * (1/(2^3)^7)*5^9 = i * 0.931322575
 		 */
@@ -123,7 +123,7 @@ int main(void)
 
 		int delta = correct - xmf;
 		verbose("\t\t%d\n", delta);  // difference between FPU and our conversion
-		
+
 		if (abs(delta) > maxdelta) // if maximum difference found
 		{
 			maxdelta = delta;
