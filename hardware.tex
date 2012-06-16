@@ -16,7 +16,7 @@ For keeping, measuring and resolving time computer needs a clock.
 Computer clock is an electronic device that counts oscillations in a
 quartz crystal oscillator with a particular frequency~\cite{thesis-sync}.
 These clocks are essentially timers associated with a counter register and
-are capable of generating a hardware interrupt.
+are capable of generating hardware interrupts.
 The counter register counts the oscillations of the crystal.
 When the counter registers reaches a specific value,
 an interrupt is generated.
@@ -63,8 +63,6 @@ kernel/system\_call.s - timer\_interrupt() in assembly - increments jiffies
 The current real time is provided by CURRENT\_TIME (startup\_time+jiffies/HZ) => since jiffies is integer and HZ is 100 => resolution of 10ms.
 kernel/sys.c - sys\_time() - CURRENT\_TIME returned
 
-\section{Clock quality}
-
 \section{Interrupts}
 Older x86 processors used an interrupt mechanism to switch from
 user-space to kernel-space, but new x86 processors provide instructions
@@ -79,3 +77,16 @@ The Kernel Discipline =  kernel clock model RFC 1589
 
 However, some clock implementations do not allow small corrections to be applied to the system clock, and there is no standard interface to monitor the system clock's quality.
 => divide problem (in RFC)
+
+\section{Clock quality factors}
+The smallest possible increase of time the clock model allows is called {\it{resolution}}~\cite{ntp-faq}.
+If your clock increments its value only once per second, your resolution is also one second.
+A high resolution does not help you anything if you can't read the clock.
+Therefore the smallest possible increase of time that can be experienced
+by a program is called {\it{precision}}~\cite{ntp-faq}.
+
+It is sometimes convenient
+to express frequency offsets in parts-per-million~(PPM), where~1~PPM
+is equal to $10^{-6}$ $\frac{s}{s}$ (0.0001\%)~\cite{rfc5905}.
+Real clocks have a frequency error of several PPM quite frequently
+and some of the best clocks available still have errors of about $1^{-8}$PPM~\cite{ntp-faq}.
