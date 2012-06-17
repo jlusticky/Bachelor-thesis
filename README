@@ -2,11 +2,11 @@ Bachelor thesis - Contiki NTP Client
 ====================================
 I am using the template from http://www.fit.vutbr.cz/info/szz/sablona09.tar.gz
 The concrete task is at fig/task.jpg
-The main content is in obsah.tex which includes other files from contiki/ and ntp/
-Running command will produce projekt.pdf and arbeit.pdf as well as the documentation
-cd/docs/simulation.pdf and cd/docs/setup.pdf.
+The main content is in obsah.tex which includes other files from contiki/, ntp/, others/ and implementation/.
+Running make command will produce projekt.pdf and arbeit.pdf.
+To generate tutorials go to cd/docs/ and issue make in this directory.
 
 fig/     - figures used in thesis
 cd/      - cd content attached to the thesis
-cd/docs/ - documentation - use make docs to generate it
+cd/docs/ - tutorials - use make in this directory to generate it
 cd/sw/   - software source code
