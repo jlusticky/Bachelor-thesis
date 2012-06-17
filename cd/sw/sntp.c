@@ -136,7 +136,7 @@ struct ntp_msg ntpmsg;
 void
 usage(void)
 {
-	fprintf(stderr, "%s\n%s\n%s\n%s\n%s\n%s\n", 
+	fprintf(stderr, "%s\n%s\n%s\n%s\n%s\n%s\n",
 		"Usage: sntp [-p] [-i n] [-b | -c | -s] address",
 		"\t-p\tuse privileged NTP port",
 		"\t-i n\tcontinue sending NTP messsage every i seconds",
@@ -175,13 +175,13 @@ main(int argc, char *argv[])
 	}
 	argc -= optind;
 	argv += optind;
-	
+
 	if (argc != 1) // only one host can be specified
 	{
 		usage();
 	}
 	const char * host = argv[0];
-	
+
 	if (bflag) // NTP broadcast server mode
 	{
 		ntpmsg.status = MODE_BROADCAST | (NTP_VERSION << 3) | LI_ALARM;
@@ -204,7 +204,7 @@ main(int argc, char *argv[])
 	{
 		family = AF_INET;
 	}
-	
+
 	int sockfd = socket(family, SOCK_DGRAM, 0); // UDP
 	if (sockfd == -1)
 	{
@@ -223,7 +223,7 @@ main(int argc, char *argv[])
 			sin6.sin6_family = AF_INET6;
 			sin6.sin6_port = htons(NTP_PORT);
 			sin6.sin6_addr = in6addr_any;
-	
+
 			if (bind(sockfd, (const struct sockaddr *) &sin6, sizeof(struct sockaddr_in6)) == -1)
 			{
 				perror("bind");
@@ -249,19 +249,19 @@ main(int argc, char *argv[])
 	{
 		struct timespec ts;
 		clock_gettime(CLOCK_REALTIME, &ts);
-	
+
 		ntpmsg.xmttime.int_partl = htonl(ts.tv_sec + JAN_1970);
 		ntpmsg.xmttime.fractionl = htonl((double) ts.tv_nsec * 0xFFFFFFFF / 1000000000);
-		
+
 		printf("Sending time %ld sec %ld nsec to %s\n", ts.tv_sec, ts.tv_nsec, host);
-		
+
 		if (family == AF_INET6)
 		{
 			memset(&sin6, 0, sizeof(sin6));
 			sin6.sin6_family = AF_INET6;
 			sin6.sin6_port = htons(NTP_PORT);
 			inet_pton(AF_INET6, host, &sin6.sin6_addr);
-			
+
 			if (sendto(sockfd, &ntpmsg, sizeof(ntpmsg), 0, (const struct sockaddr *) &sin6, sizeof(struct sockaddr_in6)) == -1)
 			{
 				perror("sendto");
@@ -275,7 +275,7 @@ main(int argc, char *argv[])
 			sin4.sin_family = AF_INET;
 			sin4.sin_port = htons(NTP_PORT);
 			inet_pton(AF_INET, host, &sin4.sin_addr);
-				
+
 			if (sendto(sockfd, &ntpmsg, sizeof(ntpmsg), 0, (const struct sockaddr *) &sin4, sizeof(struct sockaddr_in)) == -1)
 			{
 				perror("sendto");
@@ -283,7 +283,7 @@ main(int argc, char *argv[])
 				return 1;
 			}
 		}
-	
+
 		if ((ntpmsg.status & MODEMASK) == MODE_CLIENT) // wait for response
 		{
 			struct ntp_msg recvmsg;
@@ -293,11 +293,11 @@ main(int argc, char *argv[])
 				close(sockfd);
 				return 1;
 			}
-			
+
 			printf("NTP time got from %s: %lu sec %lu nsec\n", host, ntohl(recvmsg.xmttime.int_partl) - JAN_1970,
-				(unsigned long) (((double) ntohl(recvmsg.xmttime.fractionl) * 1000000000) / 0xFFFFFFFF));
+				(unsigned long) (((double) ntohl(recvmsg.xmttime.fractionl) * 1000000000) / 0x100000000UL));
 		}
-		
+
 		if (ival == 0) // if i was not specified, terminate after one packet
 		{
 			return 0;
