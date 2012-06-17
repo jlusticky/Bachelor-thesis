@@ -60,3 +60,5 @@ uIP current supports broadcast packets as well as sending multicast packets. Joi
 equations, commas, grammar
 ---
 comparision in clock_adjust_time use 0L instead of 0
+---
+foto without JTAG, only power supply
