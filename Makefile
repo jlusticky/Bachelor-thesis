@@ -31,12 +31,6 @@ $(CO).dvi: $(CO).tex $(CO).bib
 	latex $(CO)
 	latex $(CO)
 
-docs:
-	make -C cd/docs/
-
-text:
-	make -C cd/docs/ text
-
 desky:
 #	latex desky
 #	dvips desky
@@ -47,7 +41,6 @@ clean:
 	rm -f *.dvi *.log $(CO).blg $(CO).bbl $(CO).toc *.aux $(CO).out $(CO).lof
 	rm -f $(CO).pdf
 	rm -f *~
-	make -C cd/docs/ clean
 	rm -f $(DE).acn $(DE).blg $(DE).bbl $(DE).toc $(DE).out $(DE).lof $(DE).glo $(DE).ist
 	rm -f $(DE).pdf
 	rm -f desky.pdf

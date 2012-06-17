@@ -1,11 +1,10 @@
-.PHONY: all clean docs text
+.PHONY: all clean text
 
 all: setup.pdf simulation.pdf
-docs: all
 
 setup.pdf: setup.tex
 	pdflatex setup.tex
-	
+
 simulation.pdf: simulation.tex
 	pdflatex simulation.tex
 
