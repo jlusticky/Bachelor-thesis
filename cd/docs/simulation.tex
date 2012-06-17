@@ -1,24 +1,107 @@
 \documentclass{article}
 \usepackage{a4wide}
+\usepackage{listings}
+\usepackage{url}
+
+\lstset{
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+%breaklines=true,        % sets automatic line breaking
+%breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
+%escapeinside={\%*}{*)},          % if you want to add a comment within your code
+escapechar=\&,
+}
+
 \begin{document}
 
-\title{How to use AVR Studio 4 simulator with Contiki OS}
+\title{Debugging AVR Raven with Contiki OS}
 \author{Josef Lusticky}
+\date{June 16, 2012}
 
 \maketitle
 
-As debugging using GDB might not be sufficient for all cases of development (such as the Timer/Counter modules),
-this guide shows set up of AVR Studio 4 for simulation with Contiki project.
+This guide shows how to setup different tools for debugging.
+Each of them has some pros and cons and each of them is preferred for other kind of development.
 
-First of all we need a PC with Windows or Virtualbox with Windows installed on our Linux development PC.
+Debugging using the GNU Debugger with JTAG is easy to setup, works directly on the hardware
+and usually needs only software available from a repository and no additional hardware setup.
+But debugging using GDB might not be sufficient for all cases of development (such as the Timer/Counter modules).
+
+A simulation of Contiki project with AVR Studio 4 can conveniently show all contents of memory
+as well as registers - even each bit of them.
+Values can be changed any time and this technique requires no hardware.
+However, since AVR Studio~4 is only available for Windows OS,
+a computer running Windows or virtual machine running Windows is required.
+There is also no simple way of debugging a device using a network communication.
+
+Debugging using serial output needs no extra software setup and is suitable
+for debugging the whole system directly on the hardware.
+Contiki is also well designed for this debugging technique.
+The only major downside is a requirement of an additional hardware
+for connection between the AVR Raven and the PC host.
+
+%----------------------------------------------------------------------------
+
+\section{GNU Debugger}
+For debugging using the GNU Debugger we will use gdb-avr and avarice software -
+an interface between GDB and AVR JTAG - avarice - {\url{http://avarice.sourceforge.net/}{.
+Optionally we can also use DDD as a graphical frontend for debugging.
+
+For debugging using GDB, we need already compiled project for AVR Raven.
+\begin{lstlisting}
+navigate to project directory we want to debug:
+	&\textdollar& cd contiki/examples/hello-world
+and compile it using make:
+	&\textdollar& make TARGET=avr-raven
+\end{lstlisting}
+Avarice tool needs a hex file from our project.
+If the hex file is not present in the project directory, the following command will extract it:
+\begin{lstlisting}
+extract a .hex file for flashing with other programmers and avarice:
+	&\textdollar& make hello-world.hex
+	%!TODO MANUAL + test
+\end{lstlisting}
+
+Next we lunch avarice which will also flash the project to hardware and
+create a port (1212) for connecting with the GDB debugger.
+\begin{lstlisting}
+	&\textdollar& avarice -g -j usb -P atmega1284p --erase --program --file hello-world.hex -B 1MHz :1212
+\end{lstlisting}
+After then we start the GDB debugger with our compiled binary file.
+\begin{lstlisting}
+the following will run gdb and drop us to its command line:
+	&\textdollar& avr-gdb hello-wolrd.avr-raven
+connect to 1212 port for communicating with the hardware, after then we can debug as usual:
+	target remote :1212
+run the program (we should set some brakepoints before):
+	continue
+\end{lstlisting}
+If we want to use a DDD frontend, we start the DDD with avr-gdb debugger:
+\begin{lstlisting}
+	&\textdollar& ddd --debugger avr-gdb  hello-world.avr-raven
+\end{lstlisting}
+On the GDB Console connect to target using (if you can not see it, click View and then GDB Console):
+\begin{lstlisting}
+	(gdb) target remote :1212
+\end{lstlisting}
+Now we can select brakepoints and debug using continue as usual.
+
+%----------------------------------------------------------------------------
+
+\section{AVR Studio 4}
+AVR Studio 4 is simulator of AVR platforms from Atmel.
+Version 4 of AVR Studio is easy to get working with Contiki and provides everything needed for simulation.
+Unfortunately AVR Studio is available only for Windows,
+so we need a PC with Windows or Virtualbox with Windows installed on our Linux development PC.
 The installation of Windows in Virtualbox is preferred because this way we can easily copy our compiled binaries
 from the development Linux PC to Windows guest
-without need of setting up build environment in Windows or network connection between two PCs.
+without setting up build environment in Windows.
+Of course we can use a separate computer with Windows for AVR Studio installation,
+but in we will often copy files from development Linux PC.
 
-\section{Installation}
+\subsection{Installation}
 Install Windows and the Guest addition in Windows if running under Virtualbox.
 Set up shared folder (this needs the Guest additions) between your development host PC and virtual Windows PC, so you can copy files to Windows.
-Install the AVR Studio version 4 (this version is easy to get working with Contiki and provides everything needed for simulation).
+Install the AVR~Studio version~4.
 
 Copy the complete Contiki source code with your compiled project from your development PC to
 {\it{C:\textbackslash YOUR\_HOME\_FOLDER\_ON\_DEVELOPMENT\_PC\textbackslash}}
@@ -37,8 +120,7 @@ If the headers files are not to be found in this paths, {\it{avr-gcc -v }} comm
 If you will not stick to this paths on Windows,
 you might be later asked by AVR Studio to locate these files and directories manually.
 
-
-\section{Simulation}
+\subsection{Simulation}
 Execute the AVR Studio 4. From the Startup dialog select Open and open to your Contiki binary ELF file for AVR target.
 If the Startup dialog is not shown, go to menu File and select Open File.
 You will be asked where to save your newly created AVR Studio project (.aps file).
@@ -49,4 +131,32 @@ You may be asked if you want to load EEPROM data - click OK.
 Now you can simulate and debug you Contiki project in AVR Studio 4.
 To select CPU frequency go to menu Debug and select AVR Simulator Options.
 The Debug menu has all you need to step through the code. The I/O view shows current status of the hardware.
+
+%----------------------------------------------------------------------------
+
+\section{Serial output}
+Contiki configures USART~1 interface on AVR Raven for debugging in asynchronous operation
+with the following parameters:
+baud rate 57600, none parity, 1 stop bit, 8 data bits.
+Contiki also automatically redirects stdout to this serial output, so every printf
+writes to this interface.
+This configuration is defined and can be changed in
+file {\it{contiki/platform/avr-raven/contiki-raven-main.c}},
+{\it{initialize}} function - part commented with "Second rs232 port for debugging".
+
+file {\it{contiki/platform/avr-raven/}}
+The AVR Raven has USART output for debugging.
+This output needs to be level shifted for RS232 using a MAX232 or similar chip.
+Because many computers no longer have an RS232 serial port, a serial to USB converter might be needed.
+%TODO SETUP FOTOS
+
+%----------------------------------------------------------------------------
+
+\section{Other tools}
+AVR Raven device can be debugged using Cooja simulator, which is part of Contiki.
+See {\url{https://www.sics.se/contiki/wiki/index.php/AVR_motes_in_COOJA}} for a tutorial on Contiki OS Wiki site.
+
+There are plenty of other simulators and debugging techniques used, each of them suitable
+different kind of debugging.
+Among them HAPSIM simulator, SimAVR, Avrora or SimulAVR.
 \end{document}

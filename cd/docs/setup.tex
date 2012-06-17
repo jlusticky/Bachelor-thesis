@@ -74,8 +74,6 @@ evaluation starter kit called RZ Raven - \url{http://www.atmel.com/tools/RZRAVEN
 	or after cloning git repository by issuing {\it{git checkout 2.5}}
 	\item Programmer (flasher) for AVR - avrdude - \url{http://www.nongnu.org/avrdude/}
 	\item GNU AVR toolchain - avr-libc, binutils-avr, gcc-avr %!TODO - version
-	\item Optional debugger (gdb-avr) and interface between GDB and AVR JTAG - avarice - \url{http://avarice.sourceforge.net/}
-	\item +Optionally we can use DDD as a GDB frontend
 \end{itemize}
 
 If we want to interface with the hardware as non-root user, we need to configure udev.
@@ -121,41 +119,6 @@ upload compiled project using avrdude (issue as root if udev was not configured 
 	&\textdollar& make hello-world.u %! TODO - or we can do it manually
 \end{lstlisting}
 After successful upload we should have a running hello-world project on AVR Raven device.
-
-
-\section{Debugging}
-For debugging we will use gdb-avr and avarice software.
-We can also use a DDD graphical frontend for debugging.
-Avarice tool need a hex file from our project.
-If it is not present in the project directory, the following command will extract it:
-\begin{lstlisting}
-extract a .hex file for flashing with other programmers and avarice:
-	&\textdollar& make hello-world.hex
-\end{lstlisting}
-
-Next we lunch avarice which will also flash the project to hardware and
-create a port (1212) for connecting with the GDB debugger.
-\begin{lstlisting}
-	&\textdollar& avarice -g -j usb -P atmega1284p --erase --program --file hello-world.hex -B 1MHz :1212
-\end{lstlisting}
-After then we start the GDB debugger with our compiled binary file.
-\begin{lstlisting}
-the following will run gdb and drop us to its command line:
-	&\textdollar& avr-gdb hello-wolrd.avr-raven
-connect to 1212 port for communicating with the hardware, after then we can debug as usual:
-	target remote :1212
-run the program (we should set some brakepoints before):
-	continue
-\end{lstlisting}
-If we want to use a DDD frontend, we start the DDD with avr-gdb debugger:
-\begin{lstlisting}
-	&\textdollar& ddd --debugger avr-gdb  hello-world.avr-raven
-\end{lstlisting}
-On the GDB Console connect to target using (if you can not see it, click View and then GDB Console):
-\begin{lstlisting}
-	(gdb) target remote :1212
-\end{lstlisting}
-Now we can select brakepoints and debug using continue as usual.
 
 
 \section{Network communication}
