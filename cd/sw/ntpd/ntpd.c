@@ -48,6 +48,11 @@
 #define REMOTE_PORT NTP_PORT
 #define LOCAL_PORT NTP_PORT
 
+/* NTP client uses clock_set_time if the local clock offset is
+ * equal or greater than ADJUST_TRESHOLD seconds.
+ */
+#define ADJUST_TRESHOLD 3
+
 /* If remote host is defined, assuming NTP unicast mode.
  * Client is active and sends ntp_msg to NTP server, otherwise no ntp_msg is needed.
  */
@@ -104,16 +109,11 @@ tcpip_handler(void)
 	}
 
     /* Compute adjustment */
-    adjts.nsec = 0;
-    if ((pkt->status & MODEMASK) == MODE_BROADCAST) // in broadcast mode set time to xmttime
+    if ((pkt->status & MODEMASK) == MODE_BROADCAST) // in broadcast mode compute time from xmt and dst
     {
 	    // local clock offset THETA = t3 - t4
 	    adjts.sec = (uip_ntohl(pkt->xmttime.int_partl) - JAN_1970) - dstts.sec;
-
-	    if (adjts.sec == 0) // if seconds are the same calculate nsec offset
-	    {
-			adjts.nsec = fractionl_to_nsec(uip_htonl(pkt->xmttime.fractionl)) - dstts.nsec;
-		}
+	    adjts.nsec = fractionl_to_nsec(uip_htonl(pkt->xmttime.fractionl)) - dstts.nsec;
 	}
 #ifndef REMOTE_HOST // if only NTP broadcast mode supported
 	else // in broadcast only mode, no other calcualtion is possible
@@ -131,30 +131,22 @@ tcpip_handler(void)
 		}
 
 		/* Compute local clock offset THETA = ((t2 - t1) + (t3 - t4)) / 2
-		 * only for seconds part.
-		 * If seconds offset is zero, compute nsec offset later.
+		 * for seconds part.
 		 */
 		rects.sec = uip_htonl(pkt->rectime.int_partl) - JAN_1970;
 		xmtts.sec = uip_htonl(pkt->xmttime.int_partl) - JAN_1970;
 
-		PRINTF("SECONDS: org = %ld, rec = %ld, xmt = %ld, dst = %lu\n", ts.sec, rects.sec, xmtts.sec, dstts.sec);
-		PRINTF("THETA = ((%ld - %ld) + (%ld - %ld)) / 2\n", rects.sec, ts.sec, xmtts.sec, dstts.sec);
+		PRINTF("SEC THETA = ((%ld - %ld) + (%ld - %ld)) / 2\n", rects.sec, ts.sec, xmtts.sec, dstts.sec);
+		adjts.sec = ((rects.sec - ts.sec) + (xmtts.sec - dstts.sec)) / 2; // dstts.sec + 1 = 0
 
-		adjts.sec = ((rects.sec - ts.sec) // TODO look at assembly for DIV vs. shift
-					+ (xmtts.sec - dstts.sec)) / 2; // dstts.sec + 1 = 0
+		/* Calculate nsec offset */
+		rects.nsec = fractionl_to_nsec(uip_htonl(pkt->rectime.fractionl));
+		xmtts.nsec = fractionl_to_nsec(uip_htonl(pkt->xmttime.fractionl));
 
-		PRINTF("Local clock offset = %ld sec\n",  adjts.sec);
+		PRINTF("NSEC THETA = ((%ld - %ld) + (%ld - %ld)) / 2\n", rects.nsec, ts.nsec, xmtts.nsec, dstts.nsec);
 
-		if (adjts.sec == 0) // if seconds offset is zero calculate nsec offset
-		{
-			rects.nsec = fractionl_to_nsec(uip_htonl(pkt->rectime.fractionl));
-			xmtts.nsec = fractionl_to_nsec(uip_htonl(pkt->xmttime.fractionl));
-
-			PRINTF("THETA = ((%ld - %ld) + (%ld - %ld)) / 2\n", rects.nsec, ts.nsec, xmtts.nsec, dstts.nsec);
-
-			adjts.nsec = ((rects.nsec - ts.nsec) + (xmtts.nsec - dstts.nsec)) / 2; // TODO as above
-			PRINTF("Local clock offset = %ld nsec\n", adjts.nsec);
-		}
+		adjts.nsec = ((rects.nsec - ts.nsec) + (xmtts.nsec - dstts.nsec)) / 2;
+		PRINTF("Local clock offset = %ld sec %ld nsec\n", adjts.sec, adjts.nsec);
 	}
 
 	/* Set our timestamp to zero to avoid processing the same packet more than once */
@@ -162,7 +154,7 @@ tcpip_handler(void)
 #endif /* ! REMOTE_HOST */
 
 	/* Set or adjust local clock */
-    if (labs(adjts.sec) > 3) /// do this only IF difference > 36min use settime, otherwise adjtime
+    if (labs(adjts.sec) >= ADJUST_TRESHOLD)
     {
 		PRINTF("Setting the time to xmttime from server\n");
 		clock_set_time(uip_ntohl(pkt->xmttime.int_partl) - JAN_1970);
