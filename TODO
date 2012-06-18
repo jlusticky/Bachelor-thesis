@@ -1,7 +1,6 @@
 Thesis
 ======
 Clock - figures
-Use more BOOKs not only MISC in citations
 Convert setup.txt and simulation.txt to latex + add photos
 
 Content
@@ -27,30 +26,18 @@ implementation.tex - work in progress
 
 Tasks
 =====
-?documentation for avr atmega1284p - 3timers and their usage
-?study clock hardware on x86 - hpet
-
 describe ISR clock and timer interface on AVR
 
-read RFCs
-generate and read pdf docs
+read RFC - clock discipline
 citation for embedded systems - one binary
 
 dntpd - ntpreq.c
 
 ipv4 - minimal-net platform and native
 
-try new dir layout + more processes
-document uip - app has to act on incomming data, overwrite
----
-adjtime - wip
+make new dir layout + more processes
 ----
-thus, the time is always a monotonically increasing function.
-----
-text
 measurement - graf + determine adjustments
-another platform
-compare my algo vs. real results
 ----
 DTS - Digital Time Service - rfc1305
 adjust treshold - max we can adjust 32767*(1/128/32) with int16_t
@@ -58,9 +45,5 @@ adjust treshold - max we can adjust 32767*(1/128/32) with int16_t
 uIP current supports broadcast packets as well as sending multicast packets. Joining multicast groups (IGMP) and receiving non-local multicast packets is not currently supported.
 ---
 equations, commas, grammar
----
-comparision in clock_adjust_time use 0L instead of 0
----
-foto without JTAG, only power supply
 ---
 test setup, debug + photos
