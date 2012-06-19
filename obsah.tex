@@ -62,40 +62,40 @@ Advanced clock discipline algorithms -
 The clock discipline process is a system process that controls the
 time and frequency of the system clock~\cite{rfc5905},
 
-Add timestamp into i-node in CFS.
+%Add timestamp into i-node in CFS.
 
---
-ntpv4.pdf:
-SNTP is intended for primary
-servers equipped with a single reference clock, as well as clients with a single upstream server
-and no dependent clients.
+%--
+%ntpv4.pdf:
+%SNTP is intended for primary
+%servers equipped with a single reference clock, as well as clients with a single upstream server
+%and no dependent clients.
 
-It is useful to provide an
-initial volley where the client operating in mode 3 exchanges several packets with the server in
-order to calibrate the propagation delay % ntp/algorithms.tex
+%It is useful to provide an
+%initial volley where the client operating in mode 3 exchanges several packets with the server in
+%order to calibrate the propagation delay % ntp/algorithms.tex
 
-The operating system is assumed to provide two functions, one to set the time
-directly, for example the Unix settimeofday()1 function, and another to adjust the time in small
-increments advancing or retarding the time by a designated amount, for example the Unix
-adjtime() function. In the intended design the clock discipline process uses the adjtime() function
-if the adjustment is less than a designated threshold, and the settimeofday() function if above the
-threshold.
+%The operating system is assumed to provide two functions, one to set the time
+%directly, for example the Unix settimeofday()1 function, and another to adjust the time in small
+%increments advancing or retarding the time by a designated amount, for example the Unix
+%adjtime() function. In the intended design the clock discipline process uses the adjtime() function
+%if the adjustment is less than a designated threshold, and the settimeofday() function if above the
+%threshold.
 
-A SNTP client using the on-wire protocol has a single server and no downstream clients. It can
-operate with any subset of the NTP on-wire protocol, the simplest using only the transmit
-timestamp of the server packet and ignoring all other fields. However, the additional complexity
-to implement the full on-wire protocol is minimal and is encouraged.
+%A SNTP client using the on-wire protocol has a single server and no downstream clients. It can
+%operate with any subset of the NTP on-wire protocol, the simplest using only the transmit
+%timestamp of the server packet and ignoring all other fields. However, the additional complexity
+%to implement the full on-wire protocol is minimal and is encouraged.
 
 
---
-rfc5905:
-In the case of NTP as specified herein, NTP broadcast clients are
-vulnerable to disruption by misbehaving or hostile SNTP or NTP
-broadcast servers elsewhere in the Internet.  Such disruption can be
-minimized by several approaches.  Filtering can be employed to limit
-the access of NTP clients to known or trusted NTP broadcast servers.
-Such filtering will prevent malicious traffic from reaching the NTP
-clients.
+%--
+%rfc5905:
+%In the case of NTP as specified herein, NTP broadcast clients are
+%vulnerable to disruption by misbehaving or hostile SNTP or NTP
+%broadcast servers elsewhere in the Internet.  Such disruption can be
+%minimized by several approaches.  Filtering can be employed to limit
+%the access of NTP clients to known or trusted NTP broadcast servers.
+%Such filtering will prevent malicious traffic from reaching the NTP
+%clients.
 
---- uni-kl
-A value of 100 ppm, for instance, means that the base frequency of the system clock is multiplied by 1.0001.
+%--- uni-kl
+%A value of 100 ppm, for instance, means that the base frequency of the system clock is multiplied by 1.0001.
