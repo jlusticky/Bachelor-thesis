@@ -1,14 +1,6 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky
 
-%\chapter{CD Content}
-%\begin{tabular}{|l|l|}
-	%\hline
-	%Directory & Content \\ \hline
-	%bib/ & Bibliography used in citations \\
-	%\hline
-%\end{tabular}
-
 \chapter{Protothreads example}\label{app:protothreads}
 Here is
 %Next page shows
@@ -27,11 +19,11 @@ typedef unsigned short lc_t;
 
 struct pt {
   lc_t lc;                                           /* Local continuation */
-}; 
+};
 
 struct pt state;
 struct timer timer;
- 
+
 PT_THREAD(display_text(struct pt *pt, const char *msg))
 {
   PT_BEGIN(pt);
@@ -86,7 +78,7 @@ typedef unsigned short lc_t;
 
 struct pt {
   lc_t lc;                                           /* Local continuation */
-}; 
+};
 
 struct pt state;
 struct timer timer;
@@ -94,19 +86,19 @@ struct timer timer;
 int display_text(struct pt *pt, const char *msg)     /* Expanded PT_THREAD */
 {
   switch(pt->lc) {  case 0:                      /* Expanded PT_BEGIN(pt); */
-  
+
     for (int i = 0; i < strlen(msg); i++) {
       lcd_display_char(msg[i]);
       timer_set(&timer, CLOCK_SECOND);             /* Wait for one second. */
-    
+
                                    /* The following two lines are expanded */
       pt->lc = 31; case 31:   /* PT_WAIT_UNTIL(pt, timer_expired(&timer)); */
       if(!(timer_expired(&timer))) { return PT_WAITING; }         /* macro */
-    
+
     }
-  
+
   pt->lc = 0; return PT_ENDED; }                        /* Expanded PT_END */
-  
+
 }
 
 int main(void)
@@ -122,39 +114,38 @@ int main(void)
 \end{lstlisting}
 
 \chapter{Interrupt frequency measurement}\label{app:interrupt-frequency}
-\begin{figure}[H]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=9cm,keepaspectratio]{fig/osc-no-adjust.png}
   \caption{Interrupt frequency without clock adjustment}
-  %\label{fig:measurements-osc-no-adjust}
-  %\bigskip
+  \label{fig:measurements-osc-no-adjust}
+  \bigskip
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=9cm,keepaspectratio]{fig/osc-speed-up.png}
   \caption{Interrupt frequency when speeding up the clock}
-  %\label{fig:measurements-osc-speed-up}
-  %\bigskip
+  \label{fig:measurements-osc-speed-up}
+  \bigskip
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=9cm,keepaspectratio]{fig/osc-slow-down.png}
   \caption{Interrupt frequency when slowing down the clock}
-  %\label{fig:measurements-osc-slow-down}
-  %\bigskip
+  \label{fig:measurements-osc-slow-down}
+  \bigskip
 \end{figure}
 
-%\chapter{NTP Vocabulary}
-%http://www.ntp.org/ntpfaq/NTP-s-sw-clocks-quality.htm
-% resolution
-% precision
-% jitter = dispersion
-% accuracy
-% PPM + example
-% frequency error
-% reliability
-% wander
-
-% offset = phase
+\chapter{CD Content} %!TODO
+\begin{tabular}{|l|l|}
+	\hline
+	Directory & Content \\ \hline
+	docs/ & Setup guides for running and debugging Contiki OS on AVR Raven\\
+	docs/datasheets/ & Datasheets for used hardware\\
+	docs/img/ & Images from Dopsy group laboratory at RheinMain University\\
+	sw/ntpd/ & Contiki NTP Client source code\\
+	sw/test/ & Program used for testing Contiki NTP Client\\
+	\hline
+\end{tabular}
