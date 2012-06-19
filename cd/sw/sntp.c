@@ -1,11 +1,11 @@
 /*
- * Testing program for sending NTP messages to specified host
+ * Testing program for sending NTP messages to a specified host
  * by IPv6 or IPv4 address.
  *
  * Program send client, server or broadcast NTP message.
  * In client mode program waits for NTP server response.
  * Client mode is default.
- * Broadcast mode message is sent only to specified host.
+ * Broadcast mode message is sent only to the specified host.
  *
  * Unprivileged port is used by default unless -p given,
  * which uses NTP_PORT (123) then.
@@ -251,7 +251,7 @@ main(int argc, char *argv[])
 		clock_gettime(CLOCK_REALTIME, &ts);
 
 		ntpmsg.xmttime.int_partl = htonl(ts.tv_sec + JAN_1970);
-		ntpmsg.xmttime.fractionl = htonl((double) ts.tv_nsec * 0xFFFFFFFF / 1000000000);
+		ntpmsg.xmttime.fractionl = htonl((double) ts.tv_nsec * 0x100000000UL / 1000000000);
 
 		printf("Sending time %ld sec %ld nsec to %s\n", ts.tv_sec, ts.tv_nsec, host);
 
