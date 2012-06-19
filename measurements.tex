@@ -2,11 +2,57 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \chapter{Measurements}\label{chap:measurements}
+There are several factors that can be measured.
+Clock interrupt frequency measurements show the influence of clock adjustments
+on the number of clock ticks (interrupts) per second.
+Clock offset measurements show the time difference between the reference clock and
+the local clock.
+Clock phase measurements show the phase difference between the reference clock and
+the local clock, that is, when each second is accounted.
 
-%\section{Interrupt frequency}
-Using UNI-T~2025CEL digital oscilloscope
-Port D, bit 7
-Output from oscilloscope
-can be found in appendix~\ref{app:interrupt-frequency}.
+\section{Clock interrupt frequency}
+For measuring clock interrupt frequency the bit 7 of Port D
+and ground pin was connected to UNI-T~2025CEL digital oscilloscope.
+At the beginning of the interrupt service routine a logic 1 was written,
+what causes high level of voltage.
+At the end of the interrupt service routine a logic 0 was written,
+what causes low voltage.
 
-%\section{Local clock offset}
+When there is no clock adjustment, the value in output compare register is 31 by default.
+The clock interrupt frequency
+should be equal to a~value of {\it{CLOCK\_SECOND}} macro, which is 128 by default on AVR~Raven.
+The figure~\ref{fig:measurements-osc-no-adjust} is showing the output from oscilloscope
+for this case.
+
+When slowing down the clock, the clock interrupt frequency
+should be equal to
+$$\frac{\frac{f_{asy}}{prescaler}}{inc + 1} = \frac{\frac{32768}{8}}{31+1} = 124.\overline{12}$$
+The figure~\ref{fig:measurements-osc-speed-up} is showing the output from oscilloscope
+for this case.
+
+When speeding up the clock, the clock interrupt frequency
+should be equal to
+$$\frac{\frac{f_{asy}}{prescaler}}{inc - 1} = \frac{\frac{32768}{8}}{31-1} \doteq 132.129$$
+The figure~\ref{fig:measurements-osc-slow-down} is showing the output from oscilloscope
+for this case.
+
+The measured values are not exact equal to those expected.
+This is mostly due to influence of the clock source
+(32~768~Hz quartz crystal oscillator) by a room temperature,
+but it could also be air pressure or magnetic fields, etc.
+
+\section{Clock offset}
+
+
+\section{Clock phase}
+The GPS based clock Meinberg~GPS~167 and digital oscilloscope UNI-T~2025CEL
+was used for measuring clock frequency difference.
+Meinberg~GPS~167 rises an impulse when each second is accounted.
+Contiki on AVR~Raven was configured to write a logic~1
+to~bit~7 of~Port~D when each second is accounted,
+and to write a logic~0 to~the same bit after~25 clock ticks.
+
+TODO: FIGURE
+In phase.
+TODO: FIGURE
+Out of phase.
