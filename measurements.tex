@@ -13,36 +13,42 @@ the local clock, that is, when each second is accounted.
 \section{Clock interrupt frequency}
 For measuring clock interrupt frequency the bit 7 of Port D
 and ground pin was connected to UNI-T~2025CEL digital oscilloscope.
-At the beginning of the interrupt service routine a logic 1 was written,
+At the beginning of the interrupt service routine a~logic 1 is written,
 what causes high level of voltage.
-At the end of the interrupt service routine a logic 0 was written,
+At the end of the interrupt service routine a~logic 0 is written,
 what causes low voltage.
 
 When there is no clock adjustment, the value in output compare register is 31 by default.
 The clock interrupt frequency
-should be equal to a~value of {\it{CLOCK\_SECOND}} macro, which is 128 by default on AVR~Raven.
-The figure~\ref{fig:measurements-osc-no-adjust} is showing the output from oscilloscope
+is supposed to be equal to a~value of {\it{CLOCK\_SECOND}} macro, which is 128 by default on AVR~Raven.
+The~figure~\ref{fig:osc-no-adjust} is showing the output from oscilloscope
 for this case.
+$$\frac{\frac{f_{asy}}{prescaler}}{inc} = \frac{\frac{32768}{8}}{32} = 128$$
 
-When slowing down the clock, the clock interrupt frequency
-should be equal to
-$$\frac{\frac{f_{asy}}{prescaler}}{inc + 1} = \frac{\frac{32768}{8}}{31+1} = 124.\overline{12}$$
-The figure~\ref{fig:measurements-osc-speed-up} is showing the output from oscilloscope
-for this case.
+The~figure~\ref{fig:osc-speed-up} is showing the~output from oscilloscope
+when slowing down the clock.
+The~clock interrupt frequency
+is supposed to be equal to $124.\overline{12}$~Hz.
+$$\frac{\frac{f_{asy}}{prescaler}}{inc + 1} = \frac{\frac{32768}{8}}{32+1} = 124.\overline{12}$$
 
-When speeding up the clock, the clock interrupt frequency
-should be equal to
-$$\frac{\frac{f_{asy}}{prescaler}}{inc - 1} = \frac{\frac{32768}{8}}{31-1} \doteq 132.129$$
-The figure~\ref{fig:measurements-osc-slow-down} is showing the output from oscilloscope
-for this case.
+The~figure~\ref{fig:osc-slow-down} is showing the output from oscilloscope
+when speeding up the clock.
+The~clock interrupt frequency
+is supposed to be approximately equal to 132.129~Hz.
+$$\frac{\frac{f_{asy}}{prescaler}}{inc - 1} = \frac{\frac{32768}{8}}{32-1} \doteq 132.129$$
 
-The measured values are not exact equal to those expected.
+
+The~measured values are not exactly equal to those expected.
 This is mostly due to influence of the clock source
 (32~768~Hz quartz crystal oscillator) by a room temperature,
 but it could also be air pressure or magnetic fields, etc.
 
 \section{Clock offset}
-
+For measuring clock offset the serial output from AVR~Raven was used.
+When the developed NTP client receives response from the server,
+it calculates the local clock offset and prints this value to the serial output.
+The NTP poll interval was set to 16 seconds, that means, the local clock offset
+is calculated every 16 seconds.
 
 \section{Clock phase}
 The GPS based clock Meinberg~GPS~167 and digital oscilloscope UNI-T~2025CEL
@@ -52,7 +58,10 @@ Contiki on AVR~Raven was configured to write a logic~1
 to~bit~7 of~Port~D when each second is accounted,
 and to write a logic~0 to~the same bit after~25 clock ticks.
 
-TODO: FIGURE
-In phase.
-TODO: FIGURE
-Out of phase.
+Figure~\ref{fig:osc-out-of-phase} is showing the clock out of phase
+after setting the time using the {\it{clock\_set\_time}} call.
+When NTP client uses the {\it{clock\_adjust\_time}} call,
+the local clock offset as well as the phase is being adjusted.
+Figure~\ref{fig:osc-adjusting-phase} is showing the phase while adjusting the clock.
+Finally, when the clock adjustments finish, the clock is in phase with
+the reference clock. Figure~\ref{fig:osc-in-phase} is showing the clock in phase after adjustments finished.

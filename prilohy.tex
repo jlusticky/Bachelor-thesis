@@ -116,27 +116,59 @@ int main(void)
 \chapter{Clock interrupt frequency measurements}\label{app:interrupt-frequency}
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=9cm,keepaspectratio]{fig/osc-no-adjust.png}
+  \includegraphics[width=10cm,keepaspectratio]{fig/osc-no-adjust.png}
   \caption{Interrupt frequency without clock adjustment}
-  \label{fig:measurements-osc-no-adjust}
+  \label{fig:osc-no-adjust}
   \bigskip
 \end{figure}
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=9cm,keepaspectratio]{fig/osc-speed-up.png}
+  \includegraphics[width=10cm,keepaspectratio]{fig/osc-speed-up.png}
   \caption{Interrupt frequency when speeding up the clock}
-  \label{fig:measurements-osc-speed-up}
+  \label{fig:osc-speed-up}
   \bigskip
 \end{figure}
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=9cm,keepaspectratio]{fig/osc-slow-down.png}
+  \includegraphics[width=10cm,keepaspectratio]{fig/osc-slow-down.png}
   \caption{Interrupt frequency when slowing down the clock}
-  \label{fig:measurements-osc-slow-down}
+  \label{fig:osc-slow-down}
   \bigskip
 \end{figure}
+
+
+\chapter{Clock phase difference measurements}\label{app:phase}
+The following figures are showing the output from UNI-T~2025CEL digital oscilloscope.
+The yellow line on~channel~2 shows the impulses from the GPS synchronised clock Meinberg~GPS~167.
+The blue line on~channel~1 shows the impulses from AVR Raven running
+Contiki~OS with the developed NTP client.
+The rising edge occurs when each second is being accounted.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm,keepaspectratio]{fig/osc-out-of-phase.png}
+  \caption{Second impulses when the clock is out of phase}
+  \label{fig:osc-out-of-phase}
+  \bigskip
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm,keepaspectratio]{fig/osc-adjusting-phase.png}
+  \caption{Second impulses when the clock is being adjusted}
+  \label{fig:osc-adjusting-phase}
+  \bigskip
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm,keepaspectratio]{fig/osc-in-phase.png}
+  \caption{Second impulses when the clock is in phase}
+  \label{fig:osc-in-phase}
+  \bigskip
+\end{figure}
+
 
 \chapter{CD Content} %!TODO
 \begin{tabular}{|l|l|}
