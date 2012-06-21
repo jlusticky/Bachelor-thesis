@@ -1,7 +1,8 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky
 
-\chapter{Hardware time support}
+%\chapter{Hardware time support}
+\chapter{System time support}
 \begin{figure}
 	\centering
 	\includegraphics[width=6cm,keepaspectratio]{fig/clock.png}
@@ -23,21 +24,20 @@ interrupt service routine increments a system clock value stored in memory~\cite
 \section{Time handling}
 The original IBM PC did know what time it was, provided you typed it in when you booted it,
 but it forgot when you turned it off~\cite{timecounters}.
-Newer desktop computers %with CPU based on Intel x86 architecture
-have Real-Time Clock (RTC) in CMOS chip that is battery powered,
+Today desktop computers %with CPU based on Intel x86 architecture
+have hardware Real-Time Clock (RTC) in CMOS chip that is battery powered,
 so it keeps time when the computer is powered off~\cite{timecounters}.
+Hardware Real-Time Clocks should not be confused with the system clock,
+which is a software system clock maintained by
+the kernel and used to implement calls for getting the time,
+as well as setting timestamps on files, etc~\cite{linux-man-rtc}.
+The system clock will often be set to the current time using an RTC at boot time~\cite{linux-man-rtc},
+so the systems without an RTC need to set the system clock another way,
+such as across the network using NTP.
 
-%Resolution and hence precision... of RTC is small - 1s.
-%Therefore keeps an operating systems its own clock inside the kernel - the system clock.
-
-%Therefore a usual process of time handling
-%used by first Unix-like operating systems on x86 architecture
-%was as follows.
-At each of these ticks the kernel then increases the internal variable called jiffies.
-
----
-The kernel maintains the current time and advances it at every interrupt [2,16].
-The structure of the clock hardware of typical Intel PCs is shown in Figure 3.1.
+The kernel maintains then the current time and advances it at every interrupt.
+The structure of the clock hardware of
+typical desktop PCs is shown in figure~\ref{fig:system-pc-clock}.
 An oscillator generates clock pulses that drive a counter C.
 Every time the counter reaches the value of a programmable latch L,
 an interrupt is generated and the counter is reset.
@@ -45,29 +45,20 @@ At each of these ticks the kernel then increases the internal variable jiffies,
 which simply counts clock ticks, as well as the variable xtime,
 which represents current time (as a struct timeval).
 
-Figure 3.1: PC clock hardware
+\begin{figure}
+  \centering
+  \includegraphics[width=9cm,keepaspectratio]{fig/pc-clock.png}
+  \caption{PC clock hardware by R. Koster}
+  \label{fig:system-pc-clock}
+  %\bigskip
+\end{figure}
 
 Time can be queried via the gettimeofday function.
 If it would simply return the value of xtime,
 just the accuracy of the timer interrupt frequency could be provided.
 However, gettimeofday queries the hardware counter C that is used for
-interrupt generation and includes the time passed since the last update of xtime.
----~\cite{thesis-beat}.
+interrupt generation and includes the time passed since the last update of xtime~\cite{thesis-beat}.
 
-The kernel read the current time from RTC and stored its value in memory during boot.
-
-Starting with Intel 386, Intel introduced
-Programmable Interrupt Controller (PIT) Intel 8253 and 8254 - 3 counters (counter 0 interrupt to OS)
-
-Used by historic versions of Linux
-=> read initial time from RTC, setup PIT and interrupts (IRQ 0, INT 8), increment jiffies on every interrupt, provide application resolution of jiffies
-
-init/main.c - time\_init() - read from RTC and save to startup\_time
-kernel/sched.c - sched\_init() = PTI setup for interrupts - LATCH (1193180/HZ)
-kernel/system\_call.s - timer\_interrupt() in assembly - increments jiffies
-
-The current real time is provided by CURRENT\_TIME (startup\_time+jiffies/HZ) => since jiffies is integer and HZ is 100 => resolution of 10ms.
-kernel/sys.c - sys\_time() - CURRENT\_TIME returned
 
 TICK - http://www.ntp.org/ntpfaq/NTP-s-sw-clocks-tick.htm
 
