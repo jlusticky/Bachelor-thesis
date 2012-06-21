@@ -66,7 +66,7 @@ As described in section~\ref{sec:contiki-timers}, there is
 To obtain {\it{CLOCK\_SECOND}} interrupts per second, there must be
 ${\frac{f_{T2}}{CLOCK\_SECOND}}$ hardware clock ticks between two successive interrupts.
 On compare match in CTC mode, the timer is reset to zero as
-shown on figure~\ref{fig:implementation-timing-diagram}.
+shown in figure~\ref{fig:implementation-timing-diagram}.
 The value zero is also included in the counting - the 0th count of the timer also takes one tick.
 Therefore the value of compare register {\it{OCR2A}} must be ${\frac{f_{T2}}{CLOCK\_SECOND}} - 1$
 when using Timer/Counter~2 in CTC mode.
