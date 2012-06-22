@@ -137,7 +137,7 @@ tcpip_handler(void)
 		xmtts.sec = uip_htonl(pkt->xmttime.int_partl) - JAN_1970;
 
 		PRINTF("SEC THETA = ((%ld - %ld) + (%ld - %ld)) / 2\n", rects.sec, ts.sec, xmtts.sec, dstts.sec);
-		adjts.sec = ((rects.sec - ts.sec) + (xmtts.sec - dstts.sec)) / 2; // dstts.sec + 1 = 0
+		adjts.sec = ((rects.sec - ts.sec) + (xmtts.sec - dstts.sec)) / 2;
 
 		/* Calculate nsec offset */
 		rects.nsec = fractionl_to_nsec(uip_htonl(pkt->rectime.fractionl));
@@ -145,13 +145,42 @@ tcpip_handler(void)
 
 		PRINTF("NSEC THETA = ((%ld - %ld) + (%ld - %ld)) / 2\n", rects.nsec, ts.nsec, xmtts.nsec, dstts.nsec);
 
+		/* Correct fraction parts if seconds are adjacent */
+		if (adjts.sec == 0)
+		{
+			if (ts.sec < rects.sec) // server received packet in other second
+			{
+				printf("/ ts.nsec - / ");
+				ts.nsec -= 1000000000;
+			}
+			if (xmtts.sec < dstts.sec) // our client received packet in other second
+			{
+				printf("/ dstts.nsec + / ");
+				dstts.nsec += 1000000000;
+			}
+		}
+
 		adjts.nsec = ((rects.nsec - ts.nsec) + (xmtts.nsec - dstts.nsec)) / 2;
-		PRINTF("Local clock offset = %ld sec %ld nsec\n", adjts.sec, adjts.nsec);
 	}
 
 	/* Set our timestamp to zero to avoid processing the same packet more than once */
 	ts.sec = 0;
 #endif /* ! REMOTE_HOST */
+
+#ifdef DEBUG // correct plus minus for printing
+	if ((adjts.sec < 0) && (adjts.nsec > 0))
+	{
+		adjts.sec = adjts.sec + 1;
+		adjts.nsec = adjts.nsec - 1000000000;
+	}
+	else if ((adjts.sec > 0) && (adjts.nsec < 0))
+	{
+		adjts.sec = adjts.sec - 1;
+		adjts.nsec = adjts.nsec + 1000000000;
+	}
+#endif
+
+	PRINTF("Local clock offset = %ld sec %ld nsec\n", adjts.sec, adjts.nsec);
 
 	/* Set or adjust local clock */
     if (labs(adjts.sec) >= ADJUST_TRESHOLD)
