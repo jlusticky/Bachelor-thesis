@@ -116,3 +116,14 @@ TODO: Adjust time
 POSIX:
 Time values that are between two consecutive non-negative integer multiples
 of the resolution of the specified clock are truncated down to the smaller multiple of the resolution.
+
+%If the operating system implements the kernel discipline described above,
+%an NTP client will announce insertion and deletion of a leap second to the kernel and
+%the kernel will handle the leap second without further action necessary~\cite{ntp-faq}.
+
+%If the operating system does not implement the kernel discipline,
+%the system clock will show an error of one second after the leap second occurred~\cite{ntp-faq}.
+%The situation will be handled just like an unexpected change of time -
+%the operating system will continue with the wrong time for some time,
+%but an NTP client will step or adjust the time~\cite{ntp-faq}.
+%This will effectively cause the leap second correction to be applied too late.

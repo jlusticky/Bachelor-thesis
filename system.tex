@@ -120,7 +120,7 @@ Even if the systematic error of some clock model is known, the clock will never 
 This is because the frequency varies over time, mostly influenced by temperature,
 but it could also be air pressure or magnetic fields~\cite{ntp-faq}.
 
-\section{Clock discipline}
+\section{Clock discipline}\label{sec:system-discipline}
 For keeping an accurate time a clock not only needs to be read, it must be also set.
 However, simply setting the clock to remove the offset would cause unpredictable time steps~\cite{ntp-faq}.
 Since time is an always monotonically increasing function, this is not a desired behaviour~\cite{ntp-daq}.
