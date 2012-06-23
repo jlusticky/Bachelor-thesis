@@ -15,15 +15,27 @@ Similarly, if the server's response loss occurs, no message will be received by 
 Not to block a whole system till the response arrives
 is therefore a desired behaviour of the client.
 
---- to design.tex ?
-The AVR Raven platform features 802.15.4 support.
-Contiki is used in conjunction with RZ USB Stick - 6LoWPAN.
 
-The 6LoWPAN Adaptation Layer % see Interconnecting smart objects with IP
-% IEEE 802.15.4
-as RFC~4944 written by 6lowpan working group of IETF
-made the underlaying IEEE 802.15.4 layer
-look like an IPv6 link~\cite{6lowpan} and
+
+---
+LoWPAN is Low-power Wireless Personal Area
+Networks (LoWPANs) composed of devices conforming to the IEEE 802.15.4-2003 standard defined
+by the IEEE [129]. IEEE 802.15.4 devices are characterized by short range, low bit rate, low power,
+and low cost~\cite{interconnecting}.
+
+This can be used conjunction with RZ~USB Stick for communication with desktop PC.
+This USB Stick can be loaded with firmware automatically translating
+Ethernet packets to 802.15.4 packets.
+This firmware is distributed together with Contiki and
+is to be found in {\it{/platform/avr-ravenusb/}} directory.
+
+This layer is needed because IPv6 requires support of much larger packet
+sizes than the largest IEEE 802.15.4 frame size
+(MTU on 802.15.4 links is 127 bytes,
+whereas IPv6 mandates links with MTU of at least 1280 bytes)~\cite{interconnecting}.
+
+
+the 6LoWPAN adaptation layer makes the underlaying IEEE 802.15.4 layer look like an IPv6 link.
 \begin{figure}
   \centering
   \includegraphics[width=9cm,keepaspectratio]{fig/6lowpan.pdf}
