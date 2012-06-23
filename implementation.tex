@@ -2,18 +2,14 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \chapter{NTP client in Contiki OS}
-For implementation of reasonably useful NTP client,
-operating system must be able to set, get
-and eventually adjust time.
-Though not mandatory, adjusting time is important function,
-if the time shall be always a monotonically increasing function.
-Apart from that, communicating abilities over UDP are also required.
 
 Thanks to uIP, described in section~\ref{sec:contiki-uip}, communication is
 not a matter for Contiki OS.
 Contiki is also able to use Domain Name System for IPv4 address resolution.
 DNS resolution of IPv6 addresses was not implemented in Contiki OS
 at the time of writing~\cite{contiki-docs}.
+
+----
 The main problem of NTP client implementation for Contiki is therefore total
 lack of real-time support.
 Not only no common interface is available, but also
@@ -21,6 +17,7 @@ almost no platform-specific code has been implemented towards time support yet.
 Contiki provides basic clock interface particularly for use of timers though.
 This interface is common for all supported platforms,
 but the particular implementation is platform specific.
+----
 
 Another problem might be a possible packet loss if communication uses UDP on transport layer.
 The reason why this can happen often is explained in section~\ref{sec:contiki-uip}.
@@ -40,14 +37,6 @@ is therefore desired behaviour of the client.
 
 %TO COMMUNICATION: In Contiki the application is invoked in response to certain events
 %... This can be effectively solved by NTP Poll Interval.
-
-For developing and testing Contiki NTP client,
-the AVR Raven platform with ATmega1284P CPU~\cite{avr-datasheet} was used.
-% do not mention, appendix?
-How to get a working setup with Contiki on this platform is described in
-%!%% CHECK THIS %%%
-docs/setup.pdf file on the CD enclosed to this thesis.
-%%% CHECK THIS %%%
 
 \input{implementation/clock.tex}
 

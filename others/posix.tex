@@ -2,6 +2,17 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{POSIX-compliant systems}\label{sec:others-posix}
+NTP daemon is an application running in user-space using kernel calls to set, get and
+adjust system time.
+
+The operating system is assumed to provide two
+functions: one to set the time directly, for example, the Unix
+settimeofday() function, and another to adjust the time in small
+increments advancing or retarding the time by a designated amount,
+for example, the Unix adjtime() function~\cite{rfc5905}.
+
+The operating system interface is specified by POSIX standard on Unix-like operating systems~\cite{posix}.
+
 Traditionally, {\it{gettimeofday}} call can be used get current time on Unix systems.
 Setting the time can be done using {\it{settimeofday}} call.
 Both calls manipulate with microsecond precision and

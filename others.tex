@@ -1,17 +1,20 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky
 
-\chapter{NTP on other systems} %+next chapter Contiki NTP client design
-NTP daemon is an application running in user-space using kernel calls to set, get and
-adjust system time.
+\chapter{Design and analysis}
+For implementation of reasonably useful NTP client,
+operating system must be able to set, get
+and eventually adjust the system time in a similar fashion as
+described in section~\ref{sec:system-keeping-and-providing} and~\ref{sec:system-discipline}.
+Though not mandatory, adjusting time is important function,
+if the time shall be always a monotonically increasing function.
+Apart from that, communicating abilities over UDP are also required.
 
-The operating system is assumed to provide two
-functions: one to set the time directly, for example, the Unix
-settimeofday() function, and another to adjust the time in small
-increments advancing or retarding the time by a designated amount,
-for example, the Unix adjtime() function~\cite{rfc5905}.
-
-The operating system interface is specified by POSIX standard on Unix-like operating systems~\cite{posix}.
+For developing and testing Contiki NTP client,
+the AVR Raven platform with 8-bit ATmega1284P CPU~\cite{avr-datasheet} was used.
+How to get a working setup with Contiki on this platform is described in
+the document files on the CD enclosed to this thesis.
+The CD content hierarchy is listed in appendix~\cite{app:cd-content}.
 
 %Older x86 processors used an interrupt mechanism to switch from
 %user-space to kernel-space, but new x86 processors provide instructions
