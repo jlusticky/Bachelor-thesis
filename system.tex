@@ -23,7 +23,7 @@ interrupt service routine increments a system clock value stored in memory~\cite
 \section{Keeping and providing the time}\label{sec:system-keeping-and-providing}
 The original IBM PC did know what time it was, provided you typed it in when you booted it,
 but it forgot when you turned it off~\cite{timecounters}.
-Today desktop computers %with CPU based on Intel x86 architecture
+Today desktop computers with CPU based on Intel x86 architecture
 have hardware Real-Time Clock (RTC) in CMOS chip that is battery powered,
 so it keeps time when the computer is powered off~\cite{timecounters}.
 Hardware Real-Time Clocks should not be confused with the system clock,
@@ -120,27 +120,37 @@ Even if the systematic error of some clock model is known, the clock will never 
 This is because the frequency varies over time, mostly influenced by temperature,
 but it could also be air pressure or magnetic fields~\cite{ntp-faq}.
 
-\section{Clock corrections}
+\section{Clock discipline}
 For keeping an accurate time a clock not only needs to be read, it must be also set.
 However, simply setting the clock to remove the offset would cause unpredictable time steps~\cite{ntp-faq}.
-Since time is an always monotonically increasing function, this is not a desired behaviour~\cite{}.
+Since time is an always monotonically increasing function, this is not a desired behaviour~\cite{ntp-daq}.
 For minimising the time offset and frequency difference between
 the reference clock and the local clock without any time step,
 an NTP client can be used.
 
-With the current system time knowledge,
-the NTP client can compute an amount of adjustments needed for local clock
-to get the local clock syncronised.
-For accounting these adjustments
-operating system must also provide a call
-for adjusting the time (usually called {\it{adjtime}}).
-This call speeds up or slows down the system time to be synchronised.
-... TODO
+With the current system time knowledge and the local clock offset knowledge,
+an NTP client can compute an amount of adjustments needed to synchronise the local clock.
+To apply these adjustments, operating system must also provide a call
+for adjusting the time (usually called {\it{adjtime}})~\cite{nanokernel}.
+This call speeds up or slows down the system time in order to synchronise the local clock.
+Periodically applying such corrections {\it{discipline}} the local clock~\cite{ntp-faq}.
 
-%- software:
-The Kernel Discipline -  kernel clock model RFC 1589 -
-struct timex -
-new calls ntp\_gettime, ntp\_settime, ntp\_adjtime
+However, some clock implementations do not allow small corrections to be applied
+to the system clock, and there is also no standard interface to monitor the system clock's quality~\cite{ntp-faq}.
+This was the main reason for developing a new kernel clock model called {\it{Kernel discipline}}~\cite{nanokernel}.
+The new kernel clock model provides much improved time and frequency
+resolution, together with a more agile and precise clock discipline mechanism~\cite{nanokernel}.
+This model is described in RFC~1589~\cite{rfc1589} and it adds new calls to the existing kernel interface
+{\it{ntp\_gettime}}, {\it{ntp\_settime}} and {\it{ntp\_adjtime}}.
+Apart from the system time, these calls also provide maximum error (synchronisation distance)
+and estimated error (dispersion) to client user application programs, such as NTP client~\cite{rfc1589}.
+The programming interface also includes the new
+system call {\it{ntp\_adjtime}} mentioned previously, which can be used
+to read and write kernel variables for time and frequency
+adjustment, leap-second warning and related data~\cite{rfc1589}.
+The clock corrections are calculated and applied inside the kernel~\cite{ntp-faq}.
 
-%However, some clock implementations do not allow small corrections to be applied to the system clock, and there is no standard interface to monitor the system clock's quality.
-%=> divide problem (in RFC)
+%!TODO
+Unfortunately, further description of both models is outside the scope of this thesis.
+Both of the models have benefits and drawbacks.
+These are further discussed, particularly in relation to Contiki~OS, in %chapter~\ref{}.
