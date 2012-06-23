@@ -1,6 +1,5 @@
 Thesis
 ======
-Clock - figures
 Convert setup.txt and simulation.txt to latex + add photos
 
 Content
@@ -19,7 +18,9 @@ ntp/time.tex - DONE
 ntp/network.tex - DONE
 ntp/algorithms.tex - DONE
 
-hardware.tex - work in progress - read man clock
+system.tex - DONE + needs a review
+
+design.tex - work in progress
 
 implementation.tex - work in progress
 
@@ -49,3 +50,7 @@ equations, commas, grammar
 test setup, debug + photos
 ---
 reorganise and send for review
+---
+Operating systems targeted at embedded devices
+TinyOS
+...
