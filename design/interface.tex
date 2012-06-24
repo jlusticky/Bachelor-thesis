@@ -1,0 +1,41 @@
+%=========================================================================
+% (c) 2011, 2012 Josef Lusticky
+
+\section{Operating system time interface}
+The main problem of NTP client implementation for Contiki is therefore a total
+lack of real-time support.
+Not only no common interface is available, but also
+almost no platform-specific code has been implemented towards time interface yet.
+
+
+
+-- git
+
+Setting the current time is only possible within one second precision -
+finer time setting must be made through time adjustments described further.
+Implemented {\it{clock\_set\_time}} function computes when the system started
+in seconds since the Epoch and saves the result in newly implemented {\it{boottime}} variable.
+
+
+
+Unlike GIT!
+This variable, counting uptime in seconds,
+is particularly used by stimers in Contiki
+and modifying it would lead to misbehaviour of stimer library
+described in section~\ref{sec:contiki-timers}.
+
+
+If the operating system implements the kernel discipline described in section~\ref{sec:system-discipline},
+an NTP client will announce insertion and deletion of a leap second to the kernel and
+the kernel will handle the leap second without further action necessary~\cite{ntp-faq}.
+If the operating system does not implement the kernel discipline,
+the system clock will show an error of one second after the leap second occurred~\cite{ntp-faq}.
+The situation will be handled just like an unexpected change of time -
+the operating system will continue with the wrong time for some time,
+but an NTP client will step or adjust the time~\cite{ntp-faq}.
+This will effectively cause the leap second correction to be applied too late.
+% which is a trade-off for smaller memory requirements
+
+Since there is no way of setting, getting and adjusting the time in Contiki OS,
+a new interface for setting, getting and eventually
+adjusting the time must be developed.
