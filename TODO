@@ -52,3 +52,6 @@ reorganise and send for review
 Operating systems targeted at embedded devices
 TinyOS
 ...
+---
+try to sleep - if the time is automatically adjusted
+implemente even from other process and try to display time on LCD
