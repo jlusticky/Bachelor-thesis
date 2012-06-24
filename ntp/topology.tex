@@ -26,3 +26,11 @@ Figure~\ref{fig:ntp-hierarchy} shows a brief hierarchy of NTP.
   \label{fig:ntp-hierarchy}
   \bigskip
 \end{figure}
+The subnet topology should be organised to avoid timing loops
+and minimise the synchronisation distance~\cite{rfc5905}.
+To achieve this in NTP, the subnet topology is determined using a variant
+of the Bellman-Ford distributed routing algorithm, which computes
+the shortest-distance spanning tree rooted on the primary (stratum~1) servers~\cite{rfc5905}.
+As a result of this design, the
+algorithm automatically reorganises the subnet to produce the most accurate and reliable time,
+even when one or more primary or secondary servers or the network paths between them fail~\cite{rfc5905}.
