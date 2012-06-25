@@ -2,6 +2,13 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{NTP client code}
+The client itself is implemented as a Contiki process.
+Parameters such as remote port, local port or poll interval
+can be configured using standard C define macro.
+The client can communicate using both,
+the NTP broadcast mode and the NTP unicast mode.
+The unicast mode can be turned off by specifying no remote host.
+
 Structure representing NTP message was borrowed from OpenNTPD NTP Unix daemon
 and Dragonfly NTP daemon.
 This structure is not using the GCC extension for representing a bit field,
@@ -12,28 +19,11 @@ Accessing each field of the {\it{status}} byte is done using bitmasks.
 Unlike using the bit field extension,
 such design is compliant with the standard C language.
 
-
 A client sends messages to each server with a poll interval of $2^{\tau}$
 seconds, as determined by the poll exponent $\tau$ (tau).
 In NTPv4, $\tau$ ranges from 4 (16 s) to 17 (36 h).
 
 
-% filling the packet
-Precision express strictly speaking elapsed time to read the system clock from userland~\cite{ntp-arch}.
-However most implementation supply clock precision.
-%Dragonfly BSD:
-%wmsg.precision = -6;
-%Chrony, NTP.org - getting resolution, gettimeofday, clock_getres
-\begin{lstlisting}
-// set clock precision - convert Hz to log2 - borrowed from OpenNTPD
-int b = CLOCK_SECOND; // CLOCK_SECOND * OCR2A
-int a;
-for (a = 0; b > 1; a--, b >>= 1)
-  {}
-msg.precision = a;
-\end{lstlisting}
-This will work for clock precision greater or equal 1s, i.e. CLOCK\_SECOND must be greater or equal 1.
-%refer to CLOCK\_SECOND - is always greater or equal 1
 
 The clock are set if the time difference is equal or greater than
 treshold value. (3s)
@@ -100,8 +90,8 @@ or {\it{clock_adjust_time}} call.
 In broadcast mode, the received packet is always considered correct
 and the local clock offset is computed as the difference between the local stored timestamp
 and the transmit timestamp received.
-As one can expect, the local clock offset determined from the broadcast mode packet
-is less accurate then the unicast mode.
+As one could expect, the local clock offset determined from the broadcast mode
+is less accurate then from the unicast mode.
 The broadcast mode is intended particularly for energy constrained clients
 or for a huge number of NTP clients and a single NTP server
 in a network with small propagation delay.

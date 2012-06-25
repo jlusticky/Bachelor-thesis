@@ -77,6 +77,7 @@ The value zero is also included in the counting - the 0th count of the timer als
 Therefore the value of compare register {\it{OCR2A}} must be ${\frac{f_{T2}}{CLOCK\_SECOND}} - 1$
 when using Timer/Counter~2 in CTC mode.
 Default value of {\it{CLOCK\_SECOND}} for AVR Raven in Contiki is 128,
+defined in {\it{platform/avr-raven/contiki-conf.h}} file,
 what implies default value of compare register ${\frac{4096}{128}} - 1 = 31$.
 
 One of the tasks of the interrupt service routine is to increment the {\it{scount}} variable,

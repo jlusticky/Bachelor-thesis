@@ -7,10 +7,11 @@ Content
 obsah.tex - conclusion
 
 contiki.tex - DONE
+contiki/features.tex - DONE
 contiki/protothreads.tex - DONE
 contiki/uip.tex - DONE
-contiki/kernel.tex - DONE + power-save?
-contiki/timers.tex - DONE + power-save?
+contiki/kernel.tex - DONE
+contiki/timers.tex - DONE
 
 ntp.tex - DONE
 ntp/topology.tex - DONE
@@ -21,8 +22,14 @@ ntp/algorithms.tex - DONE
 system.tex - DONE + needs a review
 
 design.tex - work in progress
+design/network.tex - wip
+design/clock.tex - wip
+design/interface.tex - wip
+design/client.tex - wip + conversion
 
 implementation.tex - work in progress
+
+measurements.tex - wip + offset graph
 
 
 Tasks
