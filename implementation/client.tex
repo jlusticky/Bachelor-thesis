@@ -9,7 +9,7 @@ The client can communicate using both,
 the NTP broadcast mode and the NTP unicast mode.
 The unicast mode can be turned off by specifying no remote host.
 
-Structure representing NTP message was borrowed from OpenNTPD NTP Unix daemon
+Structure representing NTP message was borrowed from OpenNTPD daemon
 and Dragonfly NTP daemon.
 This structure is not using the GCC extension for representing a bit field,
 instead uses a single 8-bit integer called {\it{status}}
@@ -20,13 +20,11 @@ Unlike using the bit field extension,
 such design is compliant with the standard C language.
 
 
-
-
-Even if {\it{tmpts.sec}} value is greater than {\it{ts.sec}} value,
-subtracting and casting to signed type gives correct (negative) result~\cite{c99}.
-Assuming 32-bit data types this will work until 2038 when wrap around can occur due to difference
-between {\it{ts.sec}} and {\it{tmpts.sec}} greater than $2^{31}$-1 (2~147~483~647).
-But as NTP Era 0 ends 2036 the NTP client code must be changed in the future anyway.
+%Even if {\it{tmpts.sec}} value is greater than {\it{ts.sec}} value,
+%subtracting and casting to signed type gives correct (negative) result~\cite{c99}.
+%Assuming 32-bit data types this will work until 2038 when wrap around can occur due to difference
+%between {\it{ts.sec}} and {\it{tmpts.sec}} greater than $2^{31}$-1 (2~147~483~647).
+%But as NTP Era 0 ends 2036 the NTP client code must be changed in the future anyway.
 
 %! TODO
 
@@ -37,7 +35,7 @@ But as NTP Era 0 ends 2036 the NTP client code must be changed in the future any
 %% SENDING NTP TIMESTAMP
 The transmit timestamp sent by the client can be set to any arbitrary value.
 This is in compliance with the NTPv4 specification~\cite{rfc5905}.
-It is, however, important for the client to store the sent timestamp,
+It is however important for the client to store the sent timestamp,
 since it is later used by the client to check the server's response.
 Contiki NTP Client fills and checks only the seconds part of NTP timestamp,
 because the timestamp should be as accurate as possible and the
@@ -84,82 +82,84 @@ The broadcast mode is intended particularly for energy constrained clients
 or for a huge number of NTP clients and a single NTP server
 in a network with small propagation delay.
 
-The conversion from NTP fraction part and nanoseconds is made using...
-%%TODO from here...
+Because of the different origint of the Unix and NTP epoch.
 
-%\section{NTP values and convertions}
-Exact conversion from NTP fraction part to nanoseconds used in the local timestamps
-requires either floating point operations or 64-bit numbers.
+The conversion from fraction part of long 64-bit NTP timestamp to nanoseconds,
+used in the local timestamp structure,
+is one of the most problematic tasks for memory constrained systems.
+An accurate conversion requires either floating point operations or operations with 64 bit numbers.
 The conversion is given by
-$nsec = fractionl \times 10^9 / 2^{32}$, where $nsec$ is the nanoseconds part of the local timestamp
+$nsec = fractionl \times 10^9 \div 2^{32}$, where $nsec$ is the nanoseconds part of the local timestamp
 and $fractionl$ is the fraction part of long 64-bit NTP timestamp.
-Since there is no native hardware support for floating point nor for 64 bit arithmetic,
-GCC would supply these operations in form of library called {\it{libgcc}}.
-In fact, a simple multiplication of $fractionl$ by $\frac{10^9}{2^{32}}$ must be computed.
+Since there is no native hardware support for floating point nor for 64-bit arithmetic,
+GCC would supply these operations in form of library called {\it{libgcc}},
+which causes significantly bigger resulted binary file.
 The greatest common divisor of $10^9$ and $2^{32}$ is $2^9$,
-therefore $nsec = fractionl \times 5^9 / 2^{23}$.
+so in fact, a relatively simple multiplication of $fractionl$ by $\frac{5^9}{2^{23}}$ must be computed.
 This can be computed using sequential divisions and multiplications,
-which in turn can be done using shifts and additions~\cite{c99}.
-\begin{lstlisting}
-nsec = fractionl;
-nsec = (nsec >> 1) + (nsec >> 3); // nsec = nsec/2 + nsec/8 = (5*nsec)/8
-nsec = (nsec >> 1) + (nsec >> 3); // nsec = (5*nsec) / 8 = (25*fractionl)/64
-nsec = (nsec >> 1) + (nsec >> 3); // nsec = fractionl * 5^3/2^9
-/* Now we can multiply by 5^2 because then the total
- * multiplication coefficient for the original number fractionl
- * will be: fractionl * (1/(2^3)^4)*5^5 = fractionl * 0.762939453,
- * which is less then 1, so it can not overflow.
- */
-nsec = (nsec << 1) + nsec + (nsec >> 3); // nsec*3 + nsec/8 = (25*nsec) / 8
+which in turn can be done on 32 bits using shifts and additions~\cite{c99}.
+\begin{lstlisting}[caption=Conversion from NTP fraction part to nanoseconds]
+unsigned long
+fractionl_to_nsec(uint32_t fractionl)
+{
+  unsigned long nsec;
+  nsec = fractionl;
+  nsec = (nsec >> 1) + (nsec >> 3); // nsec = nsec/2 + nsec/8 = (5*nsec)/8
+  nsec = (nsec >> 1) + (nsec >> 3); // nsec = (5*nsec) / 8 = (25*fractionl)/64
+  nsec = (nsec >> 1) + (nsec >> 3); // nsec = fractionl * 5^3/2^9
+  /* Now we can multiply by 5^2 because then the total
+   * multiplication coefficient for the original number fractionl
+   * will be: fractionl * (1/(2^3)^4)*5^5 = fractionl * 0.762939453,
+   * which is less then 1, so it can not overflow.
+   */
+  nsec = (nsec << 1) + nsec + (nsec >> 3); // nsec*3 + nsec/8 = (25*nsec) / 8
 
-nsec = (nsec >> 1) + (nsec >> 3);
-nsec = (nsec >> 1) + (nsec >> 3);
+  nsec = (nsec >> 1) + (nsec >> 3);
+  nsec = (nsec >> 1) + (nsec >> 3);
 
-/* Again we can multiply by 5^2.
- * Total coefficient will be fractionl * (1/(2^3)^7)*5^9 = fractionl * 0.931322575
- */
-nsec = (nsec << 1) + nsec + (nsec >> 3); // nsec*3 + nsec/8 = (25*nsec) / 8
+  /* Again we can multiply by 5^2.
+   * Total coefficient will be fractionl * (1/(2^3)^7)*5^9 = fractionl * 0.931322575
+   */
+  nsec = (nsec << 1) + nsec + (nsec >> 3); // nsec*3 + nsec/8 = (25*nsec) / 8
 
-/* Last shift to agree with division by 2^23 can not be
- * done earlier since coefficient would always be greater than 1.
- */
-nsec = nsec >> 2;
+  /* Last shift to agree with division by 2^23 can not be
+   * done earlier since coefficient would always be greater than 1.
+   */
+  nsec = nsec >> 2;
+  return nsec;
+}
 \end{lstlisting}
 As the code comments say, an extra attention must be taken of the overall coefficient,
 which can not be greater than 1 in any step.
 Because $fractionl$ can be of any value between $0$ and $2^{32}-1$,
 the overall coefficient greater than 1 could cause overflow and an unexpected result.
 
-According to output from the {\it{avr-size}} tool, using 64-int number for conversion
-uses 4~330 bytes more in %program section of
-resulted binary file
-and floating point operation takes 3~474 bytes more
-than the algorithm developed.
+According to output from the {\it{avr-size}} tool,
+when compiled with GCC 4.3.5,
+using the 64-bit arithmetic for conversion
+takes 656 bytes more in %program section of
+resulted binary file (GCC supplies routine for multiplication and shifting 64-bit integers)
+and floating point operation takes 3~358 bytes more
+than the developed algorithm.
 
-It must be noted, that the developed conversion is not exactly correct, particularly
+It must be noted, that the above presented conversion is not exactly accurate, particularly
 because of loosing the least significant bits by the first shifts.
-However, this conversion gives maximum error of 5 nanoseconds for possible fractionl values,
+However, this conversion gives maximum error of 5 nanoseconds for all possible values of $fractionl$,
 which is totally adequate for most platforms without floating point unit or
-for platforms where usage of 64bit is expansive.
+for platforms where usage of 64-bit arithmetic is expansive.
 Beside significantly smaller memory requirements,
 this algorithm gives on AVR Raven even more accurate results than the libgcc
 floating point library supplied by GCC.
 
 
-Unlike the RFC 5905~\cite{rfc5905} shows, no 64 bit values nor floating point numbers are used.
-
-No floating point numbers - library.
-Division of unsigned integer number by 2 is automatically translated by compiler to logical right shift,
-making it fast operation.
-
-
-The time is set or adjusted using the {\it{clock\_set\_time}}
+In the next step after conversions, the local clock offset is computed
+as given in section~\ref{sec:ntp-algorithms}.
+Depending on the absolute value of the local clock offset,
+the system time is either set or adjusted using the {\it{clock\_set\_time}}
 and {\it{clock\_adjust\_time}} call respectively.
-
-The clock are set if the time difference is equal or greater than
-treshold value. (3s)
-The reference NTP implementation uses 125 ms~\cite{rfc5905}.
-
+The clock is set if the time difference is equal or greater than
+treshold value, which 3 seconds by default. %!TODO
+The reference NTP implementation uses 125 ms~\cite{rfc5905}
 It has been the Internet
 experience that the need to change the system time in increments
 greater than +-128 ms is extremely rare and is usually associated
@@ -168,12 +168,12 @@ with a hardware or software malfunction or system reboot~\cite{rfc1589}.
 
 %
 % NEGATIVE result for the first time
-In some scenarios where the initial frequency offset of the client is
-  relatively large and the actual propagation time small, it is
-   possible for the delay computation to become negative.  For instance,
-   if the frequency difference is 100 ppm and the interval T4-T1 is 64
-   s, the apparent delay is -6.4 ms.  Since negative values are
-   misleading in subsequent computations, the value of delta should be
-   clamped not less than s.rho, where s.rho is the system precision
-   described in Section 11.1, expressed in seconds~\cite{rfc5905}.
+%In some scenarios where the initial frequency offset of the client is
+  %relatively large and the actual propagation time small, it is
+   %possible for the delay computation to become negative.  For instance,
+   %if the frequency difference is 100 ppm and the interval T4-T1 is 64
+   %s, the apparent delay is -6.4 ms.  Since negative values are
+   %misleading in subsequent computations, the value of delta should be
+   %clamped not less than s.rho, where s.rho is the system precision
+   %described in Section 11.1, expressed in seconds~\cite{rfc5905}.
 %

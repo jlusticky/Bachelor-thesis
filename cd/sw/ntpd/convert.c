@@ -52,10 +52,10 @@ fractionl_to_nsec(uint32_t fractionl)
 	nsec = fractionl;
 #if 1
 	/*
-	 * We need to compute i * 1000000000 / 2^32.
+	 * We need to compute fractionl * 1000000000 / 2^32.
 	 * Greatest common divisor of 1000000000 and 2^32 is 2^9, therefore
-	 * i * (1000000000 / 2^9) / (2^32 / 2^9) = i * 1953125 / 8388608,
-	 * which is equal to i * 5^9 / 2^23.
+	 * fractionl * (1000000000 / 2^9) / (2^32 / 2^9) = fractionl * 1953125 / 8388608,
+	 * which is equal to fractionl * 5^9 / 2^23.
 	 * This can be computed using sequential division and multiplication,
 	 * which in turn can be done using shifts and additions.
 	 */
@@ -64,8 +64,8 @@ fractionl_to_nsec(uint32_t fractionl)
 	nsec = (nsec >> 1) + (nsec >> 3); // (125*i) / 512 = (5^3*i) / 2^9
 
 	/* Now we can multiply by 5^2 because then the total
-	 * multiplication coefficient for the original number i
-	 * will be: i * (1/(2^3)^4)*5^5 = i * 0.762939453,
+	 * multiplication coefficient for the original number fractionl
+	 * will be: fractionl * (1/(2^3)^4)*5^5 = fractionl * 0.762939453,
 	 * which is less then 1, so it can not overflow.
 	 */
 	nsec = (nsec << 1) + nsec + (nsec >> 3); // nsec*3 + nsec/8 = (25*nsec) / 8
@@ -74,7 +74,7 @@ fractionl_to_nsec(uint32_t fractionl)
 	nsec = (nsec >> 1) + (nsec >> 3);
 
 	/* Again we can multiply by 5^2.
-	 * Total coefficient will be i * (1/(2^3)^7)*5^9 = i * 0.931322575
+	 * Total coefficient will be fractionl * (1/(2^3)^7)*5^9 = fractionl * 0.931322575
 	 */
 	nsec = (nsec << 1) + nsec + (nsec >> 3); // nsec*3 + nsec/8 = (25*nsec) / 8
 
