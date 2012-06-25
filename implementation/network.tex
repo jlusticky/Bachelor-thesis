@@ -21,18 +21,5 @@ during compilate time using {\it{REMOTE\_HOST}} define.
 TODO: If no host is specified,
 NTP client assumes NTP broadcast communication mode.
 
-
-%The uIP packet buffer is accessed through
-%the uip\_buf array and is used to hold incoming and outgoing packets.
-%The device driver should place incoming data into this buffer.
-%When sending data, the device driver should read the link
-%level headers and the TCP/IP headers from this buffer.
-%The size of the link level headers is configured by the UIP\_LLH\_LEN
-%define and in case of Ethernet it is 14.
-
-%The application data need not be placed in this buffer, so
-%the device driver must read it from the place pointed to by the
-%uip\_appdata pointer %as illustrated by the following example:
-
 Routing to Meinberg NTP primary server.
 Measurements made using this setup are discussed in chapter~\ref{chap:measurements}.

@@ -2,8 +2,16 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{NTP client implementation}
-Structures representing NTP message were borrowed from OpenNTPD NTP Unix daemon.
-%They are not using the GCC extension for representing a bit field.
+Structure representing NTP message was borrowed from OpenNTPD NTP Unix daemon
+and Dragonfly NTP daemon.
+This structure is not using the GCC extension for representing a bit field,
+instead uses a single 8-bit integer called {\it{status}}
+for Leap Indicator, Version Number and Mode fields,
+described in section~\ref{sec:ntp-network}.
+Accessing each field of the {\it{status}} byte is done using bitmasks.
+Unlike using the bit field extension,
+such design is compliant with the standard C language.
+
 
 Packet sanity tests~\cite{ntp-arch}.
 
