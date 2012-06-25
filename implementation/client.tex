@@ -117,11 +117,12 @@ making it fast operation.
 
 Converting between NTP and local timestamps requires floating point operations or 64-bit numbers.
 According to output from avr-size tool, using 64-int number for conversion
-uses 4~330 bytes more in %program section of
+uses 656 bytes more in %program section of
 resulted binary file
-and floating point operation takes 3~474 bytes more
-than algorithm developed.
-uint64\_t with shift 728 bytes more.
+and floating point operation takes 3~358 bytes more
+than the developed algorithm.
+
+GCC 4.3.5
 
 C99 - shift E1 >> E2: if E1 has a signed type and a nonnegative value, the value of
 the result is the integral part of the quotient of $E1 / 2^{E2}$.
