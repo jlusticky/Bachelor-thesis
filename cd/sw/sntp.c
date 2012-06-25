@@ -212,6 +212,10 @@ main(int argc, char *argv[])
 		return 1;
 	}
 
+	/* Here can be custom fields written */
+	//ntpmsg.stratum = 30;
+
+	/* Packet is about to be sent */
 	struct sockaddr_in6 sin6;
 	struct sockaddr_in sin4;
 
