@@ -87,10 +87,10 @@ int main(void)
 
 		/*
 		 * We need to compute i * 1000000000 / 2^32.
-		 * Greatest common divisor of 1000000000 and 2^32 is 2^9, therefore
+		 * The greatest common divisor of 1000000000 and 2^32 is 2^9, therefore
 		 * i * (1000000000 / 2^9) / (2^32 / 2^9) = i * 1953125 / 8388608,
 		 * which is equal to i * 5^9 / 2^23.
-		 * This can be computed using sequential division and multiplication,
+		 * This can be computed using sequential divisions and multiplications,
 		 * which in turn can be done using shifts and additions.
 		 */
 		xmf = i;
