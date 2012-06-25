@@ -18,45 +18,6 @@ Contiki aims for maximum portability and therefore is written in C.
 It is a feature-rich operating system and
 only some of its features are described in this thesis.
 
-Contiki OS features lightweight stackless threads called Protothreads.
-Protothreads are a new concept brought to the embedded world by Contiki,
-they are extremely lightweight and compatible with standard C~\cite{paper-protothreads}.
-Each Protothread does not require a separate stack which fits them perfectly
-for usage in memory constrained embedded systems.
-Protothreads are more detailed discussed in section~\ref{sec:contiki-protothreads}.
-
-Contiki also features TCP/IP communication stack called uIP~(micro~IP)
-that conforms to Request For Comments memorandums published by the Internet Engineering Task Force.
-The uIP provides communication abilities using both IPv4 and IPv6~\cite{contiki-docs}.
-Contiki with its uIP stack is IPv6 Ready Phase 1 certified
-and therefore has right to use the IPv6~Ready silver logo~\cite{ipv6ready-db}.
-Before Contiki's uIP, the embedded world considered IP to be too heavyweight.
-That means all earlier IP implementations for general purpose computers
-were much bigger than the memory constrained embedded systems could use~\cite{interconnecting}.
-The communication stack uIP is closely described in section~\ref{sec:contiki-uip}.
-
-Next to the uIP, Contiki is equipped with other communication stack called Rime.
-Rime is a layered communication stack for sensor networks,
-with much thinner layers than traditional architectures~\cite{paper-rime}.
-Rime is designed to simplify the implementation of communication
-protocols on low-power radios.
-The communication primitives in the Rime stack were chosen
-based on what typical sensor network protocols use -
-single-hop unicast, single-hop broadcast or multi-hop~\cite{contiki-docs,paper-rime}.
-
-Beside Protothreads, uIP and Rime,
-Contiki contains a very simple, relatively small and easy to use filesystem
-called Coffee Filesystem (CFS),
-a graphical user interface called Contiki Toolkit (CTK),
-Executable Linkable Format (ELF) loader for loading object files into a running Contiki system
-and much more.
-
-Operating system Contiki, uIP and Protothreads are used by hundreds of companies in embedded devices in
-such diverse systems as car engines, oil boring equipment, satellites, and container security systems~\cite{thesis-programming}.
-The software is also used both in academic research
-projects and in university project courses on embedded systems throughout the
-world.
-
 Contiki is developed by a group of developers from industry and academia
 lead by Adam Dunkels from the Swedish Institute of Computer Science.
 The Contiki team currently consists of sixteen developers from SICS,
@@ -68,14 +29,7 @@ at the time of writing was 2.5 released in 2011.
 The actual development happens in online repository accessible on Contiki homepage at \url{http://www.contiki-os.org/}
 using Git version control system.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=9cm,keepaspectratio]{fig/contiki-vnc.png}
-  \caption{Screenshot of running Contiki OS with CTK}
-  \label{fig:contiki}
-  \bigskip
-\end{figure}
-
+\input{contiki/features.tex}
 
 \input{contiki/protothreads.tex}
 
