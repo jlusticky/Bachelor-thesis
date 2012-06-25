@@ -82,9 +82,10 @@ The broadcast mode is intended particularly for energy constrained clients
 or for a huge number of NTP clients and a single NTP server
 in a network with small propagation delay.
 
-Because of the different origint of the Unix and NTP epoch.
-
-The conversion from fraction part of long 64-bit NTP timestamp to nanoseconds,
+Due to a different origin of the Unix and NTP epoch,
+number of seconds between NTP and Unix epoch,
+is subtracted from seconds part of NTP timestamp.
+But the conversion from fraction part of long 64-bit NTP timestamp to nanoseconds,
 used in the local timestamp structure,
 is one of the most problematic tasks for memory constrained systems.
 An accurate conversion requires either floating point operations or operations with 64 bit numbers.
