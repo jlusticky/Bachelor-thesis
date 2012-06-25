@@ -83,9 +83,9 @@ fractionl_to_nsec(uint32_t fractionl)
 	 */
 	nsec = nsec >> 2;
 #elif 0
-	nsec = ((double)nsec * 1000000000) / 0x100000000UL; // >> 32
+	nsec = ((double)nsec * 1000000000) / 0x100000000ULL; // >> 32
 #else
-	nsec = ((uint64_t)nsec * 1000000000) / 0x100000000UL; // >> 32
+	nsec = ((uint64_t)nsec * 1000000000) >> 32;
 #endif
 	return nsec;
 }
