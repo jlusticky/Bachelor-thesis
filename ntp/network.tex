@@ -64,7 +64,7 @@ version number, currently~4.
 Mode is a 3-bit integer representing protocol mode.
 This is the only field distinguishing between server and client in NTP.
 In the client-server communication model, the client sets this field to value 3 (client) in the request,
-and the server sets it to value 4 (server) in the reply.
+and the server sets it to value 4 (server) in the response.
 In broadcast communication model, the server sets this field to value 5 (broadcast).
 Other modes are not used by SNTP servers and clients~\cite{rfc4330}.
 \item
@@ -110,7 +110,7 @@ at the client when the request departed for the server~\cite{rfc5905}.
 Originate Timestamp field is copied
 unchanged by the server from Transmit Timestamp field of the client's request.
 It is important that the server copies this field intact,
-as NTP client uses it to check the server's reply.
+as NTP client uses it to check the server's response.
 \item
 Receive Timestamp is long 64-bit NTP timestamp expressing the time
 at the server when the request arrived from the client~\cite{rfc5905}.
