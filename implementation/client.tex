@@ -19,26 +19,9 @@ Accessing each field of the {\it{status}} byte is done using bitmasks.
 Unlike using the bit field extension,
 such design is compliant with the standard C language.
 
-A client sends messages to each server with a poll interval of $2^{\tau}$
-seconds, as determined by the poll exponent $\tau$ (tau).
-In NTPv4, $\tau$ ranges from 4 (16 s) to 17 (36 h).
 
 
 
-The clock are set if the time difference is equal or greater than
-treshold value. (3s)
-The reference NTP implementation uses 125 ms~\cite{rfc5905}.
-
-It has been the Internet
-experience that the need to change the system time in increments
-greater than +-128 ms is extremely rare and is usually associated
-with a hardware or software malfunction or system reboot~\cite{rfc1589}.
-\begin{lstlisting}
-if (labs((signed long) (ts.sec - tmpts.sec)) > 2)
-{
-  clock_set_time(ts.sec);
-}
-\end{lstlisting}
 Even if {\it{tmpts.sec}} value is greater than {\it{ts.sec}} value,
 subtracting and casting to signed type gives correct (negative) result~\cite{c99}.
 Assuming 32-bit data types this will work until 2038 when wrap around can occur due to difference
@@ -64,11 +47,18 @@ between determination of the timestamp and dispatch of the packet.
 After the filled NTP packet is sent, the client schedules
 sending of a next NTP packet in $2^{\tau}$ seconds
 using the event timer library.
-Upon scheduling the timer, the client process yields
+In NTPv4, $\tau$ ranges from 4, resulting in poll interval 16 seconds,
+to 17, resulting in poll interval 36 hours.
+However, the event timer library imposes a limit to scheduled time.
+This limit is platform specific and depends on {\it{CLOCK\_SECOND}} value.
+The $\tau$ value can not be greater than 8 on AVR Raven assuming 128 interrupts per second.
+Upon scheduling the event timer, the client process yields
 and another process can be run.
 The client process is later invoked either by the uIP stack event
 announcing the server response
 or by the event timer in case no server response arrived.
+Event timer is therefore effectively
+dealing with possible packet loss described in section~\ref{sec:design-network}.
 
 When the server response arrives,
 determinating the destination timestamp is one of the first thing the client does.
@@ -82,10 +72,8 @@ The received packet is considered bogus in case of mismatch and further processi
 Otherwise are the NTP timestamps converted to local timestamp format and
 the local clock offset computed as described in section~\ref{sec:ntp-algorithms}.
 After the local clock offset is computed,
-the stored transmitted timestamp is set to zero
-to protect against replay of the last transmitted packet,
-and the time is set or adjusted using the {\it{clock\_set\_time}}
-or {\it{clock\_adjust\_time}} call. %respectively
+the stored transmitted timestamp is immediately set to zero
+to protect against replay of the last transmitted packet.
 
 In broadcast mode, the received packet is always considered correct
 and the local clock offset is computed as the difference between the local stored timestamp
@@ -100,26 +88,83 @@ The conversion from NTP fraction part and nanoseconds is made using...
 %%TODO from here...
 
 %\section{NTP values and convertions}
-Unlike the RFC 5905~\cite{rfc5905} shows, there are no 64 bit values. %! RFC - A.4. Kernel System Clock Interface
+Exact conversion from NTP fraction part to nanoseconds used in the local timestamps
+requires either floating point operations or 64-bit numbers.
+The conversion is given by
+$nsec = fractionl \times 10^9 / 2^{32}$, where $nsec$ is the nanoseconds part of the local timestamp
+and $fractionl$ is the fraction part of long 64-bit NTP timestamp.
+Since there is no native hardware support for floating point nor for 64 bit arithmetic,
+GCC would supply these operations in form of library called {\it{libgcc}}.
+In fact, a simple multiplication of $fractionl$ by $\frac{10^9}{2^{32}}$ must be computed.
+The greatest common divisor of $10^9$ and $2^{32}$ is $2^9$,
+therefore $nsec = fractionl \times 5^9 / 2^{23}$.
+This can be computed using sequential divisions and multiplications,
+which in turn can be done using shifts and additions~\cite{c99}.
+\begin{lstlisting}
+nsec = fractionl;
+nsec = (nsec >> 1) + (nsec >> 3); // nsec = nsec/2 + nsec/8 = (5*nsec)/8
+nsec = (nsec >> 1) + (nsec >> 3); // nsec = (5*nsec) / 8 = (25*fractionl)/64
+nsec = (nsec >> 1) + (nsec >> 3); // nsec = fractionl * 5^3/2^9
+/* Now we can multiply by 5^2 because then the total
+ * multiplication coefficient for the original number fractionl
+ * will be: fractionl * (1/(2^3)^4)*5^5 = fractionl * 0.762939453,
+ * which is less then 1, so it can not overflow.
+ */
+nsec = (nsec << 1) + nsec + (nsec >> 3); // nsec*3 + nsec/8 = (25*nsec) / 8
+
+nsec = (nsec >> 1) + (nsec >> 3);
+nsec = (nsec >> 1) + (nsec >> 3);
+
+/* Again we can multiply by 5^2.
+ * Total coefficient will be fractionl * (1/(2^3)^7)*5^9 = fractionl * 0.931322575
+ */
+nsec = (nsec << 1) + nsec + (nsec >> 3); // nsec*3 + nsec/8 = (25*nsec) / 8
+
+/* Last shift to agree with division by 2^23 can not be
+ * done earlier since coefficient would always be greater than 1.
+ */
+nsec = nsec >> 2;
+\end{lstlisting}
+As the code comments say, an extra attention must be taken of the overall coefficient,
+which can not be greater than 1 in any step.
+Because $fractionl$ can be of any value between $0$ and $2^{32}-1$,
+the overall coefficient greater than 1 could cause overflow and an unexpected result.
+
+According to output from the {\it{avr-size}} tool, using 64-int number for conversion
+uses 4~330 bytes more in %program section of
+resulted binary file
+and floating point operation takes 3~474 bytes more
+than the algorithm developed.
+
+It must be noted, that the developed conversion is not exactly correct, particularly
+because of loosing the least significant bits by the first shifts.
+However, this conversion gives maximum error of 5 nanoseconds for possible fractionl values,
+which is totally adequate for most platforms without floating point unit or
+for platforms where usage of 64bit is expansive.
+Beside significantly smaller memory requirements,
+this algorithm gives on AVR Raven even more accurate results than the libgcc
+floating point library supplied by GCC.
+
+
+Unlike the RFC 5905~\cite{rfc5905} shows, no 64 bit values nor floating point numbers are used.
+
 No floating point numbers - library.
 Division of unsigned integer number by 2 is automatically translated by compiler to logical right shift,
 making it fast operation.
 
-Converting between NTP and local timestamps requires floating point operations or 64-bit numbers.
-According to output from avr-size tool, using 64-int number for conversion
-uses 4~330 bytes more in %program section of
-resulted binary file
-and floating point operation takes 3~474 bytes more
-than algorithm developed.
-uint64\_t with shift 728 bytes more.
 
-C99 - shift E1 >> E2: if E1 has a signed type and a nonnegative value, the value of
-the result is the integral part of the quotient of $E1 / 2^{E2}$.
+The time is set or adjusted using the {\it{clock\_set\_time}}
+and {\it{clock\_adjust\_time}} call respectively.
 
-This algorithm has even higher precision than floating point library
-supplied by GCC.
-In case of floating point operations, the libgcc is used.
-\url{http://gcc.gnu.org/onlinedocs/gccint/Libgcc.html}
+The clock are set if the time difference is equal or greater than
+treshold value. (3s)
+The reference NTP implementation uses 125 ms~\cite{rfc5905}.
+
+It has been the Internet
+experience that the need to change the system time in increments
+greater than +-128 ms is extremely rare and is usually associated
+with a hardware or software malfunction or system reboot~\cite{rfc1589}.
+
 
 %
 % NEGATIVE result for the first time
