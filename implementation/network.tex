@@ -30,11 +30,10 @@ in a network with small propagation delay.
 Should there be more devices running Contiki present in one network,
 each of them needs a different link layer address.
 This address can be configured in Makefile as well.
-Beware that the firmware for RZ~USB Stick automatically translates % sice
+Beware that although the firmware for RZ~USB Stick automatically translates
 between Ethernet link layer addresses (MAC addresses) and IEEE~802.15.4 link layer
-addresses, but both are are still different links and can not be used in one
-%physical
-network topology.
+addresses, both are are still different links and can not be mixed in one
+layer~2 network (e.g. bridging will not work).
 
 Dynamic increasing or decreasing the client's poll interval in response to
 Kiss-o'-Death packets, described in section~\ref{sec:ntp-network}, is not implemented.
