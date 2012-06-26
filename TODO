@@ -22,12 +22,16 @@ ntp/algorithms.tex - DONE
 system.tex - DONE + needs a review
 
 design.tex - work in progress
-design/network.tex - wip
-design/clock.tex - wip
-design/interface.tex - wip
-design/client.tex - wip + conversion
+design/network.tex - DONE + review
+design/clock.tex - DONE + review
+design/interface.tex - wip - needs work, move ISR from design/clock.tex
+#design/client.tex - wip + conversion
 
-implementation.tex - work in progress
+implementation.tex - work in progress - foreword
+implementation/clock.tex - wip
+implementation/interface.tex - wip
+implementation/client.tex - DONE - shorten
+implementation/network.tex - DONE + review
 
 measurements.tex - wip + offset graph
 
