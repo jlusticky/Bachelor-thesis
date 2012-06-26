@@ -107,7 +107,7 @@ fractionl_to_nsec(uint32_t fractionl)
   nsec = (nsec >> 1) + (nsec >> 3); // nsec = fractionl * 5^3/2^9
   /* Now we can multiply by 5^2 because then the total
    * multiplication coefficient for the original number fractionl
-   * will be: fractionl * (1/(2^3)^4)*5^5 = fractionl * 0.762939453,
+   * will be: fractionl * (5^5)/((2^3)^4) = fractionl * 0.762939453,
    * which is less then 1, so it can not overflow.
    */
   nsec = (nsec << 1) + nsec + (nsec >> 3); // nsec*3 + nsec/8 = (25*nsec) / 8
@@ -116,19 +116,20 @@ fractionl_to_nsec(uint32_t fractionl)
   nsec = (nsec >> 1) + (nsec >> 3);
 
   /* Again we can multiply by 5^2.
-   * Total coefficient will be fractionl * (1/(2^3)^7)*5^9 = fractionl * 0.931322575
+   * Total coefficient will be fractionl * (5^9)/((2^3)^7) = fractionl * 0.931322575
    */
   nsec = (nsec << 1) + nsec + (nsec >> 3); // nsec*3 + nsec/8 = (25*nsec) / 8
 
   /* Last shift to agree with division by 2^23 can not be
-   * done earlier since coefficient would always be greater than 1.
+   * done earlier since the coefficient would always be greater than 1.
    */
   nsec = nsec >> 2;
   return nsec;
 }
 \end{lstlisting}
-As the code comments say, an extra attention must be taken of the overall coefficient,
-which can not be greater than 1 in any step.
+As the code comments say, an extra attention must be taken of the overall
+multiplication coefficient,
+that can not be greater than 1 in any step.
 Because $fractionl$ can be of any value between $0$ and $2^{32}-1$,
 the overall coefficient greater than 1 could cause overflow and an unexpected result.
 

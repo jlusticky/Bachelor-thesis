@@ -101,7 +101,7 @@ int main(void)
 
 		/* Now we can multiply by 5^2 because then the total
 		 * multiplication coefficient for the original number i
-		 * will be: i * (1/(2^3)^4)*5^5 = i * 0.762939453,
+		 * will be: i * (5^5)/((2^3)^4) = i * 0.762939453,
 		 * which is less then 1, so it can not overflow.
 		 */
 		xmf = (xmf << 1) + xmf + (xmf >> 3); // xmf*3 + xmf/8 = (25*xmf) / 8
@@ -110,7 +110,7 @@ int main(void)
 		xmf = (xmf >> 1) + (xmf >> 3);
 
 		/* Again we can multiply by 5^2.
-		 * Total coefficient will be i * (1/(2^3)^7)*5^9 = i * 0.931322575
+		 * Total coefficient will be i * (5^9)/((2^3)^7) = i * 0.931322575
 		 */
 		xmf = (xmf << 1) + xmf + (xmf >> 3); // xmf*3 + xmf/8 = (25*xmf) / 8
 
