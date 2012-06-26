@@ -117,7 +117,7 @@ This appends {\it{-c dragon\_jtag}} parameter to avrdude programmer, so it knows
 Now we can upload the file to AVR Dragon hardware:
 \begin{lstlisting}
 upload compiled project using avrdude (issue as root if udev was not configured as above):
-	&\textdollar& make hello-world.u %! TODO - or we can do it manually
+	&\textdollar& make hello-world.u
 \end{lstlisting}
 After successful upload we should have a running hello-world project on AVR Raven device.
 
@@ -128,12 +128,13 @@ NOTE: Some of the following commands must be issued by root or with sudo. We ass
 Assuming we have RZ USB stick and the working hello-world project,
 we can setup the webserver-ipv6-raven project from Contiki examples.
 
-As first, we need to flash the RZ USB stick to work as Ethernet interface.
+As first, we need to flash the RZ USB stick to work as an Ethernet interface.
 
-There is no widely available 802.15.4 and 6lowpan stack for PCs.
-As a temporary solution and to be able to interconnect IPv6 hosts such as RAVEN boards to IP networks,
-Contiki implemented a "bridge" function on the RZ USB Stick.
-The RZ USB stick bridges 802.15.4 packets to Ethernet (The Ethernet interface is emulated on the USB port).
+There is no widely available 802.15.4 and 6LoWPAN stack for PCs.
+As a temporary solution and to be able to interconnect IPv6 hosts such as AVR Raven to IP networks,
+Contiki implemented a translating function on the RZ USB Stick.
+The RZ USB stick translates 802.15.4 packets to Ethernet (The Ethernet interface is emulated on the USB port).
+Such a combination of this Contiki firmware and RZ USB Stick is called {\it{Jackdaw}}.
 
 
 %----#--SETUP RZ USB stick connection + firmware + Photos -> HTML
@@ -175,6 +176,10 @@ our PC gets aaaa::1 IPv6 address:
 traffic to aaaa::/64 network goes through usb0 (RZ USB stick) interface:
 	&\textdollar& sudo ip -6 route add aaaa::/64 dev usb0
 \end{lstlisting}
+Various parameters of RZ USB Stick, such as 802.15.4 channel,
+can be configured by through /dev/ttyACM0 character device
+accessible e.g. using the {\it{screen}} terminal emulator.
+
 
 Next thing is to setup Router Advertisement Daemon (radvd), so that the Contiki node connects automatically to our IPv6 network.
 Insert this configuration to {\it{/etc/radvd.conf}} or any other configuration file radvd uses.
@@ -242,8 +247,6 @@ or
 b) editing file contiki/platform/avr-raven/contiki-raven-main.c,
 issuing make clean and compiling and flashing again.
 
-%---# /etc/avrdude.conf
-
 Finally we can ping the AVR Raven and use the webserver running on it:
 \begin{lstlisting}
 the actual IPv6 address can be determined from Wireshark or radvd output:
@@ -253,20 +256,8 @@ use wget for http communication or any other web browser:
 \end{lstlisting}
 
 
-
-pomoci RZUSBSTICK (rzusbstick + contiki/example/ravenusbstick = jackdaw):
-ve skupine dialout
-screen /dev/ttyACM0
-
-
-
 If you desire more information on working with AVR Raven please consult
 Contiki wiki page for AVR Raven - \url{http://www.sics.se/contiki/wiki/index.php/Avr_Raven}
 Contiki documentation that can be generated from source code
 by issuing {\it{make}} command in {\it{doc}} directory.
-
--- + Jackdaw + ravenusbstick example
-http://www.sics.se/~adam/contiki/docs/a01829.html
-http://www.sics.se/~adam/contiki/docs/a01828.html
-
 \end{document}
