@@ -63,7 +63,7 @@ determinating the destination timestamp is one of the first thing the client doe
 After that, the client makes packet sanity tests including
 checking whether the response is from synchronised server.
 
-Next follows determination of the NTP communication mode.
+A determination of the NTP communication mode follows.
 In unicast mode, the seconds field of Originate timestamp
 is compared with the stored sent timestamp.
 The received packet is considered bogus in case of mismatch and further processing is stopped.
@@ -78,9 +78,6 @@ and the local clock offset is computed as the difference between the local store
 and the transmit timestamp received.
 As one could expect, the local clock offset determined from the broadcast mode
 is less accurate then from the unicast mode.
-The broadcast mode is intended particularly for energy constrained clients
-or for a huge number of NTP clients and a single NTP server
-in a network with small propagation delay.
 
 Due to a different origin of the Unix and NTP epoch,
 number of seconds between NTP and Unix epoch,
