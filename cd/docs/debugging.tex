@@ -2,6 +2,8 @@
 \usepackage{a4wide}
 \usepackage{listings}
 \usepackage{url}
+\usepackage[pdftex]{graphicx}
+\usepackage{float}
 
 \lstset{
 basicstyle=\footnotesize,       % the size of the fonts that are used for the code
@@ -61,7 +63,8 @@ extract a .hex file for flashing with other programmers and avarice:
 	%!TODO MANUAL + test
 \end{lstlisting}
 
-Next we lunch avarice which will also flash the project to hardware and
+Next we lunch avarice which will also flash the project to hardware
+through AVR Dragon and
 create a port (1212) for connecting with the GDB debugger.
 \begin{lstlisting}
 	&\textdollar& avarice -g -j usb -P atmega1284p --erase --program --file hello-world.hex -B 1MHz :1212
@@ -142,15 +145,31 @@ with the following parameters:
 baud rate 57600, none parity, 1 stop bit, 8 data bits.
 Contiki also automatically redirects stdout to this serial output, so every printf
 writes to this interface.
+In Contiki can be used PRINTF instead of printf, which outputs only if \#DEBUG is defined.
 This configuration is defined and can be changed in
 file {\it{contiki/platform/avr-raven/contiki-raven-main.c}},
 {\it{initialize}} function - part commented with "Second rs232 port for debugging".
 
-file {\it{contiki/platform/avr-raven/}}
-The AVR Raven has USART output for debugging.
-This output needs to be level shifted for RS232 using a MAX232 or similar chip.
+The USART~1 transmit output is Pin~3, Port~D (pins are numbered from zero in ATmega1284P datasheet),
+$V_{CC}$ is Pin~7 on the bottom pin line on AVR Raven (these pin line is ATmega3290P interface and
+pins are numbered from one in AVR Raven datasheet)
+and ground is Pin~12 on the bottom line on AVR Raven (the rightmost pin).
+This connection shows the figure bellow.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=12cm,keepaspectratio]{smallfig/DSC02579-small.jpeg}
+  \caption{Serial output connection - white=rx, red=vcc, black=gnd}
+\end{figure}
+
+This output needs to be level shifted for RS232 using a MAX232 or similar chip,
+because a desktop computer needs 5V and output from Raven is 3.3V.
 Because many computers no longer have an RS232 serial port, a serial to USB converter might be needed.
-%TODO SETUP FOTOS
+Such a converter shows the following figure.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=9cm,keepaspectratio]{smallfig/DSC02577-small.jpeg}
+  \caption{Serial to USB converter and level shifter}
+\end{figure}
 
 %----------------------------------------------------------------------------
 
