@@ -18,7 +18,7 @@ escapechar=\&,
 
 \begin{document}
 
-\title{How to setup Contiki on AVR Raven with ATMega1284P}
+\title{How to setup Contiki on AVR Raven}
 \author{Josef Lusticky}
 \date{June 17, 2012}
 
@@ -75,7 +75,7 @@ The mode 0666 sets this device writable for all users.
 The udev or a whole PC might need to be restarted to apply changes.
 
 
-\section{Compiling and flashing}
+\section{Compiling and Flashing}
 After everything from step 1 installed and connected, we can navigate to a Contiki project and flash it to AVR Raven:
 \begin{lstlisting}
 change to project directory:
@@ -117,7 +117,7 @@ upload compiled project using avrdude (issue as root if udev was not configured 
 After successful upload we should have a running hello-world project on AVR Raven device.
 
 
-\section{Network communication}
+\section{Network Communication}
 NOTE: Some of the following commands must be issued by root or with sudo. We assume sudo is configured on the system.
 
 Assuming we have RZ USB stick and the working hello-world project,
@@ -254,7 +254,29 @@ use wget for http communication or any other web browser:
 	&\textdollar& wget --no-proxy http://[aaaa::0011:22ff:fe33:4455]
 \end{lstlisting}
 
+\section{LCD Display}
+Presented LCD display on AVR Raven is controlled by ATmega3290P CPU.
+To control this display, we must program this connect AVR Dragon with the other JTAG interface
+on AVR Raven.
+After connected, issue the following commands to load the Contiki demo program:
+\begin{lstlisting}
+change to demo directory
+	&\textdollar& cd contiki/platform/avr-ravenlcd
+compile the demo for ATmega3290P:
+	&\textdollar& make
+extract the hex file if it is not in the directory:
+	&\textdollar& avr-objcopy -v -O ihex -R .eeprom -R .fuse ravenlcd_3290.elf ravenlcd_3290.hex
+flash the target:
+	&\textdollar& avrdude  -P usb -c dragon_jtag -p m3290p -F  -U flash:w:ravenlcd_3290.hex -Ueeprom:w:ravenlcd_3290.eep
+\end{lstlisting}
+A serial communication interface can be further used for communication
+between ATmega3290P and ATmega1284P.
+In this case the Contiki project must be compiled with {\it{CFLAGS+=-DRAVEN\_LCD\_INTERFACE=1}} -
+see an example in platform/avr-raven/apps/raven-lcd-interface directory
+and article {\it{Serial interface between Raven processors}} in Contiki documentation.
 
+
+\section{Further Reading}
 If you desire more information on working with AVR Raven please consult
 Contiki wiki page for AVR Raven - \url{http://www.sics.se/contiki/wiki/index.php/Avr_Raven}
 Contiki documentation that can be generated from source code
