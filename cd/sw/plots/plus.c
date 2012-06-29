@@ -16,23 +16,13 @@ main(int argc, char *argv[])
 		return 1;
 	}
 	int m = 0;
-	char *b = malloc(1024);
+	long long b;
 	while (!feof(f))
 	{
 		long long i;
-		fscanf(f, "%lld %s\n", &i, b);
-		printf("%lld %s\n", i + 1554516735000, b);
+		fscanf(f, "%lld %lld\n", &i, &b);
+		printf("%lld\n", i*1000000000 + b);
 		
-		
-		
-		/*
-		m++;
-		if (m == atoi(argv[1]))
-		{
-			printf("%lld\n", i);
-			m = 0;
-		}
-		*/
 	}
 	return 0;
 }

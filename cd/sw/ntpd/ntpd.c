@@ -131,31 +131,25 @@ tcpip_handler(void)
 		}
 
 		/* Compute local clock offset THETA = ((t2 - t1) + (t3 - t4)) / 2
-		 * for seconds part.
+		 * for seconds part
 		 */
 		rects.sec = uip_htonl(pkt->rectime.int_partl) - JAN_1970;
 		xmtts.sec = uip_htonl(pkt->xmttime.int_partl) - JAN_1970;
-
-		PRINTF("SEC THETA = ((%ld - %ld) + (%ld - %ld)) / 2\n", rects.sec, ts.sec, xmtts.sec, dstts.sec);
 		adjts.sec = ((rects.sec - ts.sec) + (xmtts.sec - dstts.sec)) / 2;
 
-		/* Calculate nsec offset */
+		/* Compute local clock offset for fraction part */
 		rects.nsec = fractionl_to_nsec(uip_htonl(pkt->rectime.fractionl));
 		xmtts.nsec = fractionl_to_nsec(uip_htonl(pkt->xmttime.fractionl));
-
-		PRINTF("NSEC THETA = ((%ld - %ld) + (%ld - %ld)) / 2\n", rects.nsec, ts.nsec, xmtts.nsec, dstts.nsec);
 
 		/* Correct fraction parts if seconds are adjacent */
 		if (adjts.sec == 0)
 		{
 			if (ts.sec < rects.sec) // server received packet in other second
 			{
-				printf("/ ts.nsec - / ");
 				ts.nsec -= 1000000000;
 			}
 			if (xmtts.sec < dstts.sec) // our client received packet in other second
 			{
-				printf("/ dstts.nsec + / ");
 				dstts.nsec += 1000000000;
 			}
 		}
@@ -190,7 +184,7 @@ tcpip_handler(void)
 	}
 	else
 	{
-		printf("Adjusting the time for %ld and %ld\n", adjts.sec, adjts.nsec);
+		PRINTF("Adjusting the time for %ld and %ld\n", adjts.sec, adjts.nsec);
 		clock_adjust_time(&adjts);
 	}
   }
