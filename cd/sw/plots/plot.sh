@@ -1,18 +1,18 @@
 #!/bin/sh
 if [ "$1" ]; then
 gnuplot << EOF
-plot '$1' u 0:1 #To get the max and min value
-ymax=GPVAL_DATA_Y_MAX
-ymin=GPVAL_DATA_Y_MIN
-ylen=ymax-ymin
-xmax=GPVAL_DATA_X_MAX
-xmin=GPVAL_DATA_X_MIN
-xlen=xmax-xmin
+p = 16              # poll interval (for output)
+#plot '$1' using (\$0*p):1 #To get the max and min value
+#ymax=GPVAL_DATA_Y_MAX
+#ymin=GPVAL_DATA_Y_MIN
+#ylen=ymax-ymin
+#xmax=GPVAL_DATA_X_MAX
+#xmin=GPVAL_DATA_X_MIN
+#xlen=xmax-xmin
 #plot
 set title "Local clock offset with adjustments and NTP poll interval 16s"
 set terminal png
 set output "$1.png"
-p = 16                              # poll interval (for output)
 set grid y
 #set xrange [xmin:xmax]
 #set yrange [ymin-0.5*ylen:ymax+0.5*ylen]
