@@ -15,14 +15,13 @@ main(int argc, char *argv[])
 		perror(argv[1]);
 		return 1;
 	}
-	int m = 0;
+
 	long long b;
 	while (!feof(f))
 	{
 		long long i;
 		fscanf(f, "%lld %lld\n", &i, &b);
 		printf("%lld\n", i*1000000000 + b);
-		
 	}
 	return 0;
 }
