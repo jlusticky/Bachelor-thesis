@@ -53,9 +53,6 @@ In this guide we assume the following equipment:
 NOTE: Two AVR Raven devices and one RZ USB stick can be ordered as
 evaluation starter kit called RZ Raven - \url{http://www.atmel.com/tools/RZRAVEN.aspx}
 
-%----#--SETUP AVR Raven connection + Photos -> HTML
-% As last connect AVR Raven to power.
-
 \vspace{0.5cm}
 
 {\textbf{Software:}}
@@ -65,7 +62,7 @@ evaluation starter kit called RZ Raven - \url{http://www.atmel.com/tools/RZRAVEN
 	or after cloning git repository by issuing {\it{git checkout 2.5}}
 	\item Programmer (flasher) for AVR - avrdude - \url{http://www.nongnu.org/avrdude/}
 	\item GNU AVR toolchain - avr-libc 1.6.8, binutils-avr 2.20.1, gcc-avr 4.3.5 -
-	newever versions may not work with Contiki version 2.5. % !TODO - how does it look.
+	newever versions may not work with Contiki version 2.5.
 \end{itemize}
 
 If we want to interface with the hardware as non-root user, we need to configure udev.
@@ -73,7 +70,7 @@ Put the following line to file under {\it{/etc/udev/rules.d/99-avrdragon.rules}}
 \begin{lstlisting}
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="03eb", ATTRS{idProduct}=="2107", MODE="0666"
 \end{lstlisting}
-The idVendor and idProduct can be determined from the output of lsusb command when the hardware is connected.
+The idVendor and idProduct can be determined from the output of lsusb command when the AVR Dragon is connected.
 The mode 0666 sets this device writable for all users.
 The udev or a whole PC might need to be restarted to apply changes.
 
@@ -135,7 +132,6 @@ The RZ USB stick translates 802.15.4 packets to Ethernet (The Ethernet interface
 Such a combination of this Contiki firmware and RZ USB Stick is called {\it{Jackdaw}}.
 
 
-%----#--SETUP RZ USB stick connection + firmware + Photos -> HTML
 Compile the project to allow RZ USB stick work as Ethernet interface:
 \begin{lstlisting}
 	&\textdollar& cd contiki/examples/ravenusbstick
@@ -157,7 +153,7 @@ Next we need the eeprom file. Extract it by issuing the following:
 \begin{lstlisting}
 	&\textdollar& avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex ravenusbstick.elf ravenusbstick.eeprom
 \end{lstlisting}
-Assuming we have setup udev we can flash the hardware as non-root user: %!TODO UDEV FOR RZ USB STICK
+Assuming we have setup udev we can flash the hardware as non-root user:
 \begin{lstlisting}
 	&\textdollar& avrdude -u -p usb1287 -c dragon_jtag -v -P usb -Uefuse:w:0xFF:m -Uhfuse:w:0x99:m -Ulfuse:w:0xE2:m -Ueeprom:w:ravenusbstick.eeprom -Uravenusbstick.hex
 \end{lstlisting}

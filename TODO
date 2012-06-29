@@ -1,6 +1,6 @@
 Thesis
 ======
-Convert setup.txt and simulation.txt to latex + add photos
+KAI
 
 Content
 =======
@@ -40,8 +40,6 @@ Tasks
 =====
 citation for embedded systems - one binary
 
-ipv4 - minimal-net platform and native
-
 make new dir layout + more processes
 ----
 measurement - graf + determine adjustments
@@ -51,13 +49,4 @@ adjust treshold - max we can adjust 32767*(1/128/32) with int16_t
 ---
 equations, commas, grammar
 ---
-test setup, debug + photos
----
-reorganise and send for review
----
-Operating systems targeted at embedded devices
-TinyOS
-...
----
-#try to sleep - if the time is automatically adjusted
 implemente even from other process and try to display time on LCD
