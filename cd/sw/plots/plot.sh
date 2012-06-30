@@ -10,7 +10,7 @@ p = 16              # interval in seconds between measurements
 #xmin=GPVAL_DATA_X_MIN
 #xlen=xmax-xmin
 #plot
-set title "Local clock offset with adjustments and NTP poll interval 16s"
+#set title "Local clock offset with adjustments and NTP poll interval 16s"
 set terminal png
 set output "$1.png"
 set grid y
