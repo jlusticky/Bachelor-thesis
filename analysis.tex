@@ -17,19 +17,18 @@ interrupt service routine increments a system clock value stored in memory~\cite
 The original IBM PC did know what time it was, provided you typed it in when you booted it,
 but it forgot when you turned it off~\cite{timecounters}.
 Today desktop computers with CPU based on Intel x86 architecture
-have hardware Real-Time Clock (RTC) in CMOS chip that is battery powered,
+have a hardware Real-Time Clock (RTC) in CMOS chip that is battery powered,
 so it keeps time when the computer is powered off~\cite{timecounters}.
 Hardware Real-Time Clocks should not be confused with the system clock,
 which is a software system clock maintained by
-the kernel and used to implement calls for getting the time,
+the operating system and used to implement calls for getting the time,
 as well as setting timestamps on files, etc~\cite{linux-man-rtc}.
 The system clock will often be set to the current time using an RTC at boot time~\cite{linux-man-rtc},
 so the systems without an RTC need to set the system clock another way,
 such as across the network using NTP.
 
-The kernel maintains then the current time and advances it at every interrupt.
-The structure of the clock hardware of
-typical desktop PCs is shown in figure~\ref{fig:system-pc-clock}.
+The kernel maintains the current time and advances it at every interrupt.
+The structure of the clock hardware of a~typical desktop PCs is shown in figure~\ref{fig:system-pc-clock}.
 An oscillator generates clock pulses that drive a counter~C.
 Every time the counter reaches the value of a programmable latch~L,
 an interrupt is generated and the counter is reset.
@@ -39,7 +38,7 @@ At each of these ticks the kernel then increases the internal variable
 (usually called {\it{ticks}} or {\it{jiffies}}), which simply counts clock ticks,
 as well as the variable, which represents the current system time~\cite{thesis-beat}.
 Because of the speed requirement,
-the system time use a linear time scale like seconds
+the system time uses a linear time scale like seconds
 (instead of dealing with seconds, minutes, hours, days, etc.)
 and only if a human is in need of the current time,
 the system time is converted~\cite{ntp-faq}.
@@ -76,7 +75,7 @@ therefore not further discussed in this thesis.
 Unfortunately all the common clock hardware is not very accurate~\cite{ntp-faq}.
 This is simply because the frequency that makes time increase is never exactly right.
 Even an error of only 0.001\% would make a clock be off by almost one second per day.
-Almost every clock can have an unique behaviour depending on many conditions~\cite{ntp-faq}.
+Almost every clock can have unique behaviour depending on many conditions~\cite{ntp-faq}.
 The following factors are therefore used for expressing clock quality and behaviour:
 \begin{itemize}
 \item
@@ -99,14 +98,14 @@ by a program~\cite{ntp-faq}.
 When repeatedly reading the time, the difference may vary almost randomly.
 The difference of these differences (second derivation) is called jitter~\cite{ntp-faq}.
 \item
-Accuracy determines how close is the clock to an official time reference~\cite{ntp-faq}.
+Accuracy determines how close the clock is to an official time reference~\cite{ntp-faq}.
 \item
 Offset is the difference between the time read by the clock and the reference time~\cite{thesis-sync}.
 \item
 Reliability determines the time a clock can keep within a specified accuracy~\cite{ntp-faq}.
 \end{itemize}
 
-As mentioned before, all of the common hardware clock is not very accurate.
+As mentioned before, all of the common hardware clocks are not very accurate.
 Real clocks have a frequency error of several PPM quite frequently
 and some of the best clocks available still have errors of about $1^{-8}$PPM~\cite{ntp-faq}.
 Even if the systematic error of some clock model is known, the clock will never be perfect.
@@ -116,7 +115,7 @@ but it could also be air pressure or magnetic fields~\cite{ntp-faq}.
 \section{Clock discipline}\label{sec:system-discipline}
 For keeping an accurate time a clock not only needs to be read, it must be also set.
 However, simply setting the clock to remove the offset would cause unpredictable time steps~\cite{ntp-faq}.
-Since time is an always monotonically increasing function, this is not a desired behaviour~\cite{ntp-daq}.
+Since real time is an always monotonically increasing function, this is not a desired behaviour~\cite{ntp-daq}.
 For minimising the time offset and frequency difference between
 the reference clock and the local clock without any time step,
 an NTP client can be used.
@@ -126,12 +125,12 @@ an NTP client can compute an amount of adjustments needed to synchronise the loc
 To apply these adjustments, operating system must also provide a call
 for adjusting the time (usually called {\it{adjtime}})~\cite{nanokernel}.
 This call speeds up or slows down the system time in order to synchronise the local clock.
-Periodically applying such corrections {\it{discipline}} the local clock~\cite{ntp-faq}.
+Periodical application of such corrections {\it{disciplines}} the local clock~\cite{ntp-faq}.
 
 However, some clock implementations do not allow small corrections to be applied
 to the system clock, and there is also no standard interface to monitor the system clock's quality~\cite{ntp-faq}.
 This was the main reason for developing a new kernel clock model called {\it{Kernel discipline}}~\cite{nanokernel}.
-The new kernel clock model provides much improved time and frequency
+The new kernel clock model provides improved time and frequency
 resolution, together with a more agile and precise clock discipline mechanism~\cite{nanokernel}.
 This model is described in RFC~1589~\cite{rfc1589} and it adds new calls to the existing kernel interface
 {\it{ntp\_gettime}}, {\it{ntp\_settime}} and {\it{ntp\_adjtime}}.

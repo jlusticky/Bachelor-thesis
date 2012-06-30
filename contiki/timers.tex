@@ -2,8 +2,8 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{Timers}\label{sec:contiki-timers}
-Contiki kernel does not provide support for timed events,
-instead an application that wants to use timers needs to explicitly use timer library.
+The Contiki kernel does not provide support for timed events,
+instead an application that wants to use timers needs to explicitly use a timer library.
 The timer library provides functions for setting, resetting and restarting timers,
 and for checking if a timer has expired.
 An application must manually check if its timers have expired - this is not done automatically~\cite{contiki-docs}.
@@ -17,12 +17,12 @@ The timer and stimer libraries provide the simplest form of timers and are used 
 The difference between these two is the resolution of time -
 timers use system clock ticks, whose value is incremented when an interrupt from hardware clock occurs,
 while stimers use seconds to offer much longer time periods~\cite{contiki-wiki-timers}.
-The value expressing seconds is also incremented in interrupt service routine (ISR),
+The value expressing seconds is also incremented in the interrupt service routine (ISR),
 but only when enough clock ticks since last increment occurred.
 The number of clock ticks within one second is expressed by the
 {\it{CLOCK\_SECOND}} macro provided by clock library.
-That means there are {\it{CLOCK\_SECOND}} interrupts from hardware clock per second.
-Usage of timer library and {\it{CLOCK\_SECOND}} macro is shown in appendix~\ref{app:protothreads}.
+That means there are {\it{CLOCK\_SECOND}} interrupts from the hardware clock per second.
+Usage of the timer library and {\it{CLOCK\_SECOND}} macro is shown in appendix~\ref{app:protothreads}.
 
 The simplest timer and stimer libraries are not able to post an event when a timer expires.
 Event timers should be used for this purpose.
@@ -44,7 +44,7 @@ The rtimer library provides real-time task support through callback functions -
 the rtimer immediately preempts any running Contiki process in order to let the real-time tasks
 execute at the scheduled time~\cite{contiki-wiki-timers}.
 This behaviour is illustrated in figure~\ref{fig:contiki-execution-context}.
-The rtimer library uses separate hardware clock
+The rtimer library uses a separate hardware clock
 to allow higher clock resolution~\cite{contiki-wiki-timers}.
 The small part of the rtimer module is architecture-agnostic,
 but the particular implementation is platform-specific.
