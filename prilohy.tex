@@ -114,28 +114,61 @@ int main(void)
 \end{lstlisting}
 
 \chapter{Clock interrupt frequency measurements}\label{app:interrupt-frequency}
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=10cm,keepaspectratio]{fig/osc-no-adjust.png}
   \caption{Interrupt frequency without clock adjustment}
-  \label{fig:osc-no-adjust}
+  \label{fig:app-osc-no-adjust}
   \bigskip
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=10cm,keepaspectratio]{fig/osc-speed-up.png}
   \caption{Interrupt frequency when speeding up the clock}
-  \label{fig:osc-speed-up}
+  \label{fig:app-osc-speed-up}
   \bigskip
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=10cm,keepaspectratio]{fig/osc-slow-down.png}
   \caption{Interrupt frequency when slowing down the clock}
-  \label{fig:osc-slow-down}
+  \label{fig:app-osc-slow-down}
   \bigskip
+\end{figure}
+
+
+\chapter{Clock offset measurements}\label{app:offset}
+The serial output from AVR~Raven,
+the TechTools~DigiView~DV3100 logic analyser and the Meinberg~GPS~167 clock
+were used for measuring the local clock offset.
+Meinberg~GPS~167 rises an impulse when each second is accounted.
+AVR~Raven was configured to write a logic~1
+to~bit~7 of~Port~D when each second is accounted,
+and to write a logic~0 to~the same bit after~25 clock ticks.
+
+Figure~\ref{fig:app-ntp-set-time} shows the local clock offset from long-term uptime
+observation when NTP client sets the time, but no adjustments are applied.
+The offset treshold value for setting the time was 3 seconds.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=11cm,keepaspectratio]{fig/set-time-3s.png}
+  \caption{Local clock offset with NTP client setting the time but without adjustments}
+  \label{fig:app-ntp-set-time}
+\end{figure}
+
+Figure~\ref{fig:app-ntp-la} shows the local clock offset
+acquired from logic analyser when the Contiki NTP Client runs on the device.
+The logic analyser captures the rising and the falling edge
+from the Meinberg~GPS clock and from AVR~Raven.
+The difference between the rising edge from
+Meinberg~GPS clock and the rising edge from AVR~Raven gives the local clock offset.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=11cm,keepaspectratio]{fig/la.png}
+  \caption{Local clock offset with adjustments and NTP poll interval 16s}
+  \label{fig:app-ntp-la}
 \end{figure}
 
 
@@ -145,27 +178,26 @@ The yellow line on~channel~2 shows the impulses from the GPS synchronised clock 
 The blue line on~channel~1 shows the impulses from AVR Raven running
 Contiki~OS with the developed NTP client.
 The rising edge occurs when each second is being accounted.
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=10cm,keepaspectratio]{fig/osc-out-of-phase.png}
+  \includegraphics[width=11cm,keepaspectratio]{fig/osc-out-of-phase.png}
   \caption{Second impulses when the clock is out of phase}
-  \label{fig:osc-out-of-phase}
+  \label{fig:app-osc-out-of-phase}
   \bigskip
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=10cm,keepaspectratio]{fig/osc-adjusting-phase.png}
+  \includegraphics[width=11cm,keepaspectratio]{fig/osc-adjusting-phase.png}
   \caption{Second impulses when the clock is being adjusted}
-  \label{fig:osc-adjusting-phase}
-  \bigskip
+  \label{fig:app-osc-adjusting-phase}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=10cm,keepaspectratio]{fig/osc-in-phase.png}
+  \includegraphics[width=11cm,keepaspectratio]{fig/osc-in-phase.png}
   \caption{Second impulses when the clock is in phase}
-  \label{fig:osc-in-phase}
+  \label{fig:app-osc-in-phase}
   \bigskip
 \end{figure}
 

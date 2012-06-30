@@ -15,7 +15,7 @@ set terminal png
 set output "$1.png"
 set grid y
 #set xrange [xmin:xmax]
-#set yrange [ymin-0.5*ylen:ymax+0.5*ylen]
+#set yrange [ymin-0.15*ylen:ymax+0.15*ylen]
 #set format y "%l ns"
 set ylabel "Offset [ns]"
 set xlabel "Uptime [s]"
