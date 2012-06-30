@@ -3,32 +3,18 @@
 
 \chapter{Analysis}
 For keeping, measuring and resolving time computer needs a clock.
-Computer clock is an electronic device that counts oscillations in a
+Computer clock is an electronic device with a counter register counting oscillations in a
 quartz crystal oscillator with a particular frequency~\cite{thesis-sync}.
-These clocks are essentially timers associated with a counter register and
-are capable of generating hardware interrupts.
-The counter register counts the oscillations of the crystal.
-When the counter registers reaches a specific value,
-an interrupt is generated.
-Such interrupt is called a {\it{clock tick}} (or {\it{timer tick}}) and at each clock tick,
-interrupt service routine increments a system clock value stored in memory~\cite{thesis-sync}.
+When the counter reaches a specific value, an interrupt is generated and the counter register is reset.
+Such interrupt is called {\it{clock tick}} or {\it{timer tick}}, and at each clock tick,
+interrupt service routine increments a system clock value stored in the memory~\cite{thesis-sync}.
+
+The structure of the clock hardware is shown in figure~\ref{fig:system-pc-clock}.
+
 
 \section{Keeping and providing the time}\label{sec:system-keeping-and-providing}
-The original IBM PC did know what time it was, provided you typed it in when you booted it,
-but it forgot when you turned it off~\cite{timecounters}.
-Today desktop computers with CPU based on Intel x86 architecture
-have a hardware Real-Time Clock (RTC) in CMOS chip that is battery powered,
-so it keeps time when the computer is powered off~\cite{timecounters}.
-Hardware Real-Time Clocks should not be confused with the system clock,
-which is a software system clock maintained by
-the operating system and used to implement calls for getting the time,
-as well as setting timestamps on files, etc~\cite{linux-man-rtc}.
-The system clock will often be set to the current time using an RTC at boot time~\cite{linux-man-rtc},
-so the systems without an RTC need to set the system clock another way,
-such as across the network using NTP.
 
 The kernel maintains the current time and advances it at every interrupt.
-The structure of the clock hardware of a~typical desktop PCs is shown in figure~\ref{fig:system-pc-clock}.
 An oscillator generates clock pulses that drive a counter~C.
 Every time the counter reaches the value of a programmable latch~L,
 an interrupt is generated and the counter is reset.
