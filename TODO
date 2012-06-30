@@ -19,7 +19,7 @@ ntp/time.tex - DONE
 ntp/network.tex - DONE
 ntp/algorithms.tex - DONE
 
-system.tex - DONE + needs a review
+analysis.tex - wip
 
 design.tex - work in progress
 design/network.tex - DONE + review
@@ -33,7 +33,7 @@ implementation/interface.tex - wip
 implementation/client.tex - DONE - shorten
 implementation/network.tex - DONE + review
 
-measurements.tex - DONE + review
+measurements.tex - DONE + review + NTP server type
 
 
 Tasks
