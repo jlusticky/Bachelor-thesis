@@ -1,3 +1,18 @@
+/*
+ * This program read file of the following format:
+ * nsec\n
+ * nsec\n
+ *
+ * example:
+ * 292940
+ * -393949230
+ *
+ * and prints the maximal positive value,
+ * minimal negative value.
+ *
+ * The input format can be obtained using plus.c program.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -15,20 +30,31 @@ main(int argc, char *argv[])
 		perror(argv[1]);
 		return 1;
 	}
-	int m = 0;
-	long long b;
+	long long maxdelta = 0LL;
+	long long maxpos = 0LL;
+	long long minneg = 0LL;
 	long long prev = 0LL;
 	while (!feof(f))
 	{
-		long long i;
-		fscanf(f, "%lld %lld\n", &i, &b);
-//		printf("%lld\n", i*1000000000 + b);
-		if (llabs(i*1000000000+b - prev) > 40000000LL)
+		long long n;
+		fscanf(f, "%lld\n", &n);
+
+		if (n > maxpos)
 		{
-			printf("%lld\n", prev);
-			printf("%lld %lld\n", i, b);
+			maxpos = n;
 		}
-		prev = i*1000000000+b;
+		else if (n < minneg)
+		{
+			minneg = n;
+		}
+		if (llabs(n - prev) > maxdelta)
+		{
+			maxdelta = llabs(n - prev);
+		}
+		prev = n;
 	}
+	printf("Maximal positive value %lld\n", maxpos);
+	printf("Minimal negative value %lld\n", minneg);
+	printf("Maximal delta = %lld\n", maxdelta);
 	return 0;
 }

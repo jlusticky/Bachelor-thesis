@@ -1,3 +1,19 @@
+/*
+ * This program loads the given file of the following format:
+ * sec nsec\n
+ * sec nsec\n
+ *
+ * exmaple:
+ * 1 82923993
+ * -1 -593929029
+ *
+ * and prints total count of nanoseconds in the following format:
+ * 1082923993
+ * -1593929029
+ *
+ * Contiki NTP Client can print in the input format using serial communication.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
