@@ -1,7 +1,7 @@
 #!/bin/sh
-if [ "$1" ]; then
+if [ "$1" -a "$2" ]; then
 gnuplot << EOF
-p = 16              # interval in seconds between measurements
+p = $2              # interval in seconds between measurements
 #plot '$1' using (\$0*p):1 #To get the max and min value
 #ymax=GPVAL_DATA_Y_MAX
 #ymin=GPVAL_DATA_Y_MIN
@@ -31,5 +31,5 @@ plot '$1' using (\$0*p):1 notitle with linespoints
 EOF
 
 else
-echo "Pass name of input file without suffix as parameter"
+echo "Pass the name of input file and interval between measurements as parameters"
 fi
