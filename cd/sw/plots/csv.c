@@ -1,6 +1,32 @@
+/*
+ * This program read file of the following format:
+ * time bus\n
+ * time bus\n
+ *
+ * example:
+ * 292940 00
+ * 292950 10
+ * 292970 11
+ * 293080 10
+ *
+ * where bus is the state of logic analyser bus (binary form)
+ * and time is the bus capture time,
+ *
+ * and prints the time differences between
+ * the rising edge of both signals.
+ *
+ * The input format can be obtained as a csv file from
+ * the TechTools logic analyser.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
+/*
+ * Bus state - bits.
+ * GPS clock connected to bit 0,
+ * AVR Raven connected to bit 1.
+ */
 #define NONE 00
 #define GPS 01
 #define RAVEN 10
