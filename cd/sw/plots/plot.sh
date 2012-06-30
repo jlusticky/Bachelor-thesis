@@ -9,7 +9,7 @@ p = $2              # interval in seconds between measurements
 #xmax=GPVAL_DATA_X_MAX
 #xmin=GPVAL_DATA_X_MIN
 #xlen=xmax-xmin
-#plot
+# plotting
 #set title "Local clock offset with adjustments and NTP poll interval 16s"
 set terminal png
 set output "$1.png"
