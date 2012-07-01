@@ -20,7 +20,7 @@ The 64-bit long timestamp used by NTP consists of a 32-bit unsigned seconds
 field spanning $2^{32}$ seconds (approx. 136 years from 1900 to 2036) and a 32-bit fraction field resolving
 $2^{-32}$ seconds (approx. 232 picoseconds)~\cite{rfc5905}.
 The short 32-bit timestamp includes a 16-bit unsigned seconds field
-and 16-bit fraction field.
+and a 16-bit fraction field.
 
 \begin{figure}
 	\centering
@@ -45,7 +45,7 @@ But strictly speaking an NTP timestamp is a truncated NTP Date format~\cite{rfc5
 \begin{figure}
 	\centering
 	\includegraphics[width=9cm,keepaspectratio]{fig/ntp-packet.pdf}
-	\caption{Basic NTP packet structure by D. Mills}
+	\caption{Basic NTP packet structure (source:~\cite{ntp-arch})}
 	\label{fig:ntp-packet}
 	\bigskip
 \end{figure}

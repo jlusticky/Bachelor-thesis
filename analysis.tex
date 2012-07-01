@@ -2,34 +2,38 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \chapter{Analysis}
+For implementation of a reasonably useful NTP client,
+the operating system must be able to set, get and eventually adjust the system time.
+Though not mandatory, adjusting time is an important function,
+if the time shall be always a monotonically increasing function.
+Apart from that, communicating abilities over UDP are also required.
+
+\section{Clock subsystem}
 For keeping, measuring and resolving time computer needs a clock.
 Computer clock is an electronic device with a counter register counting oscillations in a
 quartz crystal oscillator with a particular frequency~\cite{thesis-sync}.
 When the counter reaches a specific value, an interrupt is generated and the counter register is reset.
-Such interrupt is called {\it{clock tick}} or {\it{timer tick}}, and at each clock tick,
+Such interrupt is called {\it{clock tick}}, or {\it{timer tick}}, and at each clock tick,
 interrupt service routine increments a system clock value stored in the memory~\cite{thesis-sync}.
 
-The operating system maintains the current time and advances it at every interrupt.
-An oscillator generates clock pulses that drive a counter~C.
-Every time the counter reaches the value of a programmable latch~L,
-an interrupt is generated and the counter is reset.
+Operating system maintains the current time and advances it at every interrupt.
+%Every time the counter reaches the value of a programmable latch~L,
+%an interrupt is generated and the counter is reset.
 In a typical computer clock design, interrupts are produced at
 fixed tick intervals in the range 1-20~ms~\cite{nanokernel}.
-
 The current system time can be queried via a system call
 (traditionally called {\it{gettimeofday}}).
 If it would simply return the value of the system time,
 just the accuracy of the timer interrupt frequency could be provided.
-However, this call may also query the hardware counter~C that is used for
+However, this call may also query the hardware counter that is used for
 interrupt generation and includes the time passed since
 the last update of system time~\cite{thesis-beat}.
-
-The structure of the clock hardware is shown in figure~\ref{fig:system-pc-clock}.
+The structure of the clock hardware is shown in figure~\ref{fig:system-hardware-clock}.
 \begin{figure}
   \centering
   \includegraphics[width=9cm,keepaspectratio]{fig/pc-clock.png}
-  \caption{PC clock hardware by R. Koster}
-  \label{fig:system-pc-clock}
+  \caption{Hardware clock (source:~\cite{thesis-beat})}
+  \label{fig:system-hardware-clock}
   %\bigskip
 \end{figure}
 
@@ -46,7 +50,6 @@ the system time uses a linear time scale like seconds
 (instead of dealing with seconds, minutes, hours, days, etc.)
 and only if a human is in need of the current time,
 the system time is converted~\cite{ntp-faq}.
-
 
 
 
@@ -95,10 +98,9 @@ but it could also be air pressure or magnetic fields~\cite{ntp-faq}.
 \section{Clock discipline}\label{sec:system-discipline}
 For keeping an accurate time a clock not only needs to be read, it must be also set.
 However, simply setting the clock to remove the offset would cause unpredictable time steps~\cite{ntp-faq}.
-Since real time is an always monotonically increasing function, this is not a desired behaviour~\cite{ntp-daq}.
+Since real time is an always monotonically increasing function, this is not a desired behaviour~\cite{ntp-faq}.
 For minimising the time offset and frequency difference between
-the reference clock and the local clock without any time step,
-an NTP client can be used.
+the reference clock and the local clock without any time step, an NTP client can be used.
 
 With the current system time knowledge and the local clock offset knowledge,
 an NTP client can compute an amount of adjustments needed to synchronise the local clock.

@@ -14,7 +14,7 @@ The clock interface provides {\it{clock\_init}} call for initialising the hardwa
 that is automatically called during boot sequence of Contiki.
 The {\it{clock\_init}} call sets up
 appropriate counter registers and interrupt service routines in a similar fashion
-as described in section~\cite{sec:system-keeping-and-providing}.
+as described in section~\ref{sec:system-keeping-and-providing}.
 For AVR CPU this call is implemented as C macro, which evaluates to specific setup code for each
 different type of AVR CPU during compilation, and is defined in {\it{cpu/avr/dev/clock-avr.h}} file.
 The setup code is not common to all AVR CPUs because of differences among them - e.g. there are usually
@@ -55,7 +55,7 @@ This behaviour illustrates figure~\ref{fig:design-timing-diagram}
 \begin{figure}
   \centering
   \includegraphics[width=12cm,keepaspectratio]{fig/timing-diagram.pdf}
-  \caption{Timing diagram in CTC mode with prescaler 8 by Atmel Corporation}
+  \caption{Timing diagram in CTC mode with prescaler 8 (source:~\cite{avr-datasheet})}
   \label{fig:design-timing-diagram}
   \bigskip
 \end{figure}

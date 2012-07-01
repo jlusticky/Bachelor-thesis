@@ -9,14 +9,6 @@
   %\label{fig:design-overview} %!TODO
 \end{figure}
 
-For implementation of reasonably useful NTP client,
-operating system must be able to set, get
-and eventually adjust the system time in a similar fashion as
-described in section~\ref{sec:system-keeping-and-providing} and~\ref{sec:system-discipline}.
-Though not mandatory, adjusting time is important function,
-if the time shall be always a monotonically increasing function.
-Apart from that, communicating abilities over UDP are also required.
-
 For developing and testing Contiki NTP client,
 the AVR Raven platform with 8-bit ATmega1284P CPU~\cite{avr-datasheet} will be used.
 This platform features IEEE~802.15.4 (Low-Rate Wireless Personal Area Networks) link layer support.
