@@ -4,7 +4,7 @@
 \chapter{Analysis}
 For implementation of a reasonably useful NTP client,
 the operating system must be able to set, get and eventually adjust the system time.
-Though not mandatory, adjusting time is an important function,
+Though not mandatory, adjusting the time is an important function,
 if the time shall be always a monotonically increasing function.
 Apart from that, communicating abilities over UDP are also required.
 
@@ -12,22 +12,6 @@ Apart from that, communicating abilities over UDP are also required.
 For keeping, measuring and resolving time computer needs a clock.
 Computer clock is an electronic device with a counter register counting oscillations in a
 quartz crystal oscillator with a particular frequency~\cite{thesis-sync}.
-When the counter reaches a specific value, an interrupt is generated and the counter register is reset.
-Such interrupt is called {\it{clock tick}}, or {\it{timer tick}}, and at each clock tick,
-interrupt service routine increments a system clock value stored in the memory~\cite{thesis-sync}.
-
-Operating system maintains the current time and advances it at every interrupt.
-%Every time the counter reaches the value of a programmable latch~L,
-%an interrupt is generated and the counter is reset.
-In a typical computer clock design, interrupts are produced at
-fixed tick intervals in the range 1-20~ms~\cite{nanokernel}.
-The current system time can be queried via a system call
-(traditionally called {\it{gettimeofday}}).
-If it would simply return the value of the system time,
-just the accuracy of the timer interrupt frequency could be provided.
-However, this call may also query the hardware counter that is used for
-interrupt generation and includes the time passed since
-the last update of system time~\cite{thesis-beat}.
 The structure of the clock hardware is shown in figure~\ref{fig:system-hardware-clock}.
 \begin{figure}
   \centering
@@ -36,6 +20,59 @@ The structure of the clock hardware is shown in figure~\ref{fig:system-hardware-
   \label{fig:system-hardware-clock}
   %\bigskip
 \end{figure}
+When the counter reaches a specific value, an interrupt is generated and the counter register is reset.
+Such interrupt is called {\it{clock tick}}, or {\it{timer tick}}, and at each clock tick,
+interrupt service routine increments a system clock value stored in the memory~\cite{thesis-sync}.
+In a typical computer clock design, interrupts are produced at
+fixed tick intervals in the range 1-20~ms~\cite{nanokernel}.
+
+In Contiki, such a design is used by the clock library.
+There is a variable counting clock ticks, called {\it{scount}},
+and a variable counting seconds, called {\it{seconds}}.
+As described in section~\ref{sec:contiki-timers}, there are
+exactly {\it{CLOCK\_SECOND}} ticks in one second.
+When the the {\it{scount}} variable reaches this value,
+the {\it{seconds}} variable is incremented and the {\it{scount}} variable is reset.
+Both of the variables are used by Contiki timers.
+
+Since the value of the {\it{seconds}} variable is zero after the system booted,
+therefore it effectively expresses the system uptime.
+The {\it{seconds}} variable can be read by the application using the {\it{clock\_seconds}} call.
+However, in Contiki 2.5 there is no call for setting this variable.
+In the current Git version at the time of writing, a new call {\it{clock\_set\_seconds}}
+can be used for this purpose.
+Because this call simply rewrites the {\it{seconds}} variable, it breaks the stimer library.
+%The {\it{clock_set_seconds}} call is implemented only for three CPU architectures at the time of writing.
+If stimers should not be broken by setting the {\it{seconds}} variable,
+and Contiki should be able to set and provide the current time,
+a new call interface must be developed.
+
+Similarly, there is no call for adjusting the time in Contiki.
+Due to memory constraints, software structures controlling the time adjustments are too heavyweight
+for a usage in embedded operating systems.
+Since the code of an interrupt service routine can not be complex,
+sophisticated clock discipline algorithms should be also avoided.
+Because of this, a call for adjusting the time should use the hardware clock abilities as much as possible.
+
+
+\section{Communication}
+One server - complex algorithms for selecting the good servers are complex.
+IPv6
+...
+
+
+Operating system maintains the current time and advances it at every interrupt.
+
+
+The current system time can be queried via a system call
+(traditionally called {\it{gettimeofday}}).
+If it would simply return the value of the system time,
+just the accuracy of the timer interrupt frequency could be provided.
+However, this call may also query the hardware counter that is used for
+interrupt generation and includes the time passed since
+the last update of system time~\cite{thesis-beat}.
+
+
 
 Such a design is also used by the timer library in Contiki~\cite{contiki-docs}.
 
