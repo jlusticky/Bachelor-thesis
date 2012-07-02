@@ -3,7 +3,7 @@
 
 \chapter{Analysis}
 For implementation of a reasonably useful NTP client,
-the operating system must be able to set, get and eventually adjust the system time.
+an operating system must be able to set, get and eventually adjust the system time.
 Though not mandatory, adjusting the time is an important function,
 if the time shall be always a monotonically increasing function.
 Apart from that, communicating abilities over UDP are also required.
@@ -33,135 +33,183 @@ As described in section~\ref{sec:contiki-timers}, there are
 exactly {\it{CLOCK\_SECOND}} ticks in one second.
 When the the {\it{scount}} variable reaches this value,
 the {\it{seconds}} variable is incremented and the {\it{scount}} variable is reset.
-Both of the variables are used by Contiki timers.
+Both variables are used by the Contiki timers.
 
 Since the value of the {\it{seconds}} variable is zero after the system booted,
-therefore it effectively expresses the system uptime.
+it actually expresses the system uptime.
 The {\it{seconds}} variable can be read by the application using the {\it{clock\_seconds}} call.
 However, in Contiki 2.5 there is no call for setting this variable.
 In the current Git version at the time of writing, a new call {\it{clock\_set\_seconds}}
 can be used for this purpose.
-Because this call simply rewrites the {\it{seconds}} variable, it breaks the stimer library.
+Because this call simply rewrites the {\it{seconds}} variable, it breaks the stimer library,
+and should by avoided by the NTP client.
 %The {\it{clock_set_seconds}} call is implemented only for three CPU architectures at the time of writing.
+
+The precision of one seconds is also not adequate.
+Further precision can be acquired by reading the {\it{scount}} variable,
+as it provides resolution of $\frac{1}{CLOCK\_SECOND}$.
+Moreover, the hardware counter can be also read, as it includes the time passed since
+the last update of the {\it{scount}} variable.
 If stimers should not be broken by setting the {\it{seconds}} variable,
-and Contiki should be able to set and provide the current time,
+and Contiki should be able to set and provide the current time in a higher precision,
 a new call interface must be developed.
 
 Similarly, there is no call for adjusting the time in Contiki.
 Due to memory constraints, software structures controlling the time adjustments are too heavyweight
-for a usage in embedded operating systems.
+for a usage in an embedded operating system.
 Since the code of an interrupt service routine can not be complex,
-sophisticated clock discipline algorithms should be also avoided.
+sophisticated clock discipline algorithms should be avoided.
 Because of this, a call for adjusting the time should use the hardware clock abilities as much as possible.
 
 
 \section{Communication}
-One server - complex algorithms for selecting the good servers are complex.
-IPv6
-...
+Without any NTP server is an NTP client useless.
+However, too many server associations complicate the client design.
+In fact, in the most common scenario, there can be only a single NTP master server
+for the whole network.
+A single server association requires just a simple calculation of the local clock offset
+$\theta$, whereas more servers associations require the intersection algorithm,
+as described in section~\ref{sec:ntp-algorithms}.
+Selection algorithms requiring advanced data structures should be therefore avoided.
+
+The NTP broadcast communication mode, on the other hand,
+requires no associations and no packet filling process on the client side.
+Moreover, because the client does not have to actively send any NTP packets,
+an energy consumption of the client is reduced.
+
+The NTP client should be able to communicate over both IPv4 and IPv6.
+Thanks to the uIP stack, this is no a matter for Contiki.
+The only constraint is that both IP versions can not be used simultaneously
+and the decision must be made during the compilation~\cite{contiki-docs}.
+Although the {\it{UIP\_CONF\_IPV6}} macro can be used to determine which IP version
+support is being compiled, the NTP client application can be written IP-version agnostic.
 
 
-Operating system maintains the current time and advances it at every interrupt.
+\section{Timestamp conversions}
+As mentioned in section~\ref{sec:ntp-time}, the NTP timescale is not
+coincident with the POSIX timescale.
+If the new call interface should use the standard POSIX timescale,
+conversion between NTP and POSIX timestamps must be calculated.
+The conversion from the POSIX timestamp to the 64-bit long NTP timestamp
+is needed when the client sends the request
+and the conversion vice versa is needed when the client calculates
+the local clock offset from the received timestamps.
+
+Since both timescales reckon in seconds, the conversion between
+the NTP timestamp seconds field value and the POSIX timestamp seconds field value is simple.
+However, the conversion between the NTP fraction field value ($2^{-32}$)
+and the POSIX fraction field value (nanoseconds or microseconds) is problematic.
+The relation between the POSIX fraction field and the NTP fraction field
+is given by $POSIX.frac = NTP.frac \times POSIX.res \div 2^{32}$,
+where $POSIX.frac$ is the POSIX fraction field value,
+$NTP.frac$ is the NTP fraction field value and
+$POSIX.res$ is the POSIX timestamp resolution (microseconds or nanoseconds).
+The accurate conversion requires either floating point operations or operations with 64 bit numbers.
+These operations can be memory expensive, especially on 8-bit microcontrollers,
+and their usage must be considered carefully or another suitable solution must be found.
 
 
-The current system time can be queried via a system call
-(traditionally called {\it{gettimeofday}}).
-If it would simply return the value of the system time,
-just the accuracy of the timer interrupt frequency could be provided.
-However, this call may also query the hardware counter that is used for
-interrupt generation and includes the time passed since
-the last update of system time~\cite{thesis-beat}.
+%Operating system maintains the current time and advances it at every interrupt.
+
+
+%The current system time can be queried via a system call
+%(traditionally called {\it{gettimeofday}}).
+%If it would simply return the value of the system time,
+%just the accuracy of the timer interrupt frequency could be provided.
+%However, this call may also query the hardware counter that is used for
+%interrupt generation and includes the time passed since
+%the last update of system time~\cite{thesis-beat}.
 
 
 
-Such a design is also used by the timer library in Contiki~\cite{contiki-docs}.
+%Such a design is also used by the timer library in Contiki~\cite{contiki-docs}.
 
 
 
-\section{Keeping and providing the time}\label{sec:system-keeping-and-providing}
+%\section{Keeping and providing the time}\label{sec:system-keeping-and-providing}
 
 
 
-Because of the speed requirement,
-the system time uses a linear time scale like seconds
-(instead of dealing with seconds, minutes, hours, days, etc.)
-and only if a human is in need of the current time,
-the system time is converted~\cite{ntp-faq}.
+%Because of the speed requirement,
+%the system time uses a linear time scale like seconds
+%(instead of dealing with seconds, minutes, hours, days, etc.)
+%and only if a human is in need of the current time,
+%the system time is converted~\cite{ntp-faq}.
 
 
 
 
-\section{Clock quality factors}
-Unfortunately all the common clock hardware is not very accurate~\cite{ntp-faq}.
-This is simply because the frequency that makes time increase is never exactly right.
-Even an error of only 0.001\% would make a clock be off by almost one second per day.
-Almost every clock can have unique behaviour depending on many conditions~\cite{ntp-faq}.
-The following factors are therefore used for expressing clock quality and behaviour:
-\begin{itemize}
-\item
-Frequency is the rate at which a clock progresses~\cite{thesis-sync}.
-\item
-It is sometimes convenient
-to express frequency offsets in parts-per-million~(PPM), where~1~PPM
-is equal to $10^{-6}$ $\frac{s}{s}$ (0.0001\%)~\cite{rfc5905}.
-\item
-From long-term observation one may also notice variations in the clock frequency.
-The difference of the frequency is called wander~\cite{ntp-faq}.
-There can be clocks with poor short-term stability, but with good long-term stability, and vice versa.
-\item
-Resolution is the smallest possible increase of time the clock model allows.
-If a clock increments its value only once per second, its resolution is also one second~\cite{ntp-faq}.
-\item
-Precision is the smallest possible increase of time that can be experienced
-by a program~\cite{ntp-faq}.
-\item
-When repeatedly reading the time, the difference may vary almost randomly.
-The difference of these differences (second derivation) is called jitter~\cite{ntp-faq}.
-\item
-Accuracy determines how close the clock is to an official time reference~\cite{ntp-faq}.
-\item
-Offset is the difference between the time read by the clock and the reference time~\cite{thesis-sync}.
-\item
-Reliability determines the time a clock can keep within a specified accuracy~\cite{ntp-faq}.
-\end{itemize}
+%\section{Clock quality factors}
+%Unfortunately all the common clock hardware is not very accurate~\cite{ntp-faq}.
+%This is simply because the frequency that makes time increase is never exactly right.
+%Even an error of only 0.001\% would make a clock be off by almost one second per day.
+%Almost every clock can have unique behaviour depending on many conditions~\cite{ntp-faq}.
+%The following factors are therefore used for expressing clock quality and behaviour:
+%\begin{itemize}
+%\item
+%Frequency is the rate at which a clock progresses~\cite{thesis-sync}.
+%\item
+%It is sometimes convenient
+%to express frequency offsets in parts-per-million~(PPM), where~1~PPM
+%is equal to $10^{-6}$ $\frac{s}{s}$ (0.0001\%)~\cite{rfc5905}.
+%\item
+%From long-term observation one may also notice variations in the clock frequency.
+%The difference of the frequency is called wander~\cite{ntp-faq}.
+%There can be clocks with poor short-term stability, but with good long-term stability, and vice versa.
+%\item
+%Resolution is the smallest possible increase of time the clock model allows.
+%If a clock increments its value only once per second, its resolution is also one second~\cite{ntp-faq}.
+%\item
+%Precision is the smallest possible increase of time that can be experienced
+%by a program~\cite{ntp-faq}.
+%\item
+%When repeatedly reading the time, the difference may vary almost randomly.
+%The difference of these differences (second derivation) is called jitter~\cite{ntp-faq}.
+%\item
+%Accuracy determines how close the clock is to an official time reference~\cite{ntp-faq}.
+%\item
+%Offset is the difference between the time read by the clock and the reference time~\cite{thesis-sync}.
+%\item
+%Reliability determines the time a clock can keep within a specified accuracy~\cite{ntp-faq}.
+%\end{itemize}
 
-As mentioned before, all of the common hardware clocks are not very accurate.
-Real clocks have a frequency error of several PPM quite frequently
-and some of the best clocks available still have errors of about $1^{-8}$PPM~\cite{ntp-faq}.
-Even if the systematic error of some clock model is known, the clock will never be perfect.
-This is because the frequency varies over time, mostly influenced by temperature,
-but it could also be air pressure or magnetic fields~\cite{ntp-faq}.
+%As mentioned before, all of the common hardware clocks are not very accurate.
+%Real clocks have a frequency error of several PPM quite frequently
+%and some of the best clocks available still have errors of about $1^{-8}$PPM~\cite{ntp-faq}.
+%Even if the systematic error of some clock model is known, the clock will never be perfect.
+%This is because the frequency varies over time, mostly influenced by temperature,
+%but it could also be air pressure or magnetic fields~\cite{ntp-faq}.
 
-\section{Clock discipline}\label{sec:system-discipline}
-For keeping an accurate time a clock not only needs to be read, it must be also set.
-However, simply setting the clock to remove the offset would cause unpredictable time steps~\cite{ntp-faq}.
-Since real time is an always monotonically increasing function, this is not a desired behaviour~\cite{ntp-faq}.
-For minimising the time offset and frequency difference between
-the reference clock and the local clock without any time step, an NTP client can be used.
+%\section{Clock discipline}\label{sec:system-discipline}
+%For keeping an accurate time a clock not only needs to be read, it must be also set.
+%However, simply setting the clock to remove the offset would cause unpredictable time steps~\cite{ntp-faq}.
+%Since real time is an always monotonically increasing function, this is not a desired behaviour~\cite{ntp-faq}.
+%For minimising the time offset and frequency difference between
+%the reference clock and the local clock without any time step, an NTP client can be used.
 
-With the current system time knowledge and the local clock offset knowledge,
-an NTP client can compute an amount of adjustments needed to synchronise the local clock.
-To apply these adjustments, operating system must also provide a call
-for adjusting the time (usually called {\it{adjtime}})~\cite{nanokernel}.
-This call speeds up or slows down the system time in order to synchronise the local clock.
-Periodical application of such corrections {\it{disciplines}} the local clock~\cite{ntp-faq}.
+%With the current system time knowledge and the local clock offset knowledge,
+%an NTP client can compute an amount of adjustments needed to synchronise the local clock.
+%To apply these adjustments, operating system must also provide a call
+%for adjusting the time (usually called {\it{adjtime}})~\cite{nanokernel}.
+%This call speeds up or slows down the system time in order to synchronise the local clock.
+%Periodical application of such corrections {\it{disciplines}} the local clock~\cite{ntp-faq}.
 
-However, some clock implementations do not allow small corrections to be applied
-to the system clock, and there is also no standard interface to monitor the system clock's quality~\cite{ntp-faq}.
-This was the main reason for developing a new kernel clock model called {\it{Kernel discipline}}~\cite{nanokernel}.
-The new kernel clock model provides improved time and frequency
-resolution, together with a more agile and precise clock discipline mechanism~\cite{nanokernel}.
-This model is described in RFC~1589~\cite{rfc1589} and it adds new calls to the existing kernel interface
-{\it{ntp\_gettime}}, {\it{ntp\_settime}} and {\it{ntp\_adjtime}}.
-Apart from the system time, these calls also provide maximum error (synchronisation distance)
-and estimated error (dispersion) to client user application programs, such as NTP client~\cite{rfc1589}.
-The programming interface also includes the new
-system call {\it{ntp\_adjtime}} mentioned previously, which can be used
-to read and write kernel variables for time and frequency
-adjustment, leap-second warning and related data~\cite{rfc1589}.
-The clock corrections are calculated and applied inside the kernel~\cite{ntp-faq}.
+%However, some clock implementations do not allow small corrections to be applied
+%to the system clock, and there is also no standard interface to monitor the system clock's quality~\cite{ntp-faq}.
+%This was the main reason for developing a new kernel clock model called {\it{Kernel discipline}}~\cite{nanokernel}.
+%The new kernel clock model provides improved time and frequency
+%resolution, together with a more agile and precise clock discipline mechanism~\cite{nanokernel}.
+%This model is described in RFC~1589~\cite{rfc1589} and it adds new calls to the existing kernel interface
+%{\it{ntp\_gettime}}, {\it{ntp\_settime}} and {\it{ntp\_adjtime}}.
+%Apart from the system time, these calls also provide maximum error (synchronisation distance)
+%and estimated error (dispersion) to client user application programs, such as NTP client~\cite{rfc1589}.
+%The programming interface also includes the new
+%system call {\it{ntp\_adjtime}} mentioned previously, which can be used
+%to read and write kernel variables for time and frequency
+%adjustment, leap-second warning and related data~\cite{rfc1589}.
+%The clock corrections are calculated and applied inside the kernel~\cite{ntp-faq}.
 
-%!TODO
-Both of the models have benefits and drawbacks,
-but further description of them is outside the scope of this thesis.
-These are further discussed, particularly in relation to Contiki~OS, in %chapter~\ref{}.
+%%!TODO
+%Both of the models have benefits and drawbacks,
+%but further description of them is outside the scope of this thesis.
+%These are further discussed, particularly in relation to Contiki~OS, in %chapter~\ref{}.
