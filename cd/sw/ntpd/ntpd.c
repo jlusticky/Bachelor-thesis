@@ -59,6 +59,15 @@
 #ifdef REMOTE_HOST
 static struct ntp_msg msg;
 struct time_spec ts;
+/* NTP Poll interval in seconds = 2^TAU
+ * In NTPv4 TAU ranges from 4 (Poll interval 16 s) to 17 ( Poll interval 36 h)
+ */
+/// CAUTION: etimer is limited in Contiki to cca 500s (platform specific)
+/// so do not use TAU > 8
+#ifndef TAU
+#define TAU 4
+#endif /* TAU */
+
 #else
 	#warning "No REMOTE_HOST defined - only NTP broadcast messages will be processed!"
 #endif /* REMOTE_HOST */
@@ -228,12 +237,6 @@ PROCESS_THREAD(ntpd_process, ev, data)
 	/* new connection with remote host */
 	udpconn = udp_new(&ipaddr, UIP_HTONS(REMOTE_PORT), NULL); // remote server port
 
-	/* NTP Poll interval in seconds = 2^TAU
-	 * In NTPv4 TAU ranges from 4 (Poll interval 16 s) to 17 ( Poll interval 36 h)
-	 */
-	/// CAUTION: etimer is limited in Contiki to cca 500s (platform specific)
-	/// so do not use TAU > 8
-	#define TAU 4
 	#define POLL_INTERVAL (1 << TAU)
 	msg.ppoll = TAU; // log2(poll_interval)
 
@@ -268,6 +271,10 @@ PROCESS_THREAD(ntpd_process, ev, data)
 		{
 			timeout_handler();
 			etimer_restart(&et); // wait again SEND_INTERVAL seconds
+		}
+		else if (ev == PROCESS_EVENT_MSG) // another application wants us to synchronise
+		{
+			timeout_handler();
 		}
 #endif
 	}
