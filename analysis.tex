@@ -8,7 +8,7 @@ Though not mandatory, adjusting the time is an important function,
 if the time shall be always a monotonically increasing function.
 Apart from that, communicating abilities over UDP are also required.
 
-\section{Clock subsystem}
+\section{Clock subsystem}\label{sec:analysis-clock}
 For keeping, measuring and resolving time computer needs a clock.
 Computer clock is an electronic device with a counter register counting oscillations in a
 quartz crystal oscillator with a particular frequency~\cite{thesis-sync}.
@@ -76,6 +76,17 @@ The NTP broadcast communication mode, on the other hand,
 requires no associations and no packet filling process on the client side.
 Moreover, because the client does not have to actively send any NTP packets,
 an energy consumption of the client is reduced.
+
+% 1 - see design
+A problem might be a possible packet loss when communication uses UDP on transport layer.
+The reason why this can happen often in Contiki, is explained in section~\ref{sec:contiki-uip}.
+% 2
+In NTP unicast mode, the packet loss might occur either for a client's query to the server
+or for a server's response to the client.
+If the client's query loss occurs, no server response will be sent.
+Similarly, if the server's response loss occurs, no message will be received by the client.
+Not to block a whole system till the response arrives
+is therefore a desired behaviour of the client.
 
 The NTP client should be able to communicate over both IPv4 and IPv6.
 Thanks to the uIP stack, this is no a matter for Contiki.

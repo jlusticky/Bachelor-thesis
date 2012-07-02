@@ -19,11 +19,11 @@ ntp/time.tex - DONE
 ntp/network.tex - DONE
 ntp/algorithms.tex - DONE
 
-analysis.tex - wip
+analysis.tex - DONE + review
 
 design.tex - work in progress
+design/clock.tex - WIP
 design/network.tex - DONE + review
-design/clock.tex - DONE + review
 design/interface.tex - wip - needs work, move ISR from design/clock.tex
 #design/client.tex - wip + conversion
 

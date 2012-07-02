@@ -2,28 +2,34 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \chapter{Design}
-\begin{figure}
-  \centering
-  \includegraphics[width=13cm,keepaspectratio]{fig/design.png}
-  \caption{Overview} %!TODO
-  %\label{fig:design-overview} %!TODO
-\end{figure}
-
 For developing and testing Contiki NTP client,
 the AVR Raven platform with 8-bit ATmega1284P CPU~\cite{avr-datasheet} will be used.
 This platform features IEEE~802.15.4 (Low-Rate Wireless Personal Area Networks) link layer support.
 Together with an adaptation layer called 6LoWPAN (IPv6 over Low power Wireless Personal Area Networks)
 AVR Raven is able to communicate over IPv6.
 
-How to get a working setup with Contiki on this platform is described in
-the document files on the CD enclosed to this thesis.
-The CD content hierarchy is listed in appendix~\ref{app:cd-content}.
+Figure~\ref{fig:design-overview} shows the NTP client overview.
+Previous chapter showed, that just a simple implementation of the application
+is due to missing calls in time interface not sufficient.
+The time interface must be extended with new calls,
+that must be implemented in the clock interface.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=13cm,keepaspectratio]{fig/design.png}
+  \caption{NTP client overview} %!TODO
+  \label{fig:design-overview} %!TODO
+\end{figure}
+
+%How to get a working setup with Contiki on this platform is described in
+%the document files on the CD enclosed to this thesis.
+%The CD content hierarchy is listed in appendix~\ref{app:cd-content}.
 
 %... This is not in Contiki, as operating systems targeted at embbeded systems produce only 1 binary file. CITATION
 
-\input{design/network.tex}
-
 \input{design/clock.tex}
+
+\input{design/network.tex}
 
 \input{design/interface.tex}
 

@@ -1,7 +1,7 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky
 
-\section{Hardware clock interface}
+\section{Clock interface}
 Contiki provides basic clock interface particularly for use of timers
 with a simple goal - measuring time.
 This interface is common for all supported platforms,
@@ -13,19 +13,21 @@ in {\it{cpu/}} directory of Contiki source code.
 The clock interface provides {\it{clock\_init}} call for initialising the hardware clock,
 that is automatically called during boot sequence of Contiki.
 The {\it{clock\_init}} call sets up
-appropriate counter registers and interrupt service routines in a similar fashion
-as described in section~\ref{sec:system-keeping-and-providing}.
-For AVR CPU this call is implemented as C macro, which evaluates to specific setup code for each
+appropriate counter registers and interrupt service routines as described in section~\ref{sec:analysis-clock}.
+This call is implemented as a macro for AVR CPUs, which evaluates to a specific setup code for each
 different type of AVR CPU during compilation, and is defined in {\it{cpu/avr/dev/clock-avr.h}} file.
 The setup code is not common to all AVR CPUs because of differences among them - e.g. there are usually
 only three Timer/Counter modules, but AVR ATmega1284P has four Timer/Counter modules~\cite{avr-datasheet}.
 
 On AVR Raven, 8 bit Timer/Counter~2 clocked from asynchronous 32~768~Hz crystal oscillator
-is by default used by Contiki clock interface,
-which is in turn used by dependent timers (discussed in section~\ref{sec:contiki-timers}).
+is used by default by Contiki clock interface.
 This oscillator is independent of any other clock,
 can be only used with Timer/Counter~2 and it
 enables use of Timer/Counter~2 as a Real Time Counter~\cite{avr-datasheet}.
+The Timer/Counter~2 prescale value 8 is used in Contiki on AVR Raven platform,
+so that oscillator frequency 32~768~Hz is effectively divided by 8.
+Counter register is hence incremented with frequency
+$f_{T2} = {\frac{f_{asy}}{prescaler}} = {\frac{32768}{8}} = 4096$ Hz.
 
 %%Unlike I/O clock used for clocking other Timers/Counters,
 %%this asynchronous crystal is also active in power-save mode~\ref{avr-datasheet}.
@@ -39,12 +41,7 @@ enables use of Timer/Counter~2 as a Real Time Counter~\cite{avr-datasheet}.
 %is stopped during sleep. Note that even if the synchronous clock is running in Power-save, this
 %clock is only available for the Timer/Counter2.
 
-For Timer/Counter~2 prescale value 8 is used in Contiki on AVR Raven platform,
-so that oscillator frequency 32~768~Hz is effectively divided by 8.
-Counter register is hence incremented with frequency
-$f_{T2} = {\frac{f_{asy}}{prescaler}} = {\frac{32768}{8}} = 4096$ Hz.
-
-Timer/Counter~2 is used in Clear Timer on Compare Match (CTC) mode by Contiki.
+The Timer/Counter~2 module is used in Clear Timer on Compare Match (CTC) mode by Contiki.
 In this mode, the counter register {\it{TCNT2}} is incrementing
 and the compare register defines maximum value for the counter register.
 Compare match between counter register and compare register
@@ -89,8 +86,47 @@ and is used by stimers for measuring time intervals.
 
 %! TODO as described in chapter??
 % write to OCR2A
-The interrupt service routine can be used for updating the value in {\it{OCR2A}} compare register.
+The interrupt service routine can be further used for updating the value in {\it{OCR2A}} compare register.
 %However, changing TOP to a value close to BOTTOM when the counter is run-
 %ning with none or a low prescaler value must be done with care since the CTC mode does not
 %have the double buffering feature. If the new value written to OCR2A is lower than the current
 %value of TCNT2, the counter will miss the compare match~\cite{avr-datasheet}.
+% TO NTP INTERFACE
+
+TODO:
+Adjusting time - CLOCK\_COMPARE\_REGISTER = 31 => 128Hz => 1s = 1s
+FREQ = 32768/8 / 32
+CLOCK\_COMPARE\_REGISTER = 30 => ca132.129Hz => 1s = ca1.032258s
+FREQ = 32768/8 / 31
+CLOCK\_COMPARE\_REGISTER = 32 => 124.12per => 1s = 0.96p
+FREQ = 32768/8 / 33
+
+=> fastest adjust is 0,03s / s
+
+% TO NTP INTERFACE
+When writing to compare register, the value is transferred to a
+temporary register, and latched after two positive edges of a source clock~\cite{avr-datasheet}.
+The user should not write a new value before the contents
+of the temporary register have been transferred to its destination.
+To detect that a transfer to the destination register has taken place,
+the Asynchronous Status Register - ASSR has been implemented.
+Since writing to compare register occurs only once within interrupt CONTEXT, % context?
+this detection is not mandatory.
+
+
+
+This is enough for implementing a reasonable time interface and using it for NTP client later.
+
+% ntp interface extending the clock library, similar to posix calls
+
+
+Each TCNT2 increment is $\frac{1}{128 \times 32} \doteq 0,000244$s
+0,244ms
+This is also minimal possible clock adjustment.
+
+
+Please note, that these adjustments will influence Contiki timers.
+Applications requiring uninfluenced timers
+are therefore advised to use rtimers, described in section~\ref{sec:contiki-timers},
+because they use separate hardware clock unaffected by NTP client
+(Timer/Counter~3 on AVR Raven platform).
