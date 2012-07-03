@@ -4,7 +4,7 @@
 \section{Clock interface}
 Previous section described how the call for getting the time acquires
 the maximum precision the clock model allows.
-In such a design, there are two read operations - read {\it{scount}} and read {\it{TCNT2}}.
+Two read operations are needed in such a design - read {\it{scount}} and read {\it{TCNT2}}.
 Since the {\it{scount}} variable depends on asynchronous interrupts produced by
 the clock module, the followed query of the counter register causes a race condition.
 The timer clock runs asynchronously from the CPU clock and

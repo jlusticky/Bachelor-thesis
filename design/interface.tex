@@ -59,7 +59,7 @@ This variable is equal to zero when enough time adjustments were performed,
 and the default value of the compare register is written back to {\it{OCR2A}}.
 A new call must be developed for the determination of how many adjustments must be done.
 
-In such a design, a leap second occurrence will be handled just like an unexpected change of time -
+As a result of this design, a leap second occurrence will be handled like an unexpected change of time -
 the operating system will continue with the wrong system time for some time,
 but an NTP client will step or adjust the system time~\cite{ntp-faq}.
 This will effectively cause the leap second correction to be applied too late,
