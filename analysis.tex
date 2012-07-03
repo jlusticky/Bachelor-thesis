@@ -6,60 +6,17 @@ For implementation of a reasonably useful NTP client,
 an operating system must be able to set, get and eventually adjust the system time.
 Though not mandatory, adjusting the time is an important function,
 if the time shall be always a monotonically increasing function.
-Apart from that, communicating abilities over UDP are also required.
+Apart from that, ability to communicate over UDP is also required.
 
-\section{Clock subsystem}\label{sec:analysis-clock}
-For keeping, measuring and resolving time computer needs a clock.
-Computer clock is an electronic device with a counter register counting oscillations in a
-quartz crystal oscillator with a particular frequency~\cite{thesis-sync}.
-The structure of the clock hardware is shown in figure~\ref{fig:system-hardware-clock}.
-\begin{figure}
-  \centering
-  \includegraphics[width=9cm,keepaspectratio]{fig/pc-clock.png}
-  \caption{Hardware clock (source:~\cite{thesis-beat})}
-  \label{fig:system-hardware-clock}
-  %\bigskip
-\end{figure}
-When the counter reaches a specific value, an interrupt is generated and the counter register is reset.
-Such interrupt is called {\it{clock tick}}, or {\it{timer tick}}, and at each clock tick,
-interrupt service routine increments a system clock value stored in the memory~\cite{thesis-sync}.
-In a typical computer clock design, interrupts are produced at
-fixed tick intervals in the range 1-20~ms~\cite{nanokernel}.
+For developing and testing Contiki NTP client,
+the AVR Raven platform with 8-bit ATmega1284P CPU~\cite{avr-datasheet} will be used.
+This platform features IEEE~802.15.4 (Low-Rate Wireless Personal Area Networks) link layer support.
+Together with an adaptation layer called 6LoWPAN (IPv6 over Low power Wireless Personal Area Networks),
+AVR Raven is able to communicate over IPv6.
 
-In Contiki, such a design is used by the clock library.
-There is a variable counting clock ticks, called {\it{scount}},
-and a variable counting seconds, called {\it{seconds}}.
-As described in section~\ref{sec:contiki-timers}, there are
-exactly {\it{CLOCK\_SECOND}} ticks in one second.
-When the the {\it{scount}} variable reaches this value,
-the {\it{seconds}} variable is incremented and the {\it{scount}} variable is reset.
-Both variables are used by the Contiki timers.
+\input{analysis/time.tex}
 
-Since the value of the {\it{seconds}} variable is zero after the system booted,
-it actually expresses the system uptime.
-The {\it{seconds}} variable can be read by the application using the {\it{clock\_seconds}} call.
-However, in Contiki 2.5 there is no call for setting this variable.
-In the current Git version at the time of writing, a new call {\it{clock\_set\_seconds}}
-can be used for this purpose.
-Because this call simply rewrites the {\it{seconds}} variable, it breaks the stimer library,
-and should by avoided by the NTP client.
-%The {\it{clock_set_seconds}} call is implemented only for three CPU architectures at the time of writing.
-
-The precision of one seconds is also not adequate.
-Further precision can be acquired by reading the {\it{scount}} variable,
-as it provides resolution of $\frac{1}{CLOCK\_SECOND}$.
-Moreover, the hardware counter can be also read, as it includes the time passed since
-the last update of the {\it{scount}} variable.
-If stimers should not be broken by setting the {\it{seconds}} variable,
-and Contiki should be able to set and provide the current time in a higher precision,
-a new call interface must be developed.
-
-Similarly, there is no call for adjusting the time in Contiki.
-Due to memory constraints, software structures controlling the time adjustments are too heavyweight
-for a usage in an embedded operating system.
-Since the code of an interrupt service routine can not be complex,
-sophisticated clock discipline algorithms should be avoided.
-Because of this, a call for adjusting the time should use the hardware clock abilities as much as possible.
+\input{analysis/clock.tex}
 
 
 \section{Communication}
