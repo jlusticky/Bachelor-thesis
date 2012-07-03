@@ -8,10 +8,10 @@ The timer library provides functions for setting, resetting and restarting timer
 and for checking if a timer has expired.
 An application must manually check if its timers have expired - this is not done automatically~\cite{contiki-docs}.
 
-Contiki has one clock module and a set of timer libraries: timer, stimer, ctimer, etimer, and rtimer~\cite{contiki-wiki-timers}.
-The clock module provides functionality to handle the system time and also to block the CPU for short time periods.
+Contiki has one clock library and a set of timer libraries: timer, stimer, ctimer, etimer, and rtimer~\cite{contiki-wiki-timers}.
+The clock library provides functionality to handle the system time and also to block the CPU for short time periods.
 It is the interface between Contiki and the platform specific clock functionality~\cite{contiki-docs}.
-The timer libraries are implemented with the functionality of the clock module as a base~\cite{contiki-wiki-timers}.
+The timer libraries are implemented with the functionality of the clock library as a base~\cite{contiki-wiki-timers}.
 
 The timer and stimer libraries provide the simplest form of timers and are used to check if a time period has passed.
 The difference between these two is the resolution of time -
@@ -46,5 +46,5 @@ execute at the scheduled time~\cite{contiki-wiki-timers}.
 This behaviour is illustrated in figure~\ref{fig:contiki-execution-context}.
 The rtimer library uses a separate hardware clock
 to allow higher clock resolution~\cite{contiki-wiki-timers}.
-The small part of the rtimer module is architecture-agnostic,
+The small part of the rtimer library is architecture-agnostic,
 but the particular implementation is platform-specific.
