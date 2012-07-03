@@ -1,7 +1,3 @@
-Thesis
-======
-KAI
-
 Content
 =======
 obsah.tex - conclusion
@@ -19,12 +15,14 @@ ntp/time.tex - DONE
 ntp/network.tex - DONE
 ntp/algorithms.tex - DONE
 
-analysis.tex
-analysis/time.tex
-analysis/clock.tex
+analysis.tex - wip/client application?
+analysis/time.tex - DONE
+analysis/clock.tex - DONE
+
 
 design.tex - work in progress
-design/clock.tex - WIP
+design/interface.tex - DONE
+
 design/network.tex - DONE + review
 design/interface.tex - wip - needs work, move ISR from design/clock.tex
 #design/client.tex - wip + conversion

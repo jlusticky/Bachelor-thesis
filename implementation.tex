@@ -5,7 +5,75 @@
 TODO: write introduction..
 %... This can be effectively solved by NTP Poll Interval.
 
-\input{implementation/clock.tex}
+\section{Time specification structure}
+%Since there is no way of setting, getting and adjusting the time in Contiki OS,
+%the interface for setting, getting and adjusting time was developed in this thesis.
+New structure for expressing time values was implemented.
+This structure is similar to POSIX {\it{timespec}} structure,
+as described in section~\ref{sec:analysis-interface}.
+However, name was chosen {\it{time\_spec}} to avoid collision with
+existing POSIX-compliant systems.
+\begin{lstlisting}
+struct time_spec {
+  long sec;
+  long nsec;
+};
+\end{lstlisting}
+This structure consists of two signed long values for expressing seconds and nanoseconds.
+The value 0 seconds and 0 nanoseconds is equal to Unix prime epoch (1st January 1970).
+In case of seconds part, the 32-bit signed long value was chosen because
+it can conveniently
+represent real-time values as well as local clock adjustment values, which may also be negative.
+%! The existing value {\it{seconds}}, representing uptime in Contiki, is of the unsigned long type.
+Such time representation will wrap around in year 2038 and is facing
+what is commonly known as the year 2038 problem~\cite{posix}.
+
+In case of nanoseconds part, the 32-bit signed long value was chosen because
+one second has $10^9$ nanoseconds and it is
+desirable to be able to express positive as well as negative values for local clock adjustments.
+As 32-bit signed long type shall be able to express values from -$2^{31}$-1 (-2~147~483~647)
+to $2^{31}$-1 (2~147~483~647)~\cite{c99},
+such representation will therefore never wrap around.
+
+It should be noted that signed long data type does not have to always result in a 32-bit variable -
+it is up to compiler what data width it chooses for each data type.
+But as ISO C99 standard states, the maximum value for an object of type signed long
+shall be greater or equal $2^{31}$-1 (2~147~483~647)~\cite{c99}.
+This in fact results in at least 32-bit variable unless the compilation setting is changed.
+Next to this, as the already presented variable {\it{seconds}} is of unsigned long type,
+the value {\it{sec}} in {\it{time\_spec}} structure %and {\it{boottime}}
+shall be of the same data width as arithmetic operations are made on them.
+
+Usage of unsigned data type delays the wrap around problem to year 2106,
+however will disable use of negative values needed for adjusting local clock.
+%As current NTP Era ends 2036 code has to be changed anyway...~\cite{ntp-y2k}.
+
+
+\section{Setting the time} %TODO
+Setting the current time is only possible within one second precision -
+finer time setting must be made through time adjustments described further.
+Implemented {\it{clock\_set\_time}} function computes when the system started
+in seconds since the Epoch and saves the result in newly implemented {\it{boottime}} variable.
+
+Not only no variables incremented every interrupt nor any internal clock registers
+are affected, but also already presented variable {\it{seconds}} is not modified.
+Modifying this variable would lead to misbehaviour of stimer library
+described in section~\ref{sec:contiki-timers}.
+
+Thanks to this newly implemented {\it{clock\_set\_time}} function and {\it{boottime}} variable,
+running Contiki system is able to tell uptime, current time and
+time when was the system booted.
+\begin{lstlisting}
+volatile unsigned long boottime;
+
+void
+clock_set_time(unsigned long sec)
+{
+  boottime = sec - seconds;
+}
+\end{lstlisting}
+
+%%%
 
 \input{implementation/interface.tex}
 

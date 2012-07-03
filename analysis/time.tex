@@ -3,7 +3,7 @@
 
 \section{Time interface}\label{sec:analysis-time}
 For keeping, measuring and resolving time computer needs a clock.
-Computer clock is an electronic device with a counter register counting oscillations in a
+A computer clock is an electronic device with a counter register counting oscillations in a
 quartz crystal oscillator with a particular frequency~\cite{thesis-sync}.
 The structure of the clock hardware is shown in figure~\ref{fig:system-hardware-clock}.
 \begin{figure}
@@ -18,14 +18,14 @@ interrupt service routine increments a system clock value stored in the memory~\
 In a typical computer clock design, interrupts are produced at
 fixed tick intervals in the range 1-20~ms~\cite{nanokernel}.
 
-In Contiki, such a design is used by the clock library.
+In Contiki, such a design is used by the clock library, described in section~\ref{sec:contiki-timers}.
 There is a variable counting clock ticks, called {\it{scount}},
 and a variable counting seconds, called {\it{seconds}}.
 As described in section~\ref{sec:contiki-timers}, there are
 exactly {\it{CLOCK\_SECOND}} ticks in one second.
-When the the {\it{scount}} variable reaches this value,
+When the {\it{scount}} variable reaches this value,
 the {\it{seconds}} variable is incremented and the {\it{scount}} variable is reset.
-Both variables are used by the Contiki timers.
+Both variables are used by the Contiki timers discussed in section~\ref{sec:contiki-timers}.
 
 Since the value of the {\it{seconds}} variable is zero after the system booted,
 it actually expresses the system uptime.
@@ -37,10 +37,10 @@ Because this call simply rewrites the {\it{seconds}} variable, it breaks the sti
 and should by avoided by the NTP client.
 %The {\it{clock_set_seconds}} call is implemented only for three CPU architectures at the time of writing.
 
-The precision of one seconds is also not adequate.
+The precision of one second is also not adequate for the NTP client.
 Further precision can be acquired by reading the {\it{scount}} variable,
 as it provides resolution of $\frac{1}{CLOCK\_SECOND}$.
-Moreover, the hardware counter can be also read, as it includes the time passed since
+Moreover, the hardware counter can be also queried, as it includes the time passed since
 the last update of the {\it{scount}} variable.
 If stimers should not be broken by setting the {\it{seconds}} variable,
 and Contiki should be able to set and provide the current time in a higher precision,
@@ -49,6 +49,7 @@ a new call interface must be developed.
 Similarly, there is no call for adjusting the time in Contiki.
 Due to memory constraints, software structures controlling the time adjustments are too heavyweight
 for a usage in an embedded operating system.
-Since the code of an interrupt service routine can not be complex,
-sophisticated clock discipline algorithms should be avoided.
-Because of this, a call for adjusting the time should use the hardware clock abilities as much as possible.
+Due to lower CPU frequencies, the code of an interrupt service routine can not be complex
+and sophisticated clock discipline algorithms should be avoided.
+Because of this, a call for adjusting the time should use abilities
+provided by the hardware clock as much as possible.

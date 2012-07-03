@@ -6,7 +6,7 @@ Contiki provides basic clock interface particularly for use of timers
 with a simple goal - measuring time.
 This interface is common for all supported platforms,
 but the particular implementation is platform specific.
-The common interface definition is located in {\it{core/sys/clock.h}} file
+The definition of the common interface is located in {\it{core/sys/clock.h}} file
 and the specific implementations can be found in {\it{clock.c}} file
 in {\it{cpu/}} directory of Contiki source code.
 
@@ -27,7 +27,7 @@ enables use of Timer/Counter~2 as a Real Time Counter~\cite{avr-datasheet}.
 The Timer/Counter~2 prescale value 8 is used in Contiki on AVR Raven platform,
 so that oscillator frequency 32~768~Hz is effectively divided by 8.
 The counter register is hence incremented with frequency
-$f_{T2} = {\frac{f_{asy}}{prescaler}} = {\frac{32768}{8}} = 4096$ Hz.
+$f_{T2} = {\frac{f_{asy}}{prescaler}} = {\frac{32768}{8}} = 4096$~Hz.
 Figure~\ref{fig:avr-clock} shows the Timer/Counter~2 clock module.
 \begin{figure}
   \centering
@@ -54,7 +54,7 @@ and the compare register {\it{OCR2A}} defines maximum value for the counter regi
 Compare match between counter register and compare register
 sets the Output Compare Flag {\it{OCF2A}} and resets the timer to zero~\cite{avr-datasheet}.
 Figure~\ref{fig:design-timing-diagram} illustrates this behaviour
-- value {\it{TOP}} is equal to value in compare register and value {\it{BOTTOM}} is equal to zero.
+- value {\it{TOP}} is equal to the value in compare register and value {\it{BOTTOM}} is equal to zero.
 
 \begin{figure}
   \centering
@@ -77,9 +77,9 @@ shown in figure~\ref{fig:design-timing-diagram}.
 The value zero is also included in the counting - the 0th count of the timer also takes one tick.
 Therefore the value of compare register {\it{OCR2A}} must be ${\frac{f_{T2}}{CLOCK\_SECOND}} - 1$
 when using Timer/Counter~2 in CTC mode.
-Default value of {\it{CLOCK\_SECOND}} for AVR Raven in Contiki is 128,
-defined in {\it{platform/avr-raven/contiki-conf.h}} file,
-what implies default value of compare register ${\frac{4096}{128}} - 1 = 31$.
+The default value of {\it{CLOCK\_SECOND}} for AVR Raven in Contiki is 128,
+what implies the default value of compare register ${\frac{4096}{128}} - 1 = 31$.
+This value is defined in {\it{platform/avr-raven/contiki-conf.h}} file.
 
 The interrupt service routine can be further used for updating the value in {\it{OCR2A}} compare register.
 This can be used for adjusting the time, because decrementing the compare register

@@ -8,7 +8,7 @@ Though not mandatory, adjusting the time is an important function,
 if the time shall be always a monotonically increasing function.
 Apart from that, ability to communicate over UDP is also required.
 
-For developing and testing Contiki NTP client,
+For developing and testing Contiki NTP Client,
 the AVR Raven platform with 8-bit ATmega1284P CPU~\cite{avr-datasheet} will be used.
 This platform features IEEE~802.15.4 (Low-Rate Wireless Personal Area Networks) link layer support.
 Together with an adaptation layer called 6LoWPAN (IPv6 over Low power Wireless Personal Area Networks),
@@ -25,9 +25,10 @@ However, too many server associations complicate the client design.
 In fact, in the most common scenario, there can be only a single NTP master server
 for the whole network.
 A single server association requires just a simple calculation of the local clock offset
-$\theta$, whereas more servers associations require the intersection algorithm,
+$\theta$, whereas more server associations require the intersection algorithm,
 described in section~\ref{sec:ntp-algorithms}.
-Selection algorithms requiring advanced data structures should be therefore avoided.
+Implementation of such an algorithm, requiring advanced data structures, should be avoided
+in a memory constrained system.
 
 The NTP broadcast communication mode, on the other hand,
 requires no associations and no packet filling process on the client side.
@@ -53,7 +54,7 @@ Although the {\it{UIP\_CONF\_IPV6}} macro can be used to determine which IP vers
 support is being compiled, the NTP client application can be written IP-version agnostic.
 
 
-\section{Timestamp conversions}
+\section{Timestamp conversions}%CLIENT CODE
 As mentioned in section~\ref{sec:ntp-time}, the NTP timescale is not
 coincident with the POSIX timescale.
 If the new call interface should use the standard POSIX timescale,
