@@ -80,15 +80,6 @@ and their usage must be considered carefully or another suitable solution must b
 %Operating system maintains the current time and advances it at every interrupt.
 
 
-%The current system time can be queried via a system call
-%(traditionally called {\it{gettimeofday}}).
-%If it would simply return the value of the system time,
-%just the accuracy of the timer interrupt frequency could be provided.
-%However, this call may also query the hardware counter that is used for
-%interrupt generation and includes the time passed since
-%the last update of system time~\cite{thesis-beat}.
-
-
 
 %Such a design is also used by the timer library in Contiki~\cite{contiki-docs}.
 
