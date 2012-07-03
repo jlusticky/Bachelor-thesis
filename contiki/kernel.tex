@@ -31,13 +31,14 @@ and the process control block remembers the actual state of execution of this fu
 in the same way as the local continuation works by Protothreads.
 Processes are therefore running quasi-parallely in Contiki.
 
-Process control block is not declared or defined directly,
+The process control block is not declared or defined directly,
 but through the {\it{PROCESS()}} macro.
 This macro takes two parameters: the variable name of the process control block
 and a textual name of the process,
 which is used in debugging and when printing out lists of active processes to users~\cite{contiki-wiki-processes}.
+The process control block is shown in listing~\ref{lst:contiki-pcb}.
 \bigskip
-\begin{lstlisting}[caption=Process control block in Contiki OS]
+\begin{lstlisting}[caption={Process control block in Contiki OS},label={lst:contiki-pcb}]
 struct process {
 	struct process *next;
 	const char *name;
