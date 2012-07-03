@@ -20,13 +20,13 @@ AVR Raven is able to communicate over IPv6.
 
 
 \section{Communication}
-Without any NTP server is an NTP client useless.
+Without any NTP server is an NTP client useless. % There are clients, servers...
 However, too many server associations complicate the client design.
 In fact, in the most common scenario, there can be only a single NTP master server
 for the whole network.
 A single server association requires just a simple calculation of the local clock offset
 $\theta$, whereas more servers associations require the intersection algorithm,
-as described in section~\ref{sec:ntp-algorithms}.
+described in section~\ref{sec:ntp-algorithms}.
 Selection algorithms requiring advanced data structures should be therefore avoided.
 
 The NTP broadcast communication mode, on the other hand,
@@ -82,12 +82,6 @@ and their usage must be considered carefully or another suitable solution must b
 
 
 %Such a design is also used by the timer library in Contiki~\cite{contiki-docs}.
-
-
-
-%\section{Keeping and providing the time}\label{sec:system-keeping-and-providing}
-
-
 
 %Because of the speed requirement,
 %the system time uses a linear time scale like seconds
