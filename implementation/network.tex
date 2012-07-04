@@ -39,19 +39,3 @@ Dynamic increasing or decreasing the client's poll interval in response to
 Kiss-o'-Death packets, described in section~\ref{sec:ntp-network}, is not implemented.
 The configuration instead assumes, that an exhausted NTP server rather drops the incoming
 client's packet than sending the response with KoD code.
-
-Contiki NTP Client is primarily intended for use in local networks with a single master NTP server,
-although using any NTP server found in the Internet would work.
-Figure~\ref{fig:implementation-routing} shows the network topology used
-for tests and measurements of Contiki NTP Client.
-% How to set up the illustrated network is described in tutorial on CD.
-The Meinberg primary NTP server was synchronised with PPS %todo.
-Measurements made using this setup are discussed in chapter~\ref{chap:measurements}.
-
-\begin{figure}
-	\centering
-	\includegraphics[width=10cm,keepaspectratio]{fig/radvd-routing.png}
-	\caption{Contiki NTP Client communicating with remote NTP server}
-	\label{fig:implementation-routing}
-	%\bigskip
-\end{figure}
