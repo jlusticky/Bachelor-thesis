@@ -4,11 +4,11 @@
 \section{Time and timescales}\label{sec:ntp-time}
 For expressing the time NTP always uses the Coordinated Universal Time (UTC)~\cite{rfc5905}.
 UTC is maintained by the International Bureau of Weights and Measures in Paris, France.
-It is the time scale that forms the basis for coordinated dissemination
+It is the time scale that forms the basis for the coordinated dissemination
 of standard frequencies and time signals~\cite{bipm-utc}.
 The time specified by UTC is the same for all timezones.
 
-UTC timescale represents mean solar time as disseminated by national
+The UTC timescale represents mean solar time as disseminated by national
 standard laboratories~\cite{rfc5905}.
 Its calculation is practically the same as with Greenwich Mean Time (GMT),
 except the daylight savings are not accounted.
@@ -16,17 +16,17 @@ This timescale is adjusted by the insertion of leap seconds to ensure approximat
 agreement with the time derived from the rotation of the Earth,
 which periodically speeds up and slows down due to the action
 of tides and changes within the Earth's core~\cite{bipm-utc}.
-The goal of a leap second is to catch up UTC with these changes.
-The leap second is inserted or deleted on the advice of
+The goal of a leap second is to compensate UTC with these changes.
+A leap second is inserted or deleted on the advice of
 International Earth Rotation and Reference Systems Service~\cite{bipm-utc}.
 NTP is well designed for a leap second occurrence -
-there is Leap Indicator field
-in the structure of NTP packet and there are also fields intended for
-information about leap second in structures that NTP algorithm uses~\cite{rfc5905}.
+there is a Leap Indicator field
+in the structure of an NTP packet and there are also fields intended for
+the information about the leap second in structures that the NTP algorithm uses~\cite{rfc5905}.
 The formal definition of UTC does not permit double leap seconds~\cite{posix}.
 
-In computer, the system time is represented by a system clock maintained by
-hardware and operating system.
+In a computer, the system time is represented by a system clock maintained by
+hardware and the operating system.
 The goal of the NTP algorithms is to minimise
 both the time difference and frequency difference between UTC and the system clock.
 When these differences have been reduced below nominal
@@ -39,5 +39,5 @@ but not always coincident with it~\cite{ntp-leap}.
 Both timescales reckon in seconds since the prime epoch,
 but the origin of the NTP timescale, the NTP prime epoch, is 00:00:00 UTC on 1 January 1900,
 while the prime epoch of the POSIX timescale is 00:00:00 UTC on 1st January 1970~\cite{ntp-leap}.
-So upon the first tick of POSIX clock on 1st January 1970 the NTP clock read 2~208~988~800,
+So upon the first tick of the POSIX clock on 1st January 1970 the NTP clock read 2~208~988~800,
 representing the number of seconds since the NTP prime epoch.

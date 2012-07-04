@@ -3,14 +3,13 @@
 
 \chapter{Measurements}\label{chap:measurements}
 There are several factors that can be measured.
-Clock interrupt frequency measurements show the influence of clock adjustments
+The clock interrupt frequency measurements show the influence of clock adjustments
 on the number of clock ticks (interrupts) per second.
-Clock offset measurements show the time difference between the reference clock and
+The clock offset measurements show the time difference between the reference clock and
 the local clock.
-Clock phase measurements show the phase difference between the reference clock and
+The clock phase measurements show the phase difference between the reference clock and
 the local clock, that is, when each second is accounted.
-The Meinberg~M600 NTP stratum 1 server synchronised using the GPS
-was used as the reference clock for all of the presented measurements.
+
 \begin{figure}
 	\centering
 	\includegraphics[width=10cm,keepaspectratio]{fig/radvd-routing.png}
@@ -18,7 +17,9 @@ was used as the reference clock for all of the presented measurements.
 	\label{fig:measurements-routing}
 \end{figure}
 Figure~\ref{fig:measurements-routing} shows the network topology used for the measurements.
-The NTP client was running on the AVR Raven platform in a room with 23~\textcelsius.
+The Meinberg~M600 NTP stratum 1 server synchronised using the GPS
+was used as the reference clock for all of the presented measurements.
+The NTP client was running on the AVR Raven platform in a room at 23~\textcelsius.
 
 \section{Clock interrupt frequency}
 For measuring clock interrupt frequency the bit 7 of Port D
