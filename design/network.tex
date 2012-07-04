@@ -10,16 +10,8 @@ intended to be used between different processes
 AVR Raven features IEEE~802.15.4 (Low-Rate Wireless Personal Area Networks) link layer support.
 On top of this layer, an adaptation layer called 6LoWPAN (IPv6 over Low power Wireless Personal Area Networks)
 is used to communicate over IPv6 by Contiki.
-The 6LoWPAN layer is needed, because IPv6 requires support of much larger packet
-sizes than the largest IEEE 802.15.4 frame size
-(MTU on 802.15.4 links is 127 bytes,
-whereas IPv6 mandates links with MTU of at least 1280 bytes)~\cite{interconnecting}.
-In conjunction with RZ~USB Stick, the network connection with desktop PC can be established.
-This USB Stick can be loaded with a firmware automatically translating
-Ethernet packets to 802.15.4 packets and vice versa.
-The firmware is distributed together with Contiki and
-is to be found in {\it{/platform/avr-ravenusb/}} directory.
-Figure~\ref{fig:design-6lowpan} show a complete hierarchy of network layers
+
+Figure~\ref{fig:design-6lowpan} shows a complete hierarchy of network layers
 concerned with NTP communication.
 \begin{figure}
   \centering

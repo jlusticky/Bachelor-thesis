@@ -2,7 +2,7 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \chapter{Implementation}
-This chapter describes an implementation of the designed interface improvements
+This chapter describes an implementation of the designed interface extensions
 and an implementation of the designed NTP client application.
 How to get a working setup with Contiki on this platform is described in
 the document files on the CD enclosed to this thesis.
@@ -47,13 +47,13 @@ Next to this, the already presented variable {\it{seconds}} is of unsigned long 
 the value {\it{sec}} in the {\it{time\_spec}} structure %and {\it{boottime}}
 shall be therefore of the same data width.
 
-Usage of unsigned data type delays the wrap around problem to year 2106,
-but will disable use of negative values needed for adjusting local clock.
+If the unsigned data type was used, the wrap around problem would be delayed to year 2106,
+but the negative values needed for adjusting the local clock could not be used.
 Since the current NTP Era ends in 2036,
 the NTP client application code has to be changed in the future~\cite{ntp-y2k}.
 
 \section{Setting the time}
-Setting the current time is only possible within one second precision -
+Setting the time is only possible within one second precision -
 finer time setting must be made using the time adjustments.
 Implemented {\it{clock\_set\_time}} function computes when the system started
 in seconds since the Epoch and saves the result in the newly implemented {\it{boottime}} variable.
@@ -77,7 +77,7 @@ clock_set_time(unsigned long sec)
 
 %%%
 \section{Getting the time}
-Getting the correct current time is only possible if it was set using
+Getting the correct current real time is only possible if it was set using
 the {\it{clock\_set\_time}} function before.
 Newly implemented function {\it{clock\_get\_time}} is then able to tell the
 current time in seconds since the Epoch by simply adding {\it{boottime}},
@@ -94,8 +94,9 @@ and the {\it{CLOCK\_CTC\_MODE}} was defined as 1, since the hardware clock is us
 which adds one counter register increment as described in section~\ref{sec:analysis-interface}.
 
 The comparison avoids the need to disable clock interrupts for an atomic
-read of the multi-byte variable and it is a common solution of the race conditions
-on AVR platfroms in Contiki described in~\ref{sec:design-clock}.
+read of the multi-byte variable.
+This is the common solution of the race conditions
+on AVR platfroms in Contiki as described in~\ref{sec:design-clock}.
 \begin{lstlisting}
 void
 clock_get_time(struct time_spec *ts)

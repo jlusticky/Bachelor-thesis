@@ -82,7 +82,7 @@ time and frequency of the system clock~\cite{rfc5905},
 %if the adjustment is less than a designated threshold, and the settimeofday() function if above the
 %threshold.
 
-%A SNTP client using the on-wire protocol has a single server and no downstream clients. It can
+%An SNTP client using the on-wire protocol has a single server and no downstream clients. It can
 %operate with any subset of the NTP on-wire protocol, the simplest using only the transmit
 %timestamp of the server packet and ignoring all other fields. However, the additional complexity
 %to implement the full on-wire protocol is minimal and is encouraged.
@@ -98,15 +98,9 @@ time and frequency of the system clock~\cite{rfc5905},
 %Such filtering will prevent malicious traffic from reaching the NTP
 %clients.
 
-%--- uni-kl
-%A value of 100 ppm, for instance, means that the base frequency of the system clock is multiplied by 1.0001.
-
-%--- my
-%Misbehaving clock (too slow, or too fast) makes problem for NTP client. (timestamp calculation)
-%This is by NTP design (local clock offset calculation)...
 
 --
-Network Time Protocol has been operating over 30 years as of early 2012
+The Network Time Protocol has been operating over 30 years as of early 2012
 and remains the longest running, continuously operating application
 protocol in the Internet~\cite{ntp-y2k}.
 A thesis from 2009 states, that NTP is

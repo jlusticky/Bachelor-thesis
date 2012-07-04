@@ -10,7 +10,7 @@
 
 \lstset{
 basicstyle=\footnotesize,       % the size of the fonts that are used for the code
-%breaklines=true,        % sets automatic line breaking
+breaklines=true,        % sets automatic line breaking
 %breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
 %escapeinside={\%*}{*)},          % if you want to add a comment within your code
 escapechar=\&,
@@ -20,7 +20,7 @@ escapechar=\&,
 
 \title{How to setup Contiki on AVR Raven}
 \author{Josef Lusticky}
-\date{June 17, 2012}
+\date{July 4, 2012}
 
 \maketitle
 
@@ -123,14 +123,21 @@ NOTE: Some of the following commands must be issued by root or with sudo. We ass
 Assuming we have RZ USB stick and the working hello-world project,
 we can setup the webserver-ipv6-raven project from Contiki examples.
 
-As first, we need to flash the RZ USB stick to work as an Ethernet interface.
+AVR Raven features IEEE~802.15.4 (Low-Rate Wireless Personal Area Networks) link layer support,
+but to be able to communicate over IPv6, an adaptation layer called
+6LoWPAN (IPv6 over Low power Wireless Personal Area Networks) is needed.
+In conjunction with RZ~USB Stick, the network connection with a desktop PC can be established.
+This USB Stick can be loaded with a firmware automatically translating
+Ethernet packets to 802.15.4 packets and vice versa.
+The firmware is distributed together with Contiki and
+can found in {\it{/platform/avr-ravenusb/}} directory.
 
+So as first, we need to flash the RZ USB stick to work as an Ethernet interface.
 There is no widely available 802.15.4 and 6LoWPAN stack for PCs.
 As a temporary solution and to be able to interconnect IPv6 hosts such as AVR Raven to IP networks,
 Contiki implemented a translating function on the RZ USB Stick.
 The RZ USB stick translates 802.15.4 packets to Ethernet (The Ethernet interface is emulated on the USB port).
 Such a combination of this Contiki firmware and RZ USB Stick is called {\it{Jackdaw}}.
-
 
 Compile the project to allow RZ USB stick work as Ethernet interface:
 \begin{lstlisting}
@@ -254,6 +261,33 @@ use wget for http communication or any other web browser:
 	&\textdollar& wget --no-proxy http://[aaaa::0011:22ff:fe33:4455]
 \end{lstlisting}
 
+\section{Contiki NTP Client}
+Assuming we have a working network communication,
+we can now use Contiki NTP Client.
+First of all Contiki needs to be patched.
+Navigate to the Contiki directory and apply the patches:
+\begin{lstlisting}
+	&\textdollar& cd contiki/
+	&\textdollar& patch -p1 contiki2.5.patch %!TODO
+\end{lstlisting}
+
+After successfully patched, we can compile the NTP client.
+Before compiling, the MAC address, the remote NTP server address and the TAU exponent of the NTP poll
+interval can be set in the Makefile (poll interval is $2^{TAU}$).
+If we do not set the remote NTP server address, the NTP client assumes that only the NTP broadcast mode
+will be used.
+\begin{lstlisting}
+	&\textdollar& make TARGET=avr-raven savetarget
+	&\textdollar& make
+\end{lstlisting}
+If we have changed any of the parameters in the Makefile, make clean must be issued before compiling again.
+
+After compiled, the project can be flashed using AVR Dragon.
+\begin{lstlisting}
+	&\textdollar& make ntpd.u %! TODO
+\end{lstlisting}
+Now we should have the NTP client running on AVR Raven.
+
 \section{LCD Display}
 Presented LCD display on AVR Raven is controlled by ATmega3290P CPU.
 To control this display, we must program this connect AVR Dragon with the other JTAG interface
@@ -271,8 +305,9 @@ flash the target:
 \end{lstlisting}
 A serial communication interface can be further used for communication
 between ATmega3290P and ATmega1284P.
-In this case the Contiki project must be compiled with {\it{CFLAGS+=-DRAVEN\_LCD\_INTERFACE=1}} -
-see an example in platform/avr-raven/apps/raven-lcd-interface directory
+In this case, the Contiki project must be compiled with the following line in the Makefile:\\
+{\it{CFLAGS+=-DRAVEN\_LCD\_INTERFACE=1}} \\
+See an example in platform/avr-raven/apps/raven-lcd-interface directory
 and article {\it{Serial interface between Raven processors}} in Contiki documentation.
 
 
