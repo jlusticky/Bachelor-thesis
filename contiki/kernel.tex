@@ -53,13 +53,13 @@ that acts like a simple dispatcher calling these functions~\cite{contiki-docs}.
 Just like Protothreads, processes are also implemented using macros,
 making them fully standard C compatible.
 
-In Contiki, code runs in either of two execution contexts:
+In Contiki, the code runs in either of two execution contexts:
 cooperative, in which code never preempts other code, and preemptive,
 which preempts the execution of cooperative code and returns control
-when preemptive code is finished.
-Processes always run in cooperative mode,
-whereas interrupt service routines and real-time timers run in preemptive mode~\cite{contiki-wiki-processes}.
-Code running in both execution contexts illustrates figure~\ref{fig:contiki-execution-context}.
+when the preemptive code is finished.
+Processes always run in the cooperative mode,
+whereas interrupt service routines and real-time timers run in the preemptive mode~\cite{contiki-wiki-processes}.
+The code running in both execution contexts is illustrated in figure~\ref{fig:contiki-execution-context}.
 
 \begin{figure}
   \centering
