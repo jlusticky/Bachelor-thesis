@@ -2,7 +2,7 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{Time interface}\label{sec:analysis-time}
-For keeping, measuring and resolving the time computer needs a clock.
+For keeping, measuring and resolving the time, computer needs a clock.
 A computer clock is an electronic device with a counter register counting oscillations in a
 quartz crystal oscillator with a particular frequency~\cite{thesis-sync}.
 The structure of the clock hardware is shown in figure~\ref{fig:system-hardware-clock}.
@@ -13,19 +13,19 @@ The structure of the clock hardware is shown in figure~\ref{fig:system-hardware-
   \label{fig:system-hardware-clock}
 \end{figure}
 When the counter reaches a specific value, an interrupt is generated and the counter register is reset.
-Such interrupt is called {\it{clock tick}}, or {\it{timer tick}}, and at each clock tick,
-interrupt service routine increments a system clock value stored in the memory~\cite{thesis-sync}.
+The clock interrupt is called {\it{clock tick}}, or {\it{timer tick}}, and at each clock tick,
+the interrupt service routine increments a system clock value stored in the memory~\cite{thesis-sync}.
 In a typical computer clock design, interrupts are produced at
 fixed tick intervals in the range 1-20~ms~\cite{nanokernel}.
 
-In Contiki, such a design is used by the clock library, described in section~\ref{sec:contiki-timers}.
+In Contiki, such a design is on AVR CPUs used by the clock library described in section~\ref{sec:contiki-timers}.
 There is a variable counting clock ticks, called {\it{scount}},
 and a variable counting seconds, called {\it{seconds}}.
 As described in section~\ref{sec:contiki-timers}, there are
 exactly {\it{CLOCK\_SECOND}} ticks in one second.
 When the {\it{scount}} variable reaches this value,
 the {\it{seconds}} variable is incremented and the {\it{scount}} variable is reset.
-Both variables are used by the Contiki timers discussed in section~\ref{sec:contiki-timers}.
+The {\it{seconds}} variable is used by the Contiki stimers discussed in section~\ref{sec:contiki-timers}.
 
 Since the value of the {\it{seconds}} variable is zero after the system booted,
 it actually expresses the system uptime.
@@ -39,7 +39,7 @@ and should by avoided by the NTP client.
 
 The precision of one second is also not adequate for the NTP client.
 Further precision can be acquired by reading the {\it{scount}} variable,
-as it provides resolution of $\frac{1}{CLOCK\_SECOND}$.
+as it provides a resolution of $\frac{1}{CLOCK\_SECOND}$~seconds.
 Moreover, the hardware counter can be also queried, as it includes the time passed since
 the last update of the {\it{scount}} variable.
 If stimers should not be broken by setting the {\it{seconds}} variable,
@@ -48,8 +48,8 @@ a new call interface must be developed.
 
 Similarly, there is no call for adjusting the time in Contiki.
 Due to memory constraints, software structures controlling the time adjustments are too heavyweight
-for a usage in an embedded operating system.
+for use in an embedded operating system running on 8-bit CPUs.
 Due to lower CPU frequencies, the code of an interrupt service routine can not be complex
 and sophisticated clock discipline algorithms should be avoided.
-Because of this, a call for adjusting the time should use abilities
+A call for adjusting the time should therefore use abilities
 provided by the hardware clock as much as possible.
