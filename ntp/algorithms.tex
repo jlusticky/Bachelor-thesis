@@ -2,25 +2,25 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{Algorithms}\label{sec:ntp-algorithms}
-Because of network latency the received Transmit Timestamp will never be exactly
+Because of network latency, the received Transmit Timestamp will never be exactly
 corresponding to the current time.
 One of the main goals of NTP is to deal with the network latency~\cite{ntp-overview}.
 
 As described in section~\ref{sec:ntp-network},
-there are the following 64-bit long timestamps in NTP packet: Origin, Receive and Transmit Timestamp.
+there are the following 64-bit long timestamps in the NTP packet: Origin, Receive and Transmit Timestamp.
 Upon NTP packet arrival, the client determines another timestamp called
 Destination Timestamp~\cite{rfc5905}.
 This timestamp is represented as T4 in figure~\ref{fig:ntp-client-server}
-and is not part of NTP packet structure.
+and is not part of the NTP packet structure.
 
-Using these four timestamps, NTP client using unicast communication mode can compute
+Using these four timestamps, the NTP client using unicast communication mode can compute
 the local clock offset which is given by $\theta = \frac{1}{2}[(t_2 - t_1) + (t_3 - t_4)]$,
 where $t_1$ is the time of the request packet transmission (Origin Timestamp),
 $t_2$ is the time of the request packet reception (Receive Timestamp),
 $t_3$ is the time of the response packet transmission (Transmit Timestamp) and
 $t_4$ is the time of the response packet reception (Destination Timestamp)~\cite{ntp-algor,rfc5905}.
-The implicit assumption in the above is that one-way delay is
-statistically half of round-trip delay~\cite{rfc5905},
+The implicit assumption in the above is that the one-way delay is
+statistically half of the round-trip delay~\cite{rfc5905},
 which is given by $\delta = (t_4 - t_1) - (t_3 - t_2)$.
 
 In broadcast communication mode, Origin and Receive Timestamps are not accounted.
@@ -34,16 +34,16 @@ When computing the result from more servers, the intersection algorithm is used
 for selecting the possible most exact timestamp received from various servers~\cite{ntp-improved-algor,rfc5905}.
 Intersection algorithm is derived from Marzullo algorithm but the basic
 computation remains the same~\cite{ntp-history}.
-First of all a selection of bad and good servers must be made.
+First of all, a selection of bad and good servers must be made.
 Bad servers are called Falsetickers and good are called Truechimers~\cite{rfc5905}.
 The division to these sets is based on their response.
-As one can assume for a sensible result there must be more Truechimers than Falsetickers~\cite{rfc5905}.
+As one can assume, for a sensible result there must be more Truechimers than Falsetickers~\cite{rfc5905}.
 
-After selecting a set of reliable servers, NTP clock algorithms compute resulting exact timestamp.
-The resulting exact timestamp does not have to be the same
+After selecting a set of reliable servers, the NTP algorithm compute the resulting timestamp.
+The resulting timestamp does not have to be the same
 as one of those provided by the servers.
-NTP clock algorithms calculate using clock accuracy estimates
-determined from Root Dispersion, Root Delay and Precision fields of server's response.
+The NTP algorithm calculates using the clock accuracy estimates,
+determined by Root Dispersion, Root Delay and Precision fields of the server's response.
 These estimates are converted to intervals.
 Figure~\ref{fig:ntp-intersection} shows the computation for the following example:
 If we have the estimates $10 \pm 2$, $12 \pm 1$ and $11 \pm 1$

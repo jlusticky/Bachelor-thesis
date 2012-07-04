@@ -2,20 +2,20 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{Clock subsystem}\label{sec:analysis-clock}
-Contiki provides basic clock interface particularly for use of timers
+Contiki provides a basic clock interface particularly for use of timers
 with a simple goal - measuring time.
 This interface is common for all supported platforms,
 but the particular implementation is platform specific.
-The definition of the common interface is located in {\it{core/sys/clock.h}} file
-and the specific implementations can be found in {\it{clock.c}} file
-in {\it{cpu/}} directory of Contiki source code.
+The definition of the common interface is located in the {\it{core/sys/clock.h}} file
+and the specific implementations can be found in the {\it{clock.c}} file
+in {\it{cpu/}} directory of the Contiki source code.
 
-The clock interface provides {\it{clock\_init}} call for initialising the hardware clock,
-that is automatically called during boot sequence of Contiki.
+The clock interface provides the {\it{clock\_init}} call for initialising the hardware clock,
+that is automatically called during the boot sequence of Contiki.
 The {\it{clock\_init}} call sets up
-appropriate counter registers and interrupt service routines as described in section~\ref{sec:analysis-clock}.
-This call is implemented as a macro for AVR CPUs, which evaluates to a specific setup code for each
-different type of AVR CPU during compilation, and is defined in {\it{cpu/avr/dev/clock-avr.h}} file.
+appropriate registers and the interrupt service routine as described in section~\ref{sec:analysis-clock}.
+This call is implemented as the C macro for AVR CPUs, that evaluates to a specific setup code for each
+different AVR CPU during the compilation, and is defined in the {\it{cpu/avr/dev/clock-avr.h}} file.
 The setup code is not common to all AVR CPUs because of differences among them - e.g. there are usually
 only three Timer/Counter modules, but AVR ATmega1284P has four Timer/Counter modules~\cite{avr-datasheet}.
 
@@ -24,15 +24,15 @@ is used by default by Contiki clock interface.
 This oscillator is independent of any other clock,
 can be only used with Timer/Counter~2 and it
 enables use of Timer/Counter~2 as a Real Time Counter~\cite{avr-datasheet}.
-The Timer/Counter~2 prescale value 8 is used in Contiki on AVR Raven platform,
-so that oscillator frequency 32~768~Hz is effectively divided by 8.
-The counter register is hence incremented with frequency
+The Timer/Counter~2 prescale value 8 is used in Contiki on AVR Raven platform -
+the oscillator frequency of 32~768~Hz is effectively divided by 8.
+The counter register is hence incremented with the frequency of
 $f_{T2} = {\frac{f_{asy}}{prescaler}} = {\frac{32768}{8}} = 4096$~Hz.
 Figure~\ref{fig:avr-clock} shows the Timer/Counter~2 clock module.
 \begin{figure}
   \centering
   \includegraphics[width=9cm,keepaspectratio]{fig/avr-clock.png}
-  \caption{AVR Raven hardware clock}
+  \caption{Timer/Counter 2 hardware clock module on AVR Raven}
   \label{fig:avr-clock}
 \end{figure}
 
@@ -48,13 +48,13 @@ Figure~\ref{fig:avr-clock} shows the Timer/Counter~2 clock module.
 %is stopped during sleep. Note that even if the synchronous clock is running in Power-save, this
 %clock is only available for the Timer/Counter2.
 
-The Timer/Counter~2 module is used in Clear Timer on Compare Match (CTC) mode by Contiki.
+The Timer/Counter~2 module is used in the Clear Timer on Compare Match (CTC) mode by Contiki.
 In this mode, the counter register {\it{TCNT2}} is incrementing
-and the compare register {\it{OCR2A}} defines maximum value for the counter register.
-Compare match between counter register and compare register
-sets the Output Compare Flag {\it{OCF2A}} and resets the timer to zero~\cite{avr-datasheet}.
-Figure~\ref{fig:design-timing-diagram} illustrates this behaviour
-- value {\it{TOP}} is equal to the value in compare register and value {\it{BOTTOM}} is equal to zero.
+and the compare register {\it{OCR2A}} defines the maximum value of the counter register.
+Compare match between the counter register and the compare register
+sets the Output Compare Flag {\it{OCF2A}} and resets the counter register to zero~\cite{avr-datasheet}.
+This behaviour is illustrated in figure~\ref{fig:design-timing-diagram}
+- the {\it{TOP}} value is equal to the value in the compare register and the {\it{BOTTOM}} value is equal to zero.
 
 \begin{figure}
   \centering
@@ -64,11 +64,11 @@ Figure~\ref{fig:design-timing-diagram} illustrates this behaviour
 \end{figure}
 
 Additionally, when compare match occurs,
-interrupt is raised and interrupt service routine {\it{AVR\_OUTPUT\_COMPARE\_INT}},
+an interrupt is raised and the interrupt service routine {\it{AVR\_OUTPUT\_COMPARE\_INT}},
 defined in {\it{cpu/avr/dev/clock.c}} file, is executed.
-In this case is flag indicating occurred match {\it{OCF2A}}
+The flag indicating occurred match {\it{OCF2A}} is
 cleared automatically by hardware when executing
-the interrupt service routine~\cite{avr-datasheet}.
+the interrupt service routine in this case~\cite{avr-datasheet}.
 
 To obtain {\it{CLOCK\_SECOND}} interrupts per second, there must be
 ${\frac{f_{T2}}{CLOCK\_SECOND}}$ hardware clock ticks between two successive interrupts.
@@ -78,8 +78,9 @@ The value zero is also included in the counting - the 0th count of the timer als
 Therefore the value of compare register {\it{OCR2A}} must be ${\frac{f_{T2}}{CLOCK\_SECOND}} - 1$
 when using Timer/Counter~2 in CTC mode.
 The default value of {\it{CLOCK\_SECOND}} for AVR Raven in Contiki is 128,
-what implies the default value of compare register ${\frac{4096}{128}} - 1 = 31$.
-This value is defined in {\it{platform/avr-raven/contiki-conf.h}} file.
+which implies the default value of the compare register ${\frac{4096}{128}} - 1 = 31$.
+The {\it{CLOCK\_SECOND}} value is defined in {\it{platform/avr-raven/contiki-conf.h}} file
+and the default value of the compare register is computed during the compilation.
 
 The interrupt service routine can be further used for updating the value in {\it{OCR2A}} compare register.
 This can be used for adjusting the time, because decrementing the compare register

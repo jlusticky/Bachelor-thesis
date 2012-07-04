@@ -1,7 +1,7 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky
 
-\section{Clock interface}
+\section{Clock interface}\label{sec:design-clock}
 Previous section described how the call for getting the time acquires
 the maximum precision the clock model allows.
 Two read operations are needed in such a design - read {\it{scount}} and read {\it{TCNT2}}.
@@ -12,7 +12,7 @@ the result may be unpredictable if read while the timer is running.
 Although the read could be wrapped with an interrupt disable,
 the common solution on AVR platform in Contiki is to perform more read operations,
 compare the results and perform read operations again if the results are not consistent.
-Figure~\ref{fig:design-read} illustrates such a solution.
+Figure~\ref{fig:design-read} shows such a solution.
 
 \begin{figure}
   \centering

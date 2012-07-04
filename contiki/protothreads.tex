@@ -2,18 +2,18 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{Protothreads}\label{sec:contiki-protothreads}
-Protothreads provide a way to run C functions quasi-parallely,
-that is, a C functions work in a way similar to thread~\cite{paper-protothreads}.
+Protothreads provide a way for C functions to run quasi-parallel,
+that is, a C functions work in a way similar to a thread~\cite{paper-protothreads}.
 In Contiki, Protothreads allow a process to wait for incoming events and
 while waiting for an event to occur, another function could be run.
-The core of this solution is C {\it switch} statement used in conjunction with a variable (called local continuation)
-containing position, where the function was interrupted~\cite{paper-protothreads}.
+The core of this solution is the C {\it switch} statement used in conjunction with a variable (called local continuation)
+containing the position, where the function was interrupted~\cite{paper-protothreads}.
 Next time the function continues from this point.
 
 The advantage of Protothreads over ordinary threads is that a Protothread does not require a separate stack.
 In memory constrained systems, the overhead of allocating multiple stacks can consume large amounts of
 available memory~\cite{paper-protothreads}.
-In contrast each Protothread only requires few bytes for storing the state of execution.
+In contrast, each Protothread only requires a few bytes for storing the state of execution.
 
 A Protothread is driven by repeated calls to the function in which the Protothread is running.
 Each time the function is called, the Protothread will run until it blocks or exits.
@@ -26,13 +26,14 @@ However the experience with rewriting event-driven state machines to Protothread
 the importance of an unconditional blocking wait {\it{PT\_YIELD()}}~\cite{thesis-programming},
 which temporarily blocks the Protothread until the next time the Protothread is invoked.
 After invocation the Protothread continues executing the code following the {\it{PT\_YIELD()}} statement.
-To understand implementation of Protothreads and how do they actually work,
-please refer to appendix~\ref{app:protothreads}, where an example of usage is shown.
+To understand implementation of Protothreads and how they actually work,
+please refer to appendix~\ref{app:protothreads}, where an example of use is shown.
 
-Since Protothreads are implemented using standard C, a library providing Protothreads can be used everywhere C toolchain is available.
+Since Protothreads are implemented using standard C, a library providing Protothreads can be used everywhere,
+where the C toolchain is available.
 But there are some cons to consider. Because Protothreads are stackless, a Protothread can only run within a single C function.
 There is also no way of storing automatic local variables~\cite{contiki-docs}.
-And since Protothreads are implemented using C {\it switch} statement, and these can
+And since Protothreads are implemented using the C {\it switch} statement, and these can
 not be nested, the code that uses Protothreads cannot use {\it switch} statements itself.
 A workaround for storing local variables is to prepend them with the {\it static} keyword, which makes them being put into data segment
-by compiler and thus remembering the value between the function calls~\cite{paper-protothreads}.
+by the compiler and thus remembering the value between the function calls~\cite{paper-protothreads}.

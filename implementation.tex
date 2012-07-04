@@ -2,12 +2,16 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \chapter{Implementation}
-TODO: write introduction..
-%... This can be effectively solved by NTP Poll Interval.
+This chapter describes an implementation of the designed interface improvements
+and an implementation of the designed NTP client application.
+How to get a working setup with Contiki on this platform is described in
+the document files on the CD enclosed to this thesis.
+The CD content hierarchy is listed in appendix~\ref{app:cd-content}.
 
-\section{Time specification structure}
 %Since there is no way of setting, getting and adjusting the time in Contiki OS,
 %the interface for setting, getting and adjusting time was developed in this thesis.
+
+\section{Time specification structure}
 New structure for expressing time values was implemented.
 This structure is similar to POSIX {\it{timespec}} structure,
 as described in section~\ref{sec:analysis-interface}.
@@ -24,8 +28,7 @@ The value 0 seconds and 0 nanoseconds is equal to Unix prime epoch (1st January 
 In case of seconds part, the 32-bit signed long value was chosen because
 it can conveniently
 represent real-time values as well as local clock adjustment values, which may also be negative.
-%! The existing value {\it{seconds}}, representing uptime in Contiki, is of the unsigned long type.
-Such time representation will wrap around in year 2038 and is facing
+Such a time representation will wrap around in year 2038 and is facing
 what is commonly known as the year 2038 problem~\cite{posix}.
 
 In case of nanoseconds part, the 32-bit signed long value was chosen because
@@ -40,20 +43,20 @@ it is up to compiler what data width it chooses for each data type.
 But as ISO C99 standard states, the maximum value for an object of type signed long
 shall be greater or equal $2^{31}$-1 (2~147~483~647)~\cite{c99}.
 This in fact results in at least 32-bit variable unless the compilation setting is changed.
-Next to this, as the already presented variable {\it{seconds}} is of unsigned long type,
-the value {\it{sec}} in {\it{time\_spec}} structure %and {\it{boottime}}
-shall be of the same data width as arithmetic operations are made on them.
+Next to this, the already presented variable {\it{seconds}} is of unsigned long type,
+the value {\it{sec}} in the {\it{time\_spec}} structure %and {\it{boottime}}
+shall be therefore of the same data width.
 
 Usage of unsigned data type delays the wrap around problem to year 2106,
-however will disable use of negative values needed for adjusting local clock.
-%As current NTP Era ends 2036 code has to be changed anyway...~\cite{ntp-y2k}.
-
+but will disable use of negative values needed for adjusting local clock.
+Since the current NTP Era ends in 2036,
+the NTP client application code has to be changed in the future~\cite{ntp-y2k}.
 
 \section{Setting the time}
 Setting the current time is only possible within one second precision -
-finer time setting must be made through time adjustments described further.
+finer time setting must be made using the time adjustments.
 Implemented {\it{clock\_set\_time}} function computes when the system started
-in seconds since the Epoch and saves the result in newly implemented {\it{boottime}} variable.
+in seconds since the Epoch and saves the result in the newly implemented {\it{boottime}} variable.
 
 Not only no variables incremented every interrupt nor any internal clock registers
 are affected, but also already presented variable {\it{seconds}} is not modified.
@@ -61,8 +64,7 @@ Modifying this variable would lead to misbehaviour of stimer library
 described in section~\ref{sec:contiki-timers}.
 
 Thanks to this newly implemented {\it{clock\_set\_time}} function and {\it{boottime}} variable,
-running Contiki system is able to tell uptime, current time and
-time when was the system booted.
+running Contiki system is able to tell uptime, current time and time when was the system booted.
 \begin{lstlisting}
 volatile unsigned long boottime;
 
@@ -80,47 +82,66 @@ the {\it{clock\_set\_time}} function before.
 Newly implemented function {\it{clock\_get\_time}} is then able to tell the
 current time in seconds since the Epoch by simply adding {\it{boottime}},
 and {\it{seconds}}.
-%! TODO
-Nanoseconds part is filled using {\it{scount}} variable counting number of
-interrupts within a second.
-Since this variable is incremented every interrupt and there are {\it{CLOCK\_SECOND}} interrupts
-per second, it is possible to get resolution of $\frac{1~000~000~000}{CLOCK\_SECOND}$ ns.
-The same resolution have Contiki timers, described in section~\ref{sec:contiki-timers}.
+
+Nanoseconds part is filled in by reading the {\it{scount}} variable and the counter register {\it{OCR2A}}.
+Since the counter register can be of a different name on another AVR CPU
+and the clock interface is common for all AVR CPUs,
+a new general name {\it{CLOCK\_COMPARE\_REGISTER}} was defined in the {\it{clock\_init}} setup code
+for the compare register {\it{OCR2A}}.
+Similarly, the {\it{CLOCK\_COMPARE\_REGISTER}} was defined for the counter register {\it{TCNT2}},
+the default value of the clock compare register was defined as {\it{CLOCK\_COMPARE\_DEFAULT\_VALUE}}
+and the {\it{CLOCK\_CTC\_MODE}} was defined as 1, since the hardware clock is used in CTC mode,
+which adds one counter register increment as described in section~\ref{sec:analysis-interface}.
+
+The comparison avoids the need to disable clock interrupts for an atomic
+read of the multi-byte variable and it is a common solution of the race conditions
+on AVR platfroms in Contiki described in~\ref{sec:design-clock}.
 \begin{lstlisting}
 void
 clock_get_time(struct time_spec *ts)
 {
-  ts->sec = boottime + seconds;
-  ts->nsec = (1000000000 / CLOCK_SECOND) * scount;
+  uint8_t counter, tmp_scount;
+  do {
+    ts->sec = boottime + seconds;
+    do {
+      counter = CLOCK_COUNTER_REGISTER;
+      tmp_scount = scount;
+    } while (counter != CLOCK_COUNTER_REGISTER);
+
+    ts->nsec = tmp_scount * (1000000000 / CLOCK_SECOND) +
+               counter * (1000000000 / (CLOCK_SECOND * (CLOCK_COMPARE_DEFAULT_VALUE + CLOCK_CTC_MODE)));
+  } while(ts->sec != (boottime + seconds));
 }
 \end{lstlisting}
 Because {\it{1000000000}} and {\it{CLOCK\_SECOND}} are both constants, the compiler is able to
 calculate the result of division during compile time.
 Furthermore as both numbers are integers, the result is integer as well~\cite{c99}.
-The most of CPU time is therefore spent on multiplication.
+The most of the CPU time is therefore spent on multiplication where the variables
+{\it{counter}} and {\it{tmp\_scount}} are involved.
 E.g. if the code is compiled using GCC version 4.3.5,
 multiplication of two 32-bit variables takes 33 instructions including {\it{call}} and {\it{ret}}
 instructions for entering and returning from the {\it{\_\_mulsi3}} routine, which computes
-the result of multiplication.
-%avr-objdump
+the result of a multiplication.
 According to AVR Instruction Set manual~\cite{avr-instruction-set},
-this results in 48 clock cycles overhead,
-which takes 3~000 nanoseconds assuming 16MHz CPU clock.
+such a multiplication results in 48 clock cycles overhead,
+which takes 6~000 nanoseconds assuming 8~MHz CPU clock.
 The timestamp provided is therefore not exact.
-However, since this consumed time strongly depends on architecture and compiler specifications,
+However, since the consumed time strongly depends on architecture and compiler specifications,
 no correction was implemented to remove this inaccuracy.
 The application must be instead aware that the timestamp is not exactly accurate.
 
-TODO: Greater precision is further implemented by reading counter register.
-
-
 \section{Adjusting the time}
-TODO: Adjust time
-POSIX:
+A new call computing the amount of needed adjustments was implemented.
+The {\it{clock\_adjust\_time}}
+%Adjusting time
+%1/128/32 = 0.000244141
+%0.000244141x32x127+0.000244141x31 == smallest possible adjustment == 244us
+
 Time values that are between two consecutive non-negative integer multiples
 of the resolution of the specified clock are truncated down to the smaller multiple of the resolution.
-
 
 \input{implementation/client.tex}
 
 \input{implementation/network.tex}
+
+\input{implementation/metrics.tex}

@@ -40,13 +40,13 @@ just the precision of the timer interrupt frequency would be provided.
 However, this call also queries the hardware counter that is used for
 interrupt generation and includes the time passed since
 the last update of the {\it{scount}} variable~\cite{thesis-beat}.
-This way, a resolution of $\frac{\frac{10^9}{CLOCK\_SECOND}}{counts}$ can be acquired,
+This way, a resolution of $\frac{1}{CLOCK\_SECOND~\times~counts}$~seconds can be acquired,
 where $counts$ is the number of counter register increments between two successive interrupts,
 which is 32 by default on AVR Raven, as stated in section~\ref{sec:analysis-clock}.
 
 Since setting the current time is possible only within one second precision,
 finer time setting must be made using time adjustments.
-Section~\ref{sec:sec:analysis-time} explained, that adjusting the time
+Section~\ref{sec:analysis-time} explained, that adjusting the time
 should use the hardware clock as much as possible.
 Adjusting the time changes the value in {\it{OCR2A}} compare register
 to delay or shorten the clock tick interval,

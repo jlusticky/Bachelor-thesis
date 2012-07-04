@@ -2,7 +2,7 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{Kernel and processes}\label{sec:contiki-kernel}
-The kernel in Contiki is event-driven providing cooperative multitasking
+The kernel in Contiki is event-driven and provides a cooperative multitasking
 environment, but the system supports preemptive
 multithreading that can be applied on a per-process basis~\cite{video}.
 The preemption is not implemented in the kernel, but
@@ -11,7 +11,7 @@ explicitly require multithreading~\cite{paper-contiki}.
 The kernel itself contains no platform specific code, it implements only CPU multiplexing and
 lets device drivers and applications communicate directly with hardware~\cite{video}.
 
-From high level of abstraction,
+From high levels of abstraction,
 applications in Contiki OS are implemented and run as processes.
 Protothreads, the lightweight threads described in section~\ref{sec:contiki-protothreads},
 are used in Contiki to implement processes.
@@ -21,15 +21,15 @@ Every Contiki process consists of a process control block and a process thread~\
 The process control block contains run-time information about the process and
 the process thread contains the code of the process.
 Among other things, the process control block contains
-textual name of the process, a pointer to the process thread and state of the process.
+the textual name of the process, a pointer to the process thread and state of the process.
 The process thread is implemented as a single Protothread,
 that is invoked from the process scheduler in the Contiki kernel~\cite{contiki-wiki-processes}.
 
-From low level of abstraction,
+From low levels of abstraction,
 every application is implemented as a simple C function
 and the process control block remembers the actual state of execution of this function
 in the same way as the local continuation works by Protothreads.
-Processes are therefore running quasi-parallely in Contiki.
+Processes are therefore running quasi-parallel in Contiki.
 
 The process control block is not declared or defined directly,
 but through the {\it{PROCESS()}} macro.
@@ -53,13 +53,13 @@ that acts like a simple dispatcher calling these functions~\cite{contiki-docs}.
 Just like Protothreads, processes are also implemented using macros,
 making them fully standard C compatible.
 
-In Contiki, code runs in either of two execution contexts:
+In Contiki, the code runs in either of two execution contexts:
 cooperative, in which code never preempts other code, and preemptive,
 which preempts the execution of cooperative code and returns control
-when preemptive code is finished.
-Processes always run in cooperative mode,
-whereas interrupt service routines and real-time timers run in preemptive mode~\cite{contiki-wiki-processes}.
-Code running in both execution contexts illustrates figure~\ref{fig:contiki-execution-context}.
+when the preemptive code is finished.
+Processes always run in the cooperative mode,
+whereas interrupt service routines and real-time timers run in the preemptive mode~\cite{contiki-wiki-processes}.
+The code running in both execution contexts is illustrated in figure~\ref{fig:contiki-execution-context}.
 
 \begin{figure}
   \centering
@@ -81,7 +81,7 @@ until the receiving process has finished processing the event~\cite{contiki-wiki
 
 Asynchronous events are delivered to the receiving process
 some time after they have been posted~\cite{contiki-wiki-processes}.
-Before delivery, the asynchronous events are held on event queue inside Contiki kernel.
+Before delivery, the asynchronous events are held on an event queue inside the Contiki kernel.
 The kernel loops through this event queue and delivers
 the event to the process by invoking the process.
 The receiver of an asynchronous event can be either a specific process

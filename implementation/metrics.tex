@@ -1,0 +1,43 @@
+%=========================================================================
+% (c) 2011, 2012 Josef Lusticky
+
+\section{Code metrics}
+The developed NTP client and patches for Contiki version 2.5
+as well as Git version are provided on the CD attached to this thesis.
+The NTP client application is common for both Contiki versions.
+The code uses the Contiki indentation style.
+
+The patch improving the Contiki operating system version 2.5
+inserts 72 new lines of code and modifies 1 line of code.
+The modified line is a backport from the actual Contiki Git version to prevent
+missing the compare match between the {\it{scount}} variable and {\it{CLOCK\_SECOND}} value.
+
+The patch improving the actual Contiki operating system Git version at the time of writing,
+inserts 78 new lines of code and modifies 1 line of code.
+The modified line fixes a reported bug, which has not been fixed at the time of writing.
+This bug causes a wrong decision of the C preprocessor whether the {\it{CLOCK\_SECOND}}
+value is a power of two, which in turn may cause a division operation in
+the clock interrupt service routine.
+
+The NTP client application has 2 code files and 1 header file.
+The code file containing the definition of the NTP process
+has 198 lines of code.
+The second code file contains only various conversions from NTP fraction part
+to nanoseconds.
+The user may choose using the C define macro which conversion will be used
+by the NTP client application.
+This file has 52 lines of code.
+
+Various code metrics of the NTP client application code
+shows listing~\ref{lst:implementation-metrics}.
+These metrics were acquired using the {\it{cloc}} program.
+\begin{lstlisting}[caption={NTP client application code metrics},label={lst:implementation-metrics}]
+-----------------------------------------------------------------------------
+Language                   files          blank        comment           code
+-----------------------------------------------------------------------------
+C                              2             52            122            198
+C/C++ Header                   1             19             54             52
+-----------------------------------------------------------------------------
+SUM:                           3             71            176            250
+-----------------------------------------------------------------------------
+\end{lstlisting}

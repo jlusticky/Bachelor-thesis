@@ -15,14 +15,14 @@ The timer libraries are implemented with the functionality of the clock library 
 
 The timer and stimer libraries provide the simplest form of timers and are used to check if a time period has passed.
 The difference between these two is the resolution of time -
-timers use system clock ticks, whose value is incremented when an interrupt from hardware clock occurs,
+timers use system clock ticks, whose value is incremented when an interrupt from the hardware clock occurs,
 while stimers use seconds to offer much longer time periods~\cite{contiki-wiki-timers}.
 The value expressing seconds is also incremented in the interrupt service routine (ISR),
 but only when enough clock ticks since last increment occurred.
 The number of clock ticks within one second is expressed by the
-{\it{CLOCK\_SECOND}} macro provided by clock library.
+{\it{CLOCK\_SECOND}} macro provided by the clock library.
 That means there are {\it{CLOCK\_SECOND}} interrupts from the hardware clock per second.
-Usage of the timer library and {\it{CLOCK\_SECOND}} macro is shown in appendix~\ref{app:protothreads}.
+The usage of the timer library and {\it{CLOCK\_SECOND}} macro is shown in appendix~\ref{app:protothreads}.
 
 The simplest timer and stimer libraries are not able to post an event when a timer expires.
 Event timers should be used for this purpose.
@@ -35,7 +35,7 @@ Callback timers (ctimer library) provide a timer mechanism that calls a specifie
 C function when a ctimer expires~\cite{contiki-docs}.
 %Like event timers, they are used to wait for some time while the rest
 %of the system can work or enter low power mode.
-Thus they are especially useful in any code that does not have an
+Thus, they are especially useful in any code that does not have an
 explicit Contiki process such as protocol implementations~\cite{contiki-wiki-timers}.
 
 The Real-time timers (rtimer library) handle the scheduling and execution of

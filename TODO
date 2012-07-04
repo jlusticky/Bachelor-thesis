@@ -38,19 +38,6 @@ measurements.tex - DONE + review
 
 Tasks
 =====
-citation for embedded systems - one binary
-
-make new dir layout + more processes
-----
-measurement - graf + determine adjustments
 ----
 DTS - Digital Time Service - rfc1305
 adjust treshold - max we can adjust 32767*(1/128/32) with int16_t
----
-equations, commas, grammar
----
-implemente even from other process and try to display time on LCD
----
-Or, more correctly, because the timer clock runs asynchronously from the
-CPU clock and the result may be unpredictable if read while the timer is
-running.
