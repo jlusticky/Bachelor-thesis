@@ -11,7 +11,8 @@ Clock phase measurements show the phase difference between the reference clock a
 the local clock, that is, when each second is accounted.
 The Meinberg~M600 NTP stratum 1 server was used as the reference clock
 for all of the presented measurements.
-
+The NTP client was running on the AVR Raven platform in a room with 23~\textcelsius
+.
 
 \section{Clock interrupt frequency}
 For measuring clock interrupt frequency the bit 7 of Port D
@@ -45,8 +46,13 @@ This is mostly due to influence of the clock source
 (32~768~Hz quartz crystal oscillator) by a room temperature,
 but it could also be air pressure or magnetic fields, etc.
 
-
 \section{Clock offset}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=11cm,keepaspectratio]{fig/no-ntp.png}
+  \caption{Local clock offset without NTP client}
+  \label{fig:measurements-no-ntp}
+\end{figure}
 Figure~\ref{fig:measurements-no-ntp} shows the local clock offset
 in case no NTP client runs on the device.
 The time is set with the initial offset of about 45 milliseconds.
@@ -57,12 +63,6 @@ Not only that the clock is running faster with approximately 100~PPM
 (9 seconds a day) in this case,
 but also the frequency jitter can be observed.
 The offset increase is therefore not exactly linear.
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=11cm,keepaspectratio]{fig/no-ntp.png}
-  \caption{Local clock offset without NTP client}
-  \label{fig:measurements-no-ntp}
-\end{figure}
 
 Figure~\ref{fig:measurements-ntp-serial} shows the local clock offset
 acquired from the serial output when Contiki NTP Client runs on the device.
@@ -82,7 +82,6 @@ This is however not the case, because of oscillator frequency error
 shown in figure~\ref{fig:measurements-no-ntp}.
 More figures showing the local clock offset measurement
 can be found in appendix~\ref{app:offset}.
-
 
 \section{Clock phase}
 The GPS based clock Meinberg~GPS~167 and digital oscilloscope UNI-T~2025CEL
