@@ -20,7 +20,7 @@ escapechar=\&,
 
 \title{How to setup Contiki on AVR Raven}
 \author{Josef Lusticky}
-\date{July 4, 2012}
+\date{July 5, 2012}
 
 \maketitle
 
@@ -312,10 +312,12 @@ flash the target:
 \end{lstlisting}
 A serial communication interface can be further used for communication
 between ATmega3290P and ATmega1284P.
-In this case, the Contiki project must be compiled with the following line in the Makefile:\\
-{\it{CFLAGS+=-DRAVEN\_LCD\_INTERFACE=1}} \\
-See an example in platform/avr-raven/apps/raven-lcd-interface directory
-and article {\it{Serial interface between Raven processors}} in Contiki documentation.
+In this case, the Contiki project must include the raven-lcd-interface application from
+{\it{/contiki/platform/avr-raven/apps/raven-lcd-interface/}}.
+This can be achieved by adding {\it{APPS += raven-lcd-interface}} to the project Makefile.
+The application that wants to write to the LCD must then include the "raven-lcd.h" header file.
+See an example in the {\it{contiki/platform/avr-raven/apps/raven-lcd-interface}} directory
+and the article {\it{Serial interface between Raven processors}} in Contiki documentation.
 
 
 \section{Further Reading}
