@@ -14,7 +14,7 @@ missing the compare match between the {\it{scount}} variable and {\it{CLOCK\_SEC
 
 The patch improving the actual Contiki operating system Git version at the time of writing,
 inserts 78 new lines of code and modifies 1 line of code.
-The modified line fixes a reported bug, which has not been fixed at the time of writing.
+The modified line fixes a reported bug, which was not fixed at the time of writing.
 This bug causes a wrong decision of the C preprocessor whether the {\it{CLOCK\_SECOND}}
 value is a power of two, which in turn may cause a division operation in
 the clock interrupt service routine.
