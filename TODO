@@ -19,11 +19,13 @@ analysis.tex - DONE
 analysis/hwclock.tex - DONE
 analysis/clock-interface.tex - DONE
 analysis/time.tex - DONE
-analysis/client.tex
+analysis/client.tex - DONE
 
 
-design.tex - work in progress
+design.tex - DONE
 design/interface.tex - DONE
+design/clock.tex - WIP
+
 
 design/network.tex - DONE + review
 design/interface.tex - wip - needs work, move ISR from design/clock.tex
@@ -43,3 +45,5 @@ Tasks
 ----
 DTS - Digital Time Service - rfc1305
 adjust treshold - max we can adjust 32767*(1/128/32) with int16_t
+---
+represent vs. express

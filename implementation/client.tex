@@ -19,18 +19,6 @@ Accessing each field of the {\it{status}} byte is done using bitmasks.
 Unlike using the bit field extension,
 such a design is compliant with the standard C language.
 
-
-
-%% SENDING NTP TIMESTAMP
-The transmit timestamp sent by the client can be set to any arbitrary value.
-This is in compliance with the NTPv4 specification~\cite{rfc5905}.
-It is however important for the client to store the sent timestamp,
-since it is later used by the client to check the server's response.
-Contiki NTP Client fills and checks only the seconds part of NTP timestamp,
-because the timestamp should be as accurate as possible and the
-conversion from nanoseconds to NTP fraction part would increase the interval
-between determination of the timestamp and dispatch of the packet.
-
 After the filled NTP packet is sent, the client schedules
 sending of a next NTP packet in $2^{\tau}$ seconds
 using the event timer library.
@@ -56,8 +44,8 @@ A determination of the NTP communication mode follows.
 In unicast mode, the seconds field of Originate timestamp
 is compared with the stored sent timestamp.
 The received packet is considered bogus in case of mismatch and further processing is stopped.
-Otherwise are the NTP timestamps converted to local timestamp format and
-the local clock offset computed as described in section~\ref{sec:ntp-algorithms}.
+Otherwise, the NTP timestamps are converted to the local timestamp format and
+the local clock offset is computed as described in section~\ref{sec:ntp-algorithms}.
 After the local clock offset is computed,
 the stored transmitted timestamp is immediately set to zero
 to protect against replay of the last transmitted packet.

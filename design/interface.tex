@@ -1,48 +1,49 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky
 
-\section{Contiki time interface}\label{sec:analysis-interface}
+\section{Time interface extensions}\label{sec:analysis-interface}
 Section~\ref{sec:analysis-time} described, that there is no proper
 way of setting, getting and adjusting the time for NTP client in Contiki OS.
 A new interface for setting, getting and eventually adjusting the time
 must be therefore developed.
 
-Setting the time should not cause a misbehaviour of the Contiki timers,
-mentioned in section~\ref{sec:analysis-time}.
+Setting the time should not cause a misbehaviour of the Contiki timers
+described in section~\ref{sec:analysis-time}.
 A modification of the {\it{scount}} and the {\it{seconds}} variable must be therefore avoided.
-This can be achieved using an additional variable containing the system boot time
-and modifying only that variable.
+This can be achieved using an additional variable, containing the system boot time,
+and modifying only that variable by the call for setting the time.
 This way, the {\it{seconds}} variable will further express the system uptime
 and the current real time can be obtained by $boottime + seconds$.
-Since the {\it{scount}} also can not be changed, setting the time is possible
+Since the {\it{scount}} also can not be changed, setting the time is only possible
 within a precision of one second.
 %Finer time setting must be made using the time adjustments.
 %REFERENCE
 
-By contrast, a call for getting the current time must be able to provide higher precision.
+By contrast, a call for getting the current time must be able to provide a higher precision.
 Therefore, a new time specification structure must be designed as well.
 To conform to the POSIX standard~\cite{posix}, this structure should consist of two parts -
 one expressing seconds and the other expressing nanoseconds.
-The first part should express the number of elapsed seconds since the POSIX epoch.
+The first part represents the number of elapsed seconds since the POSIX epoch.
 The nanosecond precision was chosen as modern systems also aim towards this
 precision~\cite{posix,ntp-precision} and
 the microsecond precision would also require at least 32-bit data type -
 one second has 1~000~000 microseconds, which is more than the maximum expressible value of
 an unsigned 16-bit data type $2^{16}$-1 (65~535).
-Getting the time call then fills this time specification structure.
 
-The part expressing the seconds is simply filled in with the value of $boottime + seconds$
-by the call for getting the time.
-The part expressing the nanoseconds should be filled in with the maximum precision
+The call for getting the time fills the time specification structure.
+The part expressing the seconds is simply filled with the value of $boottime + seconds$,
+while the part expressing the nanoseconds should be filled with the maximum precision
 the clock model allows.
-If this part was filled by only using the {\it{scount}} variable,
-just the precision of the timer interrupt frequency would be provided.
-However, this call also queries the hardware counter that is used for
+As described in section~\ref{sec:analysis-time},
+this can be achieved by reading the {\it{scount}} variable
+and by querying the hardware counter that is used for
 interrupt generation and includes the time passed since
-the last update of the {\it{scount}} variable~\cite{thesis-beat}.
+the last update of the {\it{scount}} variable.
 This way, a resolution of $\frac{1}{CLOCK\_SECOND~\times~counts}$~seconds can be acquired,
 where $counts$ is the number of counter register increments between two successive interrupts,
 which is 32 by default on AVR Raven, as stated in section~\ref{sec:analysis-clock}.
+%If this part was filled by only using the {\it{scount}} variable,
+%just the resolution of the timer interrupt frequency would be provided.
 
 Since setting the current time is possible only within one second precision,
 finer time setting must be made using time adjustments.
@@ -64,12 +65,3 @@ the operating system will continue with the wrong system time for some time,
 but an NTP client will step or adjust the system time~\cite{ntp-faq}.
 This will effectively cause the leap second correction to be applied too late,
 which is a trade-off for smaller memory requirements.
-
-%Implemented {\it{clock\_set\_time}} function computes when the system started
-%in seconds since the POSIX Epoch and saves the result in the newly implemented {\it{boottime}} variable.
-
-%Unlike GIT!
-%This variable, counting uptime in seconds,
-%is particularly used by stimers in Contiki
-%and modifying it would lead to misbehaviour of stimer library
-%described in section~\ref{sec:contiki-timers}.

@@ -8,8 +8,8 @@ The oscillator is independent of any other clock,
 can be only used with Timer/Counter~2 and it
 enables use of Timer/Counter~2 as a Real Time Counter~\cite{avr-datasheet}.
 The Timer/Counter~2 prescale value 8 is used in Contiki on AVR Raven platform -
-the oscillator frequency of 32~768~Hz is effectively divided by 8.
-The counter register is hence incremented with the frequency of
+the oscillator frequency of 32~768~Hz is effectively divided by 8 and
+the counter register is hence incremented with the frequency of
 $f_{T2} = {\frac{f_{asy}}{prescaler}} = {\frac{32768}{8}} = 4096$~Hz.
 Figure~\ref{fig:avr-clock} shows the Timer/Counter~2 module as used by Contiki.
 \begin{figure}
@@ -46,7 +46,7 @@ This behaviour is illustrated in figure~\ref{fig:design-timing-diagram}
   \label{fig:design-timing-diagram}
 \end{figure}
 
-Additionally, when compare match occurs,
+Additionally, when a compare match occurs,
 an interrupt is raised and the interrupt service routine is executed.
 The flag indicating occurred match {\it{OCF2A}} is
 cleared automatically by hardware when executing

@@ -6,8 +6,8 @@ The low-level clock interface described in previous section
 is used by Contiki to provide the system time through the time interface.
 Since the value of the {\it{seconds}} variable is zero after the system booted,
 it actually expresses the system uptime.
-The {\it{seconds}} variable can be obtained by the application using the {\it{clock\_seconds}} call.
-However, in Contiki 2.5 there is no call for setting this variable.
+The value of the {\it{seconds}} variable can be obtained by the application using the {\it{clock\_seconds}} call.
+However, there is no call for setting this variable in Contiki 2.5.
 In the current Git version at the time of writing, a new call {\it{clock\_set\_seconds}}
 can be used for this purpose.
 Because this call simply rewrites the {\it{seconds}} variable, it breaks the stimer library,
@@ -23,6 +23,9 @@ the last update of the {\it{scount}} variable.
 If stimers should not be broken by setting the {\it{seconds}} or {\it{scount}} variable,
 and Contiki should be able to set and provide the current time in a higher precision,
 a new call interface must be developed.
+These calls shall use a structure representing the system time similar
+to the existing POSIX standard~\cite{posix}.
+Such a structure for representing the time values is also not present in Contiki.
 
 Similarly, there is no call for adjusting the time in Contiki.
 Due to memory constraints, software structures controlling the time adjustments are too heavyweight
@@ -37,5 +40,7 @@ can be used for adjusting the time, because decrementing the compare register
 value causes a faster increment of the {\it{scount}} variable, which in turn causes
 a faster increment of the {\it{seconds}} variable and vice versa.
 Such changes would influence the system time and the dependent Contiki timers.
-However, applications demanding uninfluenced timers could use the Contiki rtimers,
-as they use use a separate hardware clock.
+However, applications requiring uninfluenced timers
+could use the Contiki rtimers, described in section~\ref{sec:contiki-timers},
+because they use a separate hardware clock unaffected by NTP client
+(Timer/Counter~3 on AVR Raven platform).

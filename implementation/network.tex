@@ -27,9 +27,6 @@ However, no event is sent to that application when the server's response arrives
 The remote NTP server can be specified in the Makefile or
 by using the {\it{REMOTE\_HOST}} define macro.
 If no remote host is specified, the NTP client assumes that only the NTP broadcast communication mode will be used.
-The broadcast mode is intended particularly for energy or memory constrained clients
-or for a huge number of NTP clients and a single NTP server
-in a network with small propagation delay.
 The link layer MAC address and the NTP poll exponent $\tau$
 can be configured in the Makefile as well.
 

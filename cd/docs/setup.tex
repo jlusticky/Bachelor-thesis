@@ -315,7 +315,8 @@ between ATmega3290P and ATmega1284P.
 In this case, the Contiki project must include the raven-lcd-interface application from
 {\it{/contiki/platform/avr-raven/apps/raven-lcd-interface/}}.
 This can be achieved by adding {\it{APPS += raven-lcd-interface}} to the project Makefile.
-The application that wants to write to the LCD must then include the "raven-lcd.h" header file.
+The application that wants to write to the LCD must include the "raven-lcd.h" header file.
+The function {\it{raven_lcd_show_text(char *text)}} can be used then for writing to the LCD display.
 See an example in the {\it{contiki/platform/avr-raven/apps/raven-lcd-interface}} directory
 and the article {\it{Serial interface between Raven processors}} in Contiki documentation.
 
