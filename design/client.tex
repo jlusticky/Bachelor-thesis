@@ -1,0 +1,20 @@
+%=========================================================================
+% (c) 2011, 2012 Josef Lusticky
+
+\section{Contiki NTP client}
+The NTP client application will use the designed operating system interface
+from the previous sections and the uIP communication stack.
+
+
+%DESIGN
+%The broadcast mode is intended particularly for energy or memory constrained clients
+%or for a huge number of NTP clients and a single NTP server
+%in a network with small propagation delays.
+
+
+!TO DESIGN!
+%design---
+Contiki NTP Client fills and checks only the seconds part of the NTP timestamp,
+because the timestamp should be as accurate as possible and the
+conversion from nanoseconds to NTP fraction part would increase the interval
+between determination of the timestamp and dispatch of the packet.

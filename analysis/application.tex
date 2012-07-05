@@ -22,13 +22,8 @@ requires no server associations and no packet filling process on the client side
 Moreover, because the client does not have to actively send any NTP packets,
 an energy consumption of the client is reduced.
 
-%DESIGN
-%The broadcast mode is intended particularly for energy or memory constrained clients
-%or for a huge number of NTP clients and a single NTP server
-%in a network with small propagation delays.
-
 % 1 - see design
-A problem might be a possible packet loss when communication uses UDP on transport layer.
+A problem might be a possible packet loss when communication uses UDP on the transport layer.
 The reason why this can happen often in Contiki, is explained in section~\ref{sec:contiki-uip}.
 % 2
 In NTP unicast mode, the packet loss might occur either for a client's query to the server
@@ -66,18 +61,10 @@ the NTP timestamp seconds field value and the POSIX timestamp seconds field valu
 However, the conversion from the NTP fraction field value ($2^{-32}$)
 to the POSIX fraction field value (nanoseconds or microseconds) is problematic.
 The relation between the POSIX fraction field and the NTP fraction field
-is given by $POSIX.frac = NTP.frac \times POSIX.res \div 2^{32}$,
+is given by $POSIX.frac = NTP.frac~\times~POSIX.res~\div~2^{32}$,
 where $POSIX.frac$ is the POSIX fraction field value,
 $NTP.frac$ is the NTP fraction field value and
 $POSIX.res$ is the POSIX timestamp resolution (microseconds or nanoseconds).
 The accurate conversion requires either floating point operations or operations with 64 bit numbers.
 These operations can be memory expensive, especially on 8-bit microcontrollers,
 and their usage must be carefully considered or another suitable solution must be designed.
-
-
-!TO DESIGN!
-%design---
-Contiki NTP Client fills and checks only the seconds part of the NTP timestamp,
-because the timestamp should be as accurate as possible and the
-conversion from nanoseconds to NTP fraction part would increase the interval
-between determination of the timestamp and dispatch of the packet.

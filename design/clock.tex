@@ -1,7 +1,7 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky
 
-\section{Clock library extensions}\label{sec:design-clock}
+\section{Clock library extension}\label{sec:design-clock}
 Previous section described how the call for getting the time acquires
 the maximum precision the clock model allows.
 Two read operations are needed in such a design - read {\it{scount}} and read {\it{TCNT2}}.
@@ -22,29 +22,32 @@ Figure~\ref{fig:design-read} shows such a solution.
 \end{figure}
 
 The call for adjusting the time computes the number of clock ticks
-with longer or shorter tick interval.
-If the adjustment in delta is positive, then the system clock is speeded up
-until the adjustment has been completed.
-If the adjustment in delta is negative, then the clock is slowed down in a similar fashion.
-%TODO FROM HERE
-When adjusting the time, the %TODO
-as follows:
+with the longer or shorter tick interval.
+For storing the result, a new variable must be introduced.
+If the value of this variable is zero, no adjustments are in progress.
+Otherwise, the default value of the compare register is incremented or decremented by 1
+and written to {\it{OCR2A}}.
+This effectively causes adjusting the time, as described in section~\ref{sec:analysis-interface}.
+When the time was adjusted enough,
+the default value of the compare register is written back to {\it{OCR2A}}.
 
-CLOCK\_COMPARE\_REGISTER = 30 => ca132.129Hz => 1s = ca1.032258s
-FREQ = 32768/8 / 31
-CLOCK\_COMPARE\_REGISTER = 32 => 124.12per => 1s = 0.96p
-FREQ = 32768/8 / 33
+When adjusting the time in Contiki on AVR Raven, the as follows:
+Section~\ref{sec:analysis-clock-interface} explained, that the default value
+of the compare register for AVR Raven in Contiki is 31,
+but the number of counter register increments between two successive interrupts is 32.
+Incrementing the compare register value causes one real second to be experienced as
+$\frac{f_{T2}}{CLOCK\_SECOND \times (32 + 1)} = \frac{4096}{128~\times~33} = 0.\overline{96}$~seconds
+by the operating system.
+Decrementing the compare register value causes one real second to be experienced as
+$\frac{f_{T2}}{CLOCK\_SECOND \times (32 - 1)} = \frac{4096}{128~\times~31} \doteq 1.032258$~seconds
+by the operating system.
 
-Adjusting time - CLOCK\_COMPARE\_REGISTER = 31 => 128Hz => 1s = 1s
-FREQ = 32768/8 / 32
-
-
-
-Each TCNT2 increment takes $\frac{1}{128 \times 32} \doteq 0,000244$s
-0,244ms
-This is also minimal possible clock adjustment.
-The maximum adjustment is approximately 0.03 $\frac{s}{s}$.
-%If greater adjustments are needed, the compare register must be updated with different values. 
+Each increment of the counter register {\it{TCNT2}} takes
+$\frac{1}{128 \times 32} = 0.000244140625$~seconds.
+This is also the minimal possible clock adjustment,
+that can be achieved by changing the compare register value just for one clock tick.
+The fastest possible adjustment is approximately 0.03~$\frac{s}{s}$.
+If faster adjustments were needed, the compare register would have to be updated with different values. 
 However, updating the compare register with more different values would require
 a more complicated software design
 and lower values could cause a miss of the compare match described in section~\ref{sec:analysis-hwclock}.

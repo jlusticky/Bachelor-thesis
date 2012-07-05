@@ -17,9 +17,9 @@ The timer and stimer libraries provide the simplest form of timers and are used 
 The difference between these two is the resolution of time -
 timers use system clock ticks, whose value is incremented when an interrupt from the hardware clock occurs,
 while stimers use seconds to offer much longer time periods~\cite{contiki-wiki-timers}.
-The value expressing seconds is also incremented in the interrupt service routine (ISR),
+The value representing seconds is also incremented in the interrupt service routine (ISR),
 but only when enough clock ticks since last increment occurred.
-The number of clock ticks within one second is expressed by the
+The number of clock ticks within one second is represented by the
 {\it{CLOCK\_SECOND}} macro provided by the clock library.
 That means there are {\it{CLOCK\_SECOND}} interrupts from the hardware clock per second.
 The usage of the timer library and {\it{CLOCK\_SECOND}} macro is shown in appendix~\ref{app:protothreads}.

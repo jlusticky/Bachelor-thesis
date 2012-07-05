@@ -24,14 +24,14 @@ struct time_spec {
 };
 \end{lstlisting}
 This structure consists of two signed long values for expressing seconds and nanoseconds.
-The value 0 seconds and 0 nanoseconds is equal to Unix prime epoch (1st January 1970).
-In case of seconds part, the 32-bit signed long value was chosen because
+The value 0 seconds and 0 nanoseconds is equal to the Unix prime epoch (1st January 1970).
+In case of the seconds part, the 32-bit signed long value was chosen because
 it can conveniently
 represent real-time values as well as local clock adjustment values, which may also be negative.
 Such a time representation will wrap around in year 2038 and is facing
 what is commonly known as the year 2038 problem~\cite{posix}.
 
-In case of nanoseconds part, the 32-bit signed long value was chosen because
+In case of the nanoseconds part, the 32-bit signed long value was chosen because
 one second has $10^9$ nanoseconds and it is
 desirable to be able to express positive as well as negative values for local clock adjustments.
 As 32-bit signed long type shall be able to express values from -$2^{31}$-1 (-2~147~483~647)
@@ -42,7 +42,7 @@ It should be noted that the signed long data type does not have to always result
 it is up to the compiler what data width it chooses for each data type.
 But as ISO C99 standard states, the maximum value for an object of type signed long
 shall be greater or equal $2^{31}$-1 (2~147~483~647)~\cite{c99}.
-This in fact results in at least 32-bit variable unless the compilation setting is changed.
+This in fact results in at least a 32-bit variable unless the compilation setting is changed.
 Next to this, the already presented variable {\it{seconds}} is of unsigned long type,
 the value {\it{sec}} in the {\it{time\_spec}} structure %and {\it{boottime}}
 shall be therefore of the same data width.
@@ -124,9 +124,9 @@ E.g. if the code is compiled using GCC version 4.3.5,
 multiplication of two 32-bit variables takes 33 instructions including {\it{call}} and {\it{ret}}
 instructions for entering and returning from the {\it{\_\_mulsi3}} routine, which computes
 the result of a multiplication.
-According to AVR Instruction Set manual~\cite{avr-instruction-set},
+According to the AVR Instruction Set manual~\cite{avr-instruction-set},
 such a multiplication results in 48 clock cycles overhead,
-which takes 6~000 nanoseconds assuming 8~MHz CPU clock.
+which takes 6~000 nanoseconds assuming an 8~MHz CPU clock.
 The timestamp provided is therefore not exact.
 However, since the consumed time strongly depends on the architecture and compiler specifications,
 no correction was implemented to remove this inaccuracy.
