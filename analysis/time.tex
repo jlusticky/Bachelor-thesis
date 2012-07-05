@@ -2,17 +2,6 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{Time interface}\label{sec:analysis-time}
-For keeping, measuring and resolving the time, computer needs a clock.
-A computer clock is an electronic device with a counter register counting oscillations in a
-quartz crystal oscillator with a particular frequency~\cite{thesis-sync}.
-The structure of the clock hardware is shown in figure~\ref{fig:system-hardware-clock}.
-\begin{figure}
-  \centering
-  \includegraphics[width=9cm,keepaspectratio]{fig/pc-clock.png}
-  \caption{A typical hardware clock (source:~\cite{thesis-beat})}
-  \label{fig:system-hardware-clock}
-\end{figure}
-When the counter reaches a specific value, an interrupt is generated and the counter register is reset.
 The clock interrupt is called {\it{clock tick}}, or {\it{timer tick}}, and at each clock tick,
 the interrupt service routine increments a system clock value stored in the memory~\cite{thesis-sync}.
 In a typical computer clock design, interrupts are produced at

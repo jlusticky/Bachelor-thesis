@@ -1,7 +1,7 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky
 
-\section{Operating system time interface}\label{sec:analysis-interface}
+\section{Contiki time interface}\label{sec:analysis-interface}
 Section~\ref{sec:analysis-time} described, that there is no proper
 way of setting, getting and adjusting the time for NTP client in Contiki OS.
 A new interface for setting, getting and eventually adjusting the time
@@ -66,7 +66,7 @@ This will effectively cause the leap second correction to be applied too late,
 which is a trade-off for smaller memory requirements.
 
 %Implemented {\it{clock\_set\_time}} function computes when the system started
-%in seconds since the Epoch and saves the result in newly implemented {\it{boottime}} variable.
+%in seconds since the POSIX Epoch and saves the result in the newly implemented {\it{boottime}} variable.
 
 %Unlike GIT!
 %This variable, counting uptime in seconds,

@@ -2,11 +2,29 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \chapter{Analysis}
+For keeping, measuring and resolving the time, computer needs a hardware clock.
+A computer clock is an electronic device with a counter register counting oscillations in a
+quartz crystal oscillator with a particular frequency~\cite{thesis-sync}.
+Using the hardware clock, the operating system can keep and manipulate the system time.
+
+Accessing the hardware clock is done through the operating system clock interface.
+On top of the clock interface is an interface for providing the system time.
 For implementation of a reasonably useful NTP client,
-an operating system must be able to set, get and eventually adjust the system time.
+the operating system must be able to set, get and eventually adjust the system time
+through the time interface.
 Though not mandatory, adjusting the time is an important function,
 if the time shall be always a monotonically increasing function.
-Apart from that, ability to communicate over UDP is also required.
+
+Apart from that, an ability to communicate over UDP is also required for the NTP client.
+This is a task of the operating system network interface.
+Figure~\ref{fig:analysis-overview} shows the overview of the NTP client.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=13cm,keepaspectratio]{fig/analysis.png}
+  \caption{NTP client overview} %!TODO
+  \label{fig:analysis-overview} %!TODO
+\end{figure}
 
 For developing and testing Contiki NTP Client,
 the AVR Raven platform with 8-bit ATmega1284P CPU~\cite{avr-datasheet} will be used.
@@ -14,13 +32,18 @@ This platform features IEEE~802.15.4 (Low-Rate Wireless Personal Area Networks) 
 Together with an adaptation layer called 6LoWPAN (IPv6 over Low power Wireless Personal Area Networks),
 AVR Raven is able to communicate over IPv6.
 
+\input{analysis/hwclock.tex}
+
+\input{analysis/clock-interface.tex}
+
 \input{analysis/time.tex}
 
-\input{analysis/clock.tex}
 
+\section{NTP client application}
+Apart from the time interface, the NTP client application needs to use the operating system network interface.
+Thanks to uIP, the network communication is not a matter for Contiki OS.
 
-\section{Communication}
-Without any NTP server is an NTP client useless. % There are clients, servers...
+The NTP client needs server associations in the NTP unicast communication mode.
 However, too many server associations complicate the client design.
 In fact, in the most common scenario, there can be only a single NTP master server
 for the whole network.
@@ -53,11 +76,11 @@ and the decision must be made during the compilation~\cite{contiki-docs}.
 Although the {\it{UIP\_CONF\_IPV6}} macro can be used to determine which IP version
 support is being compiled, the NTP client application can be written IP-version agnostic.
 
-
-\section{Timestamp conversions}%CLIENT CODE
+The NTP client further calculates the local clock offset using the NTP timestamps
+as described in section~\ref{sec:ntp-algorithms}.
 As mentioned in section~\ref{sec:ntp-time}, the NTP timescale is not
 coincident with the POSIX timescale.
-If the new call interface should use the standard POSIX timescale,
+If the new calls in the time interface should use the standard POSIX timescale,
 conversion between NTP and POSIX timestamps must be calculated.
 The conversion from the POSIX timestamp to the 64-bit long NTP timestamp
 is needed when the client sends the request

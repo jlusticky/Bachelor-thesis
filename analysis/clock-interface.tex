@@ -1,0 +1,34 @@
+%=========================================================================
+% (c) 2011, 2012 Josef Lusticky
+
+\section{Clock interface}
+Contiki provides a basic clock interface particularly for use of timers
+with a simple goal - measuring time.
+This interface is common for all supported platforms,
+but the particular implementation is platform specific.
+The definition of the common interface is located in the {\it{core/sys/clock.h}} file
+and the specific implementations can be found in the {\it{clock.c}} file
+in {\it{cpu/}} directory of the Contiki source code.
+
+The clock interface provides the {\it{clock\_init}} call for initialising the hardware clock,
+that is automatically called during the boot sequence of Contiki.
+The {\it{clock\_init}} call sets up
+appropriate registers and the interrupt service routine as described in section~\ref{sec:analysis-hwclock}.
+This call is implemented as the C macro for AVR CPUs, that evaluates to a specific setup code for each
+different AVR CPU during the compilation, and is defined in the {\it{cpu/avr/dev/clock-avr.h}} file.
+The setup code is not common to all AVR CPUs because of differences among them - e.g. there are usually
+only three Timer/Counter modules, but AVR ATmega1284P has four Timer/Counter modules~\cite{avr-datasheet}.
+
+To obtain {\it{CLOCK\_SECOND}} interrupts per second, there must be
+${\frac{f_{T2}}{CLOCK\_SECOND}}$ hardware clock ticks between two successive interrupts.
+On compare match in CTC mode, the timer is reset to zero as
+shown in figure~\ref{fig:design-timing-diagram}.
+The value zero is also included in the counting - the 0th count of the timer also takes one tick.
+Therefore the value of compare register {\it{OCR2A}} must be ${\frac{f_{T2}}{CLOCK\_SECOND}} - 1$
+when using Timer/Counter~2 in CTC mode.
+The default value of {\it{CLOCK\_SECOND}} for AVR Raven in Contiki is 128,
+which implies the default value of the compare register ${\frac{4096}{128}} - 1 = 31$.
+The {\it{CLOCK\_SECOND}} value is defined in {\it{platform/avr-raven/contiki-conf.h}} file
+and the default value of the compare register is computed during the compilation.
+
+%{\it{AVR\_OUTPUT\_COMPARE\_INT}}, defined in {\it{cpu/avr/dev/clock.c}} file,

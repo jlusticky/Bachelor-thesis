@@ -132,6 +132,13 @@ Ethernet packets to 802.15.4 packets and vice versa.
 The firmware is distributed together with Contiki and
 can found in {\it{/platform/avr-ravenusb/}} directory.
 
+Should there be more devices running Contiki present in one network,
+each of them needs a different link layer (MAC) address.
+Beware that although the firmware for RZ~USB Stick automatically translates
+between Ethernet link layer addresses and IEEE~802.15.4 link layer
+addresses, both are are still different links and can not be mixed in one
+layer~2 network (e.g. bridging will not work).
+
 So as first, we need to flash the RZ USB stick to work as an Ethernet interface.
 There is no widely available 802.15.4 and 6LoWPAN stack for PCs.
 As a temporary solution and to be able to interconnect IPv6 hosts such as AVR Raven to IP networks,

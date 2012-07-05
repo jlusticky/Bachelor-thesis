@@ -15,9 +15,11 @@ ntp/time.tex - DONE
 ntp/network.tex - DONE
 ntp/algorithms.tex - DONE
 
-analysis.tex - wip/client application?
-analysis/time.tex - DONE
-analysis/clock.tex - DONE
+analysis.tex - DONE
+analysis/hwclock.tex - DONE
+analysis/clock-interface.tex
+analysis/time.tex
+analysis/client.tex
 
 
 design.tex - work in progress
