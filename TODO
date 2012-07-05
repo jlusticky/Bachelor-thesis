@@ -17,8 +17,8 @@ ntp/algorithms.tex - DONE
 
 analysis.tex - DONE
 analysis/hwclock.tex - DONE
-analysis/clock-interface.tex
-analysis/time.tex
+analysis/clock-interface.tex - DONE
+analysis/time.tex - DONE
 analysis/client.tex
 
 
