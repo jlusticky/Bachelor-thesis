@@ -21,6 +21,15 @@ The NTP broadcast communication mode, on the other hand,
 requires no server associations and no packet filling process on the client side.
 Moreover, because the client does not have to actively send any NTP packets,
 an energy consumption of the client is reduced.
+Contiki supports broadcast packets as well as sending multicast packets~\cite{contiki-docs}.
+An implementation of NTP broadcast mode is therefore also possible.
+Joining multicast groups through Internet Group Management Protocol (IGMP)
+and receiving non-local multicast packets
+was not supported at the time of writing~\cite{contiki-docs}.
+
+Contiki is also able to use Domain Name System for the resolution of IPv4 addresses.
+DNS resolution of IPv6 addresses was not implemented in Contiki OS
+at the time of writing~\cite{contiki-docs}.
 
 % 1 - see design
 A problem might be a possible packet loss when communication uses UDP on the transport layer.

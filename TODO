@@ -25,11 +25,10 @@ analysis/client.tex - DONE
 design.tex - DONE
 design/interface.tex - DONE
 design/clock.tex - WIP
-
+design/client.tex - WIP
 
 design/network.tex - DONE + review
 design/interface.tex - wip - needs work, move ISR from design/clock.tex
-#design/client.tex - wip + conversion
 
 implementation.tex - work in progress - foreword
 implementation/clock.tex - wip

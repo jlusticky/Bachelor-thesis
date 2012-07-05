@@ -2,20 +2,62 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{Contiki NTP client}
-The NTP client application will use the designed operating system interface
-from the previous sections and the uIP communication stack.
+The client application itself is a Contiki process,
+that will use the designed operating system interface from the previous sections
+and the uIP communication stack.
+
+The client should be able to use both NTP communication modes,
+the NTP broadcast mode and the NTP unicast mode.
+The NTP broadcast communication mode is intended particularly for energy or
+even more memory constrained clients.
+If the client will use only the broadcast mode, the structures and code
+related to the unicast mode should not be included in the resulting program.
+
+%TODO
 
 
-%DESIGN
-%The broadcast mode is intended particularly for energy or memory constrained clients
-%or for a huge number of NTP clients and a single NTP server
-%in a network with small propagation delays.
+The NTP client fills and checks only the seconds part of the NTP timestamp,
+because the conversion to the NTP format would increase the interval
+between the timestamp determination and the packet dispatch.
+
+After the filled NTP packet is sent, the client schedules
+sending of a next NTP packet in $2^{\tau}$ seconds
+using the event timer library.
+In NTPv4, $\tau$ ranges from 4, resulting in poll interval 16 seconds,
+to 17, resulting in poll interval 36 hours.
+However, the event timer library imposes a limit on the scheduled time.
+This limit is platform specific and depends on {\it{CLOCK\_SECOND}} value.
+The $\tau$ value can not be greater than 8 on AVR Raven assuming 128 interrupts per second.
+Upon scheduling the event timer, the client process yields
+and another process can be run.
+The client process is later invoked either by the uIP stack event
+announcing the server response
+or by the event timer in case no server response arrived.
+The event timer is therefore effectively
+dealing with possible packet loss described in section~\ref{sec:design-network}.
 
 
-!TO DESIGN!
-%design---
-%KROEGER
-Contiki NTP Client fills and checks only the seconds part of the NTP timestamp,
-because the timestamp should be as accurate as possible and the
-conversion from nanoseconds to NTP fraction part would increase the interval
-between determination of the timestamp and dispatch of the packet.
+%%%TODO
+
+Due to a different origin of the Unix and NTP epoch,
+the number of seconds between NTP and Unix epoch,
+is simply subtracted from the seconds part of the NTP timestamp.
+But the conversion from fraction part of long 64-bit NTP timestamp to nanoseconds,
+used in the local timestamp structure,
+is one of the most problematic tasks for memory constrained systems.
+An accurate conversion requires either floating point operations or operations with 64 bit numbers.
+The conversion is given by
+$nsec = fractionl \times 10^9 \div 2^{32}$, where $nsec$ is the nanoseconds part of the local timestamp
+and $fractionl$ is the fraction part of long 64-bit NTP timestamp.
+Since there is no native hardware support for floating point nor for 64-bit arithmetic,
+GCC would supply these operations in form of library called {\it{libgcc}},
+which causes a significantly bigger resulting binary file.
+The greatest common divisor of $10^9$ and $2^{32}$ is $2^9$,
+so in fact, a relatively simple multiplication of $fractionl$ by $\frac{5^9}{2^{23}}$ must be computed.
+This can be computed using sequential divisions and multiplications,
+which in turn can be done on 32 bits using shifts and additions~\cite{c99}.
+
+$\frac{10^9}{2^{32}} = \frac{2^9 \times 5^9}{2^9 \times 2^{23}} =
+\frac{5^9}{2^{23}} = \frac{5}{2^3} \times \frac{5}{2^3} \times \frac{5}{2^3} \times \frac{5^2}{2^3}
+\times \frac{5}{2^3}  \times \frac{5}{2^3} \times \frac{5^2}{2^3} \times \frac{1}{2^2}$
+%the last must be done, 2 and 5 are both prime nubmers!

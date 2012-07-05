@@ -2,13 +2,6 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{NTP client application code}
-The client itself is implemented as a Contiki process.
-Parameters such as remote port, local port or poll interval %ref to ntp
-can be configured using a standard C define macro.
-The client can communicate using both,
-the NTP broadcast mode and the NTP unicast mode.
-The unicast mode can be turned off by specifying no remote host.
-
 The structure representing an NTP message was borrowed from OpenNTPD daemon
 and Dragonfly NTP daemon.
 This structure is not using the GCC extension for representing a bit field,
@@ -19,24 +12,20 @@ Accessing each field of the {\it{status}} byte is done using bitmasks.
 Unlike using the bit field extension,
 such a design is compliant with the standard C language.
 
-After the filled NTP packet is sent, the client schedules
-sending of a next NTP packet in $2^{\tau}$ seconds
-using the event timer library.
-In NTPv4, $\tau$ ranges from 4, resulting in poll interval 16 seconds,
-to 17, resulting in poll interval 36 hours.
-However, the event timer library imposes a limit on the scheduled time.
-This limit is platform specific and depends on {\it{CLOCK\_SECOND}} value.
-The $\tau$ value can not be greater than 8 on AVR Raven assuming 128 interrupts per second.
-Upon scheduling the event timer, the client process yields
-and another process can be run.
-The client process is later invoked either by the uIP stack event
-announcing the server response
-or by the event timer in case no server response arrived.
-The event timer is therefore effectively
-dealing with possible packet loss described in section~\ref{sec:design-network}.
+% STATE MACHINE
+The NTP client is written as an event-driven state machine process,
+that yields when there is no event to be served.
+This behaviour is comparable to the daemon mode in other operating systems.
+
+%CONFIGURATION
+Parameters such as remote port, local port or the $\tau$ exponent of Poll interval
+can be configured using a standard C define macro.
+The unicast mode can be turned off by specifying no remote host.
+In this case, all of the code related to the unicast mode will not be compiled.
+
 
 When the server response arrives,
-determinating the destination timestamp is one of the first thing the client does.
+the destination timestamp determination is one of the first action the client does.
 After that, the client makes packet sanity tests including
 checking whether the response is from synchronised server.
 
@@ -56,23 +45,10 @@ and the transmit timestamp received.
 As one could expect, the local clock offset determined from the broadcast mode
 is less accurate then from the unicast mode.
 
-Due to a different origin of the Unix and NTP epoch,
-number of seconds between NTP and Unix epoch,
-is subtracted from seconds part of NTP timestamp.
-But the conversion from fraction part of long 64-bit NTP timestamp to nanoseconds,
-used in the local timestamp structure,
-is one of the most problematic tasks for memory constrained systems.
-An accurate conversion requires either floating point operations or operations with 64 bit numbers.
-The conversion is given by
-$nsec = fractionl \times 10^9 \div 2^{32}$, where $nsec$ is the nanoseconds part of the local timestamp
-and $fractionl$ is the fraction part of long 64-bit NTP timestamp.
-Since there is no native hardware support for floating point nor for 64-bit arithmetic,
-GCC would supply these operations in form of library called {\it{libgcc}},
-which causes a significantly bigger resulting binary file.
-The greatest common divisor of $10^9$ and $2^{32}$ is $2^9$,
-so in fact, a relatively simple multiplication of $fractionl$ by $\frac{5^9}{2^{23}}$ must be computed.
-This can be computed using sequential divisions and multiplications,
-which in turn can be done on 32 bits using shifts and additions~\cite{c99}.
+
+
+
+%%%
 \begin{lstlisting}[caption=Conversion from NTP fraction part to nanoseconds]
 unsigned long
 fractionl_to_nsec(uint32_t fractionl)
