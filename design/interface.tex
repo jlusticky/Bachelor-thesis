@@ -38,7 +38,7 @@ this can be achieved by reading the {\it{scount}} variable
 and by querying the hardware counter that is used for
 interrupt generation and includes the time passed since
 the last update of the {\it{scount}} variable.
-This way, the resolution of
+This way, a resolution of
 $\frac{1}{CLOCK\_SECOND~\times~counts} = \frac{1}{128~\times~32} = 0.000244140625$~seconds
 can be acquired,
 where $counts$ is the number of counter register increments between two successive interrupts,

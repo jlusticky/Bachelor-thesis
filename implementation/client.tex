@@ -3,13 +3,13 @@
 
 \section{NTP client application code}
 The client itself is implemented as a Contiki process.
-Parameters such as remote port, local port or poll interval
-can be configured using standard C define macro.
+Parameters such as remote port, local port or poll interval %ref to ntp
+can be configured using a standard C define macro.
 The client can communicate using both,
 the NTP broadcast mode and the NTP unicast mode.
 The unicast mode can be turned off by specifying no remote host.
 
-Structure representing NTP message was borrowed from OpenNTPD daemon
+The structure representing an NTP message was borrowed from OpenNTPD daemon
 and Dragonfly NTP daemon.
 This structure is not using the GCC extension for representing a bit field,
 instead uses a single 8-bit integer called {\it{status}}
@@ -24,7 +24,7 @@ sending of a next NTP packet in $2^{\tau}$ seconds
 using the event timer library.
 In NTPv4, $\tau$ ranges from 4, resulting in poll interval 16 seconds,
 to 17, resulting in poll interval 36 hours.
-However, the event timer library imposes a limit to scheduled time.
+However, the event timer library imposes a limit on the scheduled time.
 This limit is platform specific and depends on {\it{CLOCK\_SECOND}} value.
 The $\tau$ value can not be greater than 8 on AVR Raven assuming 128 interrupts per second.
 Upon scheduling the event timer, the client process yields
@@ -32,7 +32,7 @@ and another process can be run.
 The client process is later invoked either by the uIP stack event
 announcing the server response
 or by the event timer in case no server response arrived.
-Event timer is therefore effectively
+The event timer is therefore effectively
 dealing with possible packet loss described in section~\ref{sec:design-network}.
 
 When the server response arrives,
@@ -68,7 +68,7 @@ $nsec = fractionl \times 10^9 \div 2^{32}$, where $nsec$ is the nanoseconds part
 and $fractionl$ is the fraction part of long 64-bit NTP timestamp.
 Since there is no native hardware support for floating point nor for 64-bit arithmetic,
 GCC would supply these operations in form of library called {\it{libgcc}},
-which causes significantly bigger resulted binary file.
+which causes a significantly bigger resulting binary file.
 The greatest common divisor of $10^9$ and $2^{32}$ is $2^9$,
 so in fact, a relatively simple multiplication of $fractionl$ by $\frac{5^9}{2^{23}}$ must be computed.
 This can be computed using sequential divisions and multiplications,
