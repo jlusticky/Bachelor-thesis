@@ -33,19 +33,19 @@ The clock interrupt frequency
 is supposed to be equal to a~value of the {\it{CLOCK\_SECOND}} macro, which is 128 by default on AVR~Raven.
 The~figure~\ref{fig:app-osc-no-adjust} shows the output from oscilloscope
 for this case.
-$$\frac{\frac{f_{asy}}{prescaler}}{inc} = \frac{\frac{32768}{8}}{32} = 128$$
+$$\frac{\frac{f_{asy}}{prescaler}}{counts} = \frac{\frac{32768}{8}}{32} = 128$$
 
 Figure~\ref{fig:app-osc-speed-up} shows the~output from oscilloscope
 when slowing down the clock.
 The~clock interrupt frequency
 is supposed to be equal to $124.\overline{12}$~Hz.
-$$\frac{\frac{f_{asy}}{prescaler}}{inc + 1} = \frac{\frac{32768}{8}}{32+1} = 124.\overline{12}$$
+$$\frac{\frac{f_{asy}}{prescaler}}{counts + 1} = \frac{\frac{32768}{8}}{32+1} = 124.\overline{12}$$
 
 Figure~\ref{fig:app-osc-slow-down} shows the output from oscilloscope
 when speeding up the clock.
 The~clock interrupt frequency
 is supposed to be approximately equal to 132.129~Hz.
-$$\frac{\frac{f_{asy}}{prescaler}}{inc - 1} = \frac{\frac{32768}{8}}{32-1} \doteq 132.129$$
+$$\frac{\frac{f_{asy}}{prescaler}}{counts - 1} = \frac{\frac{32768}{8}}{32-1} \doteq 132.129$$
 
 The~measured values are not exactly equal to those expected.
 This is mostly due to influence of the clock source
@@ -63,11 +63,11 @@ Figure~\ref{fig:measurements-no-ntp} shows the local clock offset
 in case no NTP client runs on the device.
 The time is set with the initial offset of about 45 milliseconds.
 However, the clock progresses faster due to frequency errors.
-This compensate the initial clock offset at first,
-but the local clock offset increases then.
-Not only that the clock is running faster with approximately 100~PPM
-(9 seconds a day) in this case,
-but also the frequency jitter can be observed.
+This compensates the initial clock offset at first,
+but then it causes the offset increase.
+The clock is running faster with approximately 100~PPM
+(9 seconds a day) in this case and
+the frequency jitter can be also observed.
 The offset increase is therefore not exactly linear.
 
 Figure~\ref{fig:measurements-ntp-serial} shows the local clock offset

@@ -3,16 +3,19 @@
 
 \section{Code metrics}
 The developed NTP client and patches for Contiki version 2.5
-as well as Git version are provided on the CD attached to this thesis.
+as well as the actual Contiki Git version (at the time of writing)
+are provided on the CD attached to this thesis.
 The NTP client application is common for both Contiki versions.
 The code uses the Contiki indentation style.
 
-The patch improving the Contiki operating system version 2.5
+The patch extending the Contiki operating system version 2.5
 inserts 72 new lines of code and modifies 1 line of code.
 The modified line is a backport from the actual Contiki Git version to prevent
-missing the compare match between the {\it{scount}} variable and {\it{CLOCK\_SECOND}} value.
+missing the compare match occurrence between the {\it{scount}} variable and
+the {\it{CLOCK\_SECOND}} value.
 
-The patch improving the actual Contiki operating system Git version at the time of writing,
+The patch extending the actual Contiki Git version
+(commit 86115a392eed9cc4c1111332b639917afc83f129 from 27 June 2012)
 inserts 78 new lines of code and modifies 1 line of code.
 The modified line fixes a reported bug, which was not fixed at the time of writing.
 This bug causes a wrong decision of the C preprocessor whether the {\it{CLOCK\_SECOND}}

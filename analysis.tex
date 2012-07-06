@@ -2,12 +2,12 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \chapter{Analysis}
-For keeping, measuring and resolving the time, a computer needs a hardware clock.
+To keep, measure and resolve the time, a computer needs a hardware clock.
 A computer clock is an electronic device with a counter register counting oscillations in a
 quartz crystal oscillator with a particular frequency~\cite{thesis-sync}.
 The operating system can keep and manipulate the system time using the hardware clock.
-
 Accessing the hardware clock is done through the operating system clock interface.
+
 On top of the clock interface is an interface for providing the system time.
 For implementation of a reasonably useful NTP client,
 the operating system must be able to set, get and eventually adjust the system time
@@ -17,8 +17,11 @@ if the time shall be always a monotonically increasing function.
 
 Apart from that, an ability to communicate over UDP is also required for the NTP client.
 This is a task of the operating system network interface.
-Figure~\ref{fig:analysis-overview} shows the overview of the necessary NTP client components.
-The interface....TODO
+
+The NTP client is an application, that communicates with the NTP server through the network interface
+and uses the time interface of the operating system.
+It further calculates the clock offset of the NTP sever's clock
+as describes in section~\ref{sec:ntp-algorithms}.
 
 \begin{figure}
   \centering
@@ -26,6 +29,10 @@ The interface....TODO
   \caption{NTP client overview} %!TODO
   \label{fig:analysis-overview} %!TODO
 \end{figure}
+
+In order to develop the NTP client for Contiki,
+the operating system Contiki and the hardware platform must provide the necessary
+components, as show in figure~\ref{fig:analysis-overview}.
 
 For developing and testing the Contiki NTP client,
 the AVR Raven platform with 8-bit ATmega1284P CPU~\cite{avr-datasheet} will be used.

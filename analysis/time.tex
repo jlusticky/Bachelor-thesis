@@ -21,9 +21,9 @@ as it provides a resolution of $\frac{1}{CLOCK\_SECOND}$~seconds.
 Moreover, the hardware counter can be also queried, as it includes the time passed since
 the last update of the {\it{scount}} variable.
 If stimers should not be broken by setting the {\it{seconds}} or {\it{scount}} variable,
-and Contiki should be able to set and provide the current time in a higher precision,
-a new call interface must be developed.
-These calls shall use a structure representing the system time similar
+and Contiki should be able to provide the current time in a higher precision,
+a new call interface must be designed.
+This call interface shall use a time specification structure similar
 to the existing POSIX standard~\cite{posix}.
 Such a structure for representing the time values is also not present in Contiki.
 
