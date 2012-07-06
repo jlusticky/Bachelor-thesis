@@ -6,9 +6,9 @@ The structure representing an NTP message was borrowed from OpenNTPD daemon
 and Dragonfly NTP daemon.
 This structure is not using the GCC extension for representing a bit field,
 instead uses a single 8-bit integer called {\it{status}}
-for Leap Indicator, Version Number and Mode fields of NTP packet
-described in section~\ref{sec:ntp-network}.
-Accessing each field of the {\it{status}} byte is done using bitmasks.
+for Leap Indicator, Version Number and Mode fields of the NTP packet
+structure described in section~\ref{sec:ntp-network}.
+Accessing each field of the {\it{status}} byte is done using the bitmasks.
 Unlike using the bit field extension,
 such a design is compliant with the standard C language.
 
@@ -19,17 +19,18 @@ This behaviour is comparable to the daemon mode in other operating systems.
 
 %% packet loss
 Upon sending the packet, the NTP client process sets the event timer and yields
-using the {\it{PROCESS\_YIELD}} statement, so no active waiting
-causes blocking the whole system.
-The, the process receives an event in response to either an incoming NTP packet
-or the etimer expiration.
+using the {\it{PROCESS\_YIELD}} statement,
+so no active waiting causes blocking the whole system.
+The NTP process is then invoked either in response to the incoming NTP packet event
+or in response to the timer expiration event.
 If any other running application wants the NTP client to query the server,
-it can send the {\it{PROCESS\_EVENT\_MSG}} event to the NTP process.
-However, no event is sent to that application when the server's response arrives.
+it can send the {\it{PROCESS\_EVENT\_MSG}} event to the NTP process at any time.
+However, no event is sent to that application when the server response arrives.
 
 %CONFIGURATION
-Parameters such as remote port, local port or the $\tau$ exponent of Poll interval
-can be configured using a standard C define macro.
+Parameters such as the remote port, the local port
+or the $\tau$ exponent of NTP poll interval can be configured using a standard C define macro
+in the source code as well as in the Makefile.
 The unicast mode can be turned off by specifying no remote host.
 In this case, all of the code related to the unicast mode will not be compiled.
 

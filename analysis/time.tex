@@ -5,7 +5,7 @@
 The low-level clock interface described in previous section
 is used by Contiki to provide the system time through the time interface.
 Since the value of the {\it{seconds}} variable is zero after the system booted,
-it actually expresses the system uptime.
+it actually represents the system uptime.
 The value of the {\it{seconds}} variable can be obtained by the application using the {\it{clock\_seconds}} call.
 However, there is no call for setting this variable in Contiki 2.5.
 In the current Git version at the time of writing, a new call {\it{clock\_set\_seconds}}
