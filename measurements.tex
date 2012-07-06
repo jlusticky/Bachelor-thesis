@@ -22,13 +22,13 @@ The NTP client was running on the AVR Raven platform in a room at 23~\textcelsiu
 
 \section{Clock interrupt frequency}
 For measuring clock interrupt frequency the bit 7 of Port D
-and ground pin was connected to UNI-T~2025CEL digital oscilloscope.
-At the beginning of the interrupt service routine a~logic 1 is written,
-what causes a high level of voltage.
-At the end of the interrupt service routine a~logic 0 is written,
-what causes a low level of voltage.
+and ground pin was connected to the UNI-T~2025CEL digital oscilloscope.
+At the beginning of the interrupt service routine a~logic 1 is written
+to the bit 7 of Port D, what causes a high level of voltage.
+At the end of the interrupt service routine a~logic 0 is written
+to the bit 7 of Port D, what causes a low level of voltage.
 
-When there is no clock adjustment, the value in output compare register is 31 by default.
+When there are no clock adjustments in progress, the value of the output compare register is 31 by default.
 The clock interrupt frequency
 is supposed to be equal to a~value of the {\it{CLOCK\_SECOND}} macro, which is 128 by default on AVR~Raven.
 The~figure~\ref{fig:app-osc-no-adjust} shows the output from oscilloscope
@@ -48,8 +48,8 @@ is supposed to be approximately equal to 132.129~Hz.
 $$\frac{\frac{f_{asy}}{prescaler}}{counts - 1} = \frac{\frac{32768}{8}}{32-1} \doteq 132.129$$
 
 The~measured values are not exactly equal to those expected.
-This is mostly due to influence of the clock source
-(32~768~Hz quartz crystal oscillator) by a room temperature,
+This is mostly due to a room temperature influence on the clock source
+(32~768~Hz quartz crystal oscillator),
 but it could also be air pressure or magnetic fields, etc.
 
 \section{Clock offset}
@@ -72,7 +72,7 @@ The offset increase is therefore not exactly linear.
 
 Figure~\ref{fig:measurements-ntp-serial} shows the local clock offset
 acquired from the serial output when Contiki NTP Client runs on the device.
-When the developed NTP client receives response from the server,
+When the developed NTP client receives a response from the server,
 it calculates the local clock offset and prints this value to the serial output.
 The NTP poll interval was set to 16 seconds, that means, the local clock offset
 is calculated and eventually corrected every 16 seconds.
@@ -86,7 +86,7 @@ The blue line shows the mean local clock offset value,
 that should be equal to zero in a perfect case.
 This is however not the case, because of oscillator frequency error
 shown in figure~\ref{fig:measurements-no-ntp}.
-More figures showing the local clock offset measurement
+More figures showing the local clock offset measurements
 can be found in appendix~\ref{app:offset}.
 
 \section{Clock phase}
