@@ -96,7 +96,7 @@ which adds one counter register increment as described in section~\ref{sec:analy
 
 The comparison avoids the need to disable clock interrupts for an atomic
 read of the multi-byte variable.
-This is the common solution of the race conditions
+This is the common solution of the race condition
 on AVR platfroms in Contiki as described in~\ref{sec:design-clock}.
 \begin{lstlisting}
 void
@@ -133,8 +133,17 @@ no correction was implemented to remove this inaccuracy.
 The application must be instead aware that the timestamp is not exactly accurate.
 
 \section{Adjusting the time}
-A new call computing the amount of needed adjustments was implemented.
-The {\it{clock\_adjust\_time}}
+A new function computing the amount of required adjusted ticks was implemented.
+The {\it{clock\_adjust\_time}} function stores the computed result in
+a new variable called {\it{adjcompare}}.
+
+This value was chosen to be of the signed 16-bit type.
+The imposed limit for time adjustments is therefore $2^{15}$ counter register increments
+for slowing down the clock and $2^{15}-1$ for speeding up the clock.
+That equals to $2^{15}~\times~0.000244140625 = 8$~seconds
+and $(2^{15} - 1)~\times~0.000244140625 \doteq 7.999756$~seconds, respectively.
+
+volatile int16_t adjcompare;
 %Adjusting time
 %1/128/32 = 0.000244141
 %0.000244141x32x127+0.000244141x31 == smallest possible adjustment == 244us

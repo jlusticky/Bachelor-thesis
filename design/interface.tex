@@ -56,7 +56,8 @@ which in turn speeds up or slows down the system time.
 If the amount of required adjustments is positive, then the system clock is speeded up
 until the adjustment has been completed.
 If the amount of required adjustments is negative, then the clock is slowed down in a similar fashion.
-Since the application specifies the amount of adjustments by the timestamp,
+Such a behaviour is compliant with the POSIX standard~\cite{posix}.
+Since the application shall specify the amount of adjustments through the timestamp,
 a new call must be developed for the determination of how many
 clock ticks will be delayed or shortened, respectively.
 

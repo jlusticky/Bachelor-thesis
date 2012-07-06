@@ -34,11 +34,11 @@ The client process is later invoked either by the uIP stack event
 announcing the server response
 or by the event timer in case no server response arrived.
 The event timer is therefore effectively
-dealing with possible packet loss described in section~\ref{sec:design-network}.
+dealing with possible packet loss described in section~\ref{sec:analysis-application}.
 
 
 %%
-The packet loss problem was described in section~\ref{sec:design-network}.
+The packet loss problem was described in section~\ref{sec:analysis-application}.
 However, packet loss is not a matter for NTP if using either broadcast or unicast mode.
 In broadcast mode, a lost server packet causes no setting or adjusting the client's system time.
 The client simply waits without disruption for the next NTP broadcast message.

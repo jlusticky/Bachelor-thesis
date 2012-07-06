@@ -47,9 +47,26 @@ Network Time Protocol version~4 and design and implementation of NTP client for 
 
 %! finish
 \chapter{Conclusion}
-The implemented clock interface and NTP client fits nicely to Contiki OS...
+The Network Time Protocol has been operating over 30 years as of early 2012
+and remains the longest running, continuously operating application
+protocol in the Internet~\cite{ntp-y2k}.
 
-Future work:
+The developed NTP client for Contiki OS is able to use the NTP unicast and broadcast mode.
+The implemented time interface extends Contiki OS toward real-time support,
+while requiring minimal memory amounts.
+The unique timestamp conversion provides a perfect solution to avoid the floating point or 64-bit
+arithmetic operations.
+The measured results show that the Contiki NTP client is satisfying for keeping a reasonably accurate time.
+
+The Network Time Protocol is suitable for constrained devices
+and will arguably find its place among embedded systems in the near future.
+
+%The implemented clock functionality
+
+
+
+
+TODO - Future work:
 It is useful to provide an initial volley where the client operating in
 client mode exchanges several packets with the server, so as to
 calibrate the propagation delay and to run the Autokey security
@@ -97,16 +114,3 @@ time and frequency of the system clock~\cite{rfc5905},
 %the access of NTP clients to known or trusted NTP broadcast servers.
 %Such filtering will prevent malicious traffic from reaching the NTP
 %clients.
-
-
---
-The Network Time Protocol has been operating over 30 years as of early 2012
-and remains the longest running, continuously operating application
-protocol in the Internet~\cite{ntp-y2k}.
-A thesis from 2009 states, that NTP is
-not suitable for use in wireless sensor networks because of complexity, cost,
-scalability and energy issues~\cite{thesis-sync}.
-
-This thesis showed that NTP is suitable even for such constrained devices.
-The measured results show that Contiki NTP Client is satisfying for keeping a reasonably accurate time
-and NTP will arguably find its place among embedded systems in the near future.
