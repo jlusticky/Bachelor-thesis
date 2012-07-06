@@ -49,9 +49,9 @@
 #define LOCAL_PORT NTP_PORT
 
 /* NTP client uses clock_set_time if the local clock offset is
- * equal or greater than ADJUST_TRESHOLD seconds.
+ * equal or greater than ADJUST_THRESHOLD seconds.
  */
-#define ADJUST_TRESHOLD 3
+#define ADJUST_THRESHOLD 3
 
 /* If remote host is defined, assuming NTP unicast mode.
  * Client is active and sends ntp_msg to NTP server, otherwise no ntp_msg is needed.
@@ -187,7 +187,7 @@ tcpip_handler(void)
     PRINTF("Local clock offset = %ld sec %ld nsec\n", adjts.sec, adjts.nsec);
 
     /* Set or adjust local clock */
-    if(labs(adjts.sec) >= ADJUST_TRESHOLD) {
+    if(labs(adjts.sec) >= ADJUST_THRESHOLD) {
       PRINTF("Setting the time to xmttime from server\n");
       clock_set_time(uip_ntohl(pkt->xmttime.int_partl) - JAN_1970);
     } else {
