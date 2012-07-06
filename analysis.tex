@@ -2,10 +2,10 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \chapter{Analysis}
-For keeping, measuring and resolving the time, computer needs a hardware clock.
+For keeping, measuring and resolving the time, a computer needs a hardware clock.
 A computer clock is an electronic device with a counter register counting oscillations in a
 quartz crystal oscillator with a particular frequency~\cite{thesis-sync}.
-Using the hardware clock, the operating system can keep and manipulate the system time.
+The operating system can keep and manipulate the system time using the hardware clock.
 
 Accessing the hardware clock is done through the operating system clock interface.
 On top of the clock interface is an interface for providing the system time.
@@ -17,7 +17,8 @@ if the time shall be always a monotonically increasing function.
 
 Apart from that, an ability to communicate over UDP is also required for the NTP client.
 This is a task of the operating system network interface.
-Figure~\ref{fig:analysis-overview} shows the overview of NTP client components.
+Figure~\ref{fig:analysis-overview} shows the overview of the necessary NTP client components.
+The interface....TODO
 
 \begin{figure}
   \centering

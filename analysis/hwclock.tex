@@ -3,10 +3,10 @@
 
 \section{Hardware clock}\label{sec:analysis-hwclock}
 On AVR Raven, Contiki uses the 8 bit Timer/Counter~2 module,
-clocked from asynchronous 32~768~Hz crystal oscillator, as the hardware clock by default.
+clocked from an asynchronous 32~768~Hz crystal oscillator, as the hardware clock by default.
 The oscillator is independent of any other clock,
-can be only used with Timer/Counter~2 and it
-enables use of Timer/Counter~2 as a Real Time Counter~\cite{avr-datasheet}.
+can only be used with Timer/Counter~2 and it
+enables the use of Timer/Counter~2 as a Real Time Counter~\cite{avr-datasheet}.
 The Timer/Counter~2 prescale value 8 is used in Contiki on AVR Raven platform -
 the oscillator frequency of 32~768~Hz is effectively divided by 8 and
 the counter register is hence incremented with the frequency of

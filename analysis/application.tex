@@ -27,7 +27,7 @@ Joining multicast groups through Internet Group Management Protocol (IGMP)
 and receiving non-local multicast packets
 was not supported at the time of writing~\cite{contiki-docs}.
 
-Contiki is also able to use Domain Name System for the resolution of IPv4 addresses.
+Contiki is also able to use the Domain Name System for the resolution of IPv4 addresses.
 DNS resolution of IPv6 addresses was not implemented in Contiki OS
 at the time of writing~\cite{contiki-docs}.
 
@@ -39,7 +39,7 @@ In NTP unicast mode, the packet loss might occur either for a client's query to 
 or for the server's response to the client.
 If the client's query loss occurs, no server response will be sent.
 Similarly, if the server's response loss occurs, no message will be received by the client.
-Not to block a whole system till the response arrives
+Not to block the whole system till the response arrives
 is therefore a desired behaviour of the client.
 
 The NTP client should be able to communicate over both IPv4 and IPv6.

@@ -1,6 +1,6 @@
-/* 
+/*
  * NTP client implementation for Contiki
- * 
+ *
  * NTPv4 - RFC 5905
  *
  * Copyright (c) 2011, 2012 Josef Lusticky
@@ -29,7 +29,7 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- * 
+ *
  */
 
 #ifndef __NTPD_H__

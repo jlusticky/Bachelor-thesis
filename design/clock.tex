@@ -2,7 +2,7 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{Clock library extension}\label{sec:design-clock}
-Previous section described how the call for getting the time acquires
+The previous section described how the call for getting the time acquires
 the maximum precision the clock model allows.
 Two read operations are needed in such a design - read {\it{scount}} and read {\it{TCNT2}}.
 Since the {\it{scount}} variable depends on asynchronous interrupts produced by
@@ -31,7 +31,6 @@ This effectively causes adjusting the time, as described in section~\ref{sec:ana
 When the time was adjusted enough,
 the default value of the compare register is written back to {\it{OCR2A}}.
 
-When adjusting the time in Contiki on AVR Raven, the as follows:
 Section~\ref{sec:analysis-clock-interface} explained, that the default value
 of the compare register for AVR Raven in Contiki is 31,
 but the number of counter register increments between two successive interrupts is 32.
@@ -50,7 +49,7 @@ The fastest possible adjustment is approximately 0.03~$\frac{s}{s}$.
 If faster adjustments were needed, the compare register would have to be updated with different values. 
 However, updating the compare register with more different values would require
 a more complicated software design
-and lower values could cause a miss of the compare match described in section~\ref{sec:analysis-hwclock}.
+and lower values could cause a miss of the compare match as described in section~\ref{sec:analysis-hwclock}.
 
 % TO NTP INTERFACE
 %When writing to compare register, the value is transferred to a
