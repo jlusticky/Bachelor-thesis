@@ -4,7 +4,13 @@
 \chapter{Design}
 The analysis showed, that just an implementation of the
 NTP client application is, due to missing calls in the time interface, not sufficient.
-The time interface must be extended with new calls,
+Analysis further described the necessary components of the NTP client,
+as shown in figure~\ref{fig:analysis-overview}.
+
+The uIP stack, described in section~\ref{sec:contiki-uip}, provides a feature-rich
+communication interface for the NTP client application.
+The communication interface is therefore not a matter for Contiki OS.
+However, the time interface must be extended with new calls,
 that must be further implemented in the clock library.
 Figure~\ref{fig:design-overview} shows the overview of the NTP client running on AVR Raven.
 

@@ -5,7 +5,7 @@
 Section~\ref{sec:analysis-time} described, that there is no proper
 way of setting, getting and adjusting the time for an NTP client in Contiki OS.
 A new interface for setting, getting and eventually adjusting the time
-must be therefore developed.
+must therefore be developed.
 
 Setting the time should not cause a misbehaviour of the Contiki timers
 described in section~\ref{sec:analysis-time}.
@@ -19,7 +19,7 @@ within a precision of one second.
 %Finer time setting must be made using the time adjustments.
 
 By contrast, a call for getting the current time must be able to provide a higher precision.
-Therefore, a new time specification structure must have been designed as well.
+Therefore, a new time specification structure must introduced as well.
 To conform to the POSIX standard~\cite{posix}, this structure consists of two parts -
 one representing seconds and the other representing nanoseconds.
 The first part represents the number of elapsed seconds since the POSIX epoch.
