@@ -20,6 +20,13 @@ Further precision can be acquired by reading the {\it{scount}} variable,
 as it provides a resolution of $\frac{1}{CLOCK\_SECOND}$~seconds.
 Moreover, the hardware counter can be also queried, as it includes the time passed since
 the last update of the {\it{scount}} variable.
+Two read operations are needed then - read {\it{scount}} and read {\it{TCNT2}}.
+Since the {\it{scount}} variable depends on asynchronous interrupts produced by
+the clock module, the followed query of the counter register causes a race condition.
+The timer clock runs asynchronously from the CPU clock and
+the result may be unpredictable if read while the timer is running.
+To provide consistent time values, a proper solution must be designed.
+
 If stimers should not be broken by setting the {\it{seconds}} or {\it{scount}} variable,
 and Contiki should be able to provide the current time in a higher precision,
 a new call interface must be designed.
