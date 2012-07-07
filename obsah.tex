@@ -50,16 +50,18 @@ Network Time Protocol version~4 and design and implementation of NTP client for 
 The Network Time Protocol has been operating over 30 years as of early 2012
 and remains the longest running, continuously operating application
 protocol in the Internet~\cite{ntp-y2k}.
+This thesis demonstrated, that its use can be further extended to a new platform of constrained devices,
+such as embedded systems.
 
 The developed NTP client for Contiki OS is able to use the NTP unicast and broadcast mode.
 The implemented time interface extends Contiki OS towards real-time support,
 while requiring minimal memory amounts.
-The unique timestamp conversion provides a perfect solution to avoid the floating point or 64-bit
-arithmetic operations.
+The unique timestamp conversion provides a perfect solution to avoid the
+memory expensive floating point or 64-bit arithmetic operations.
 The measured results show that the Contiki NTP client is satisfying for keeping a reasonably accurate time.
 
 The Network Time Protocol is suitable for constrained devices
-and will arguably find its place among embedded systems in the near future.
+forming the modern Internet and will arguably find its place among them in the near future.
 
 %The implemented clock functionality
 
