@@ -65,10 +65,12 @@ The time is set with the initial offset of about 45 milliseconds.
 However, the clock progresses faster due to frequency errors.
 This compensates the initial clock offset at first,
 but then it causes the offset increase.
-The clock is running faster with approximately 100~PPM
-(9 seconds a day) in this case and
-the frequency jitter can be also observed.
-The offset increase is therefore not exactly linear.
+The clock is running faster with approximately 100~PPM,
+where 1~PPM is equal to $10^{-6}$ $\frac{s}{s}$ (0.0001\%).
+That is, the clock error is about 9 seconds a day in this case.
+
+Due to the frequency jitter, that can be also observed,
+is the offset increase not exactly linear.
 
 Figure~\ref{fig:measurements-ntp-serial} shows the local clock offset
 acquired from the serial output when Contiki NTP Client runs on the device.
