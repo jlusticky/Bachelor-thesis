@@ -65,15 +65,15 @@ is not needed when the client sends the request.
 However, the conversion vice versa is needed when the client calculates
 the local clock offset from the received timestamps.
 
-Since both timescales reckon in seconds, the conversion from
+Since both the timescales use seconds, the conversion from
 the NTP timestamp seconds field value and the POSIX timestamp seconds field value is simple.
 However, the conversion from the NTP fraction field value ($2^{-32}$)
-to the POSIX fraction field value (nanoseconds or microseconds) is problematic.
+to the POSIX fraction field value (microseconds or nanoseconds) is problematic.
 The relation between the POSIX fraction field and the NTP fraction field
 is given by $POSIX.frac = NTP.frac~\times~POSIX.res~\div~2^{32}$,
 where $POSIX.frac$ is the POSIX fraction field value,
 $NTP.frac$ is the NTP fraction field value and
-$POSIX.res$ is the POSIX timestamp resolution (microseconds or nanoseconds).
+$POSIX.res$ is the POSIX timestamp resolution ($10^6$ or $10^9$).
 The accurate conversion requires either floating point operations or operations with 64 bit numbers.
 These operations can be memory expensive, especially on 8-bit microcontrollers,
 and their usage must be carefully considered or another suitable solution must be designed.

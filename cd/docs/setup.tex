@@ -95,12 +95,12 @@ To see all available target platforms issue the following command:
 \end{lstlisting}
 
 Next we need to upload our compiled project to AVR Raven.
-The connection for flashing ATmega1284P CPU is shown bellow.
+The connection for flashing the ATmega1284P CPU is shown bellow.
 Do not forget that AVR Raven must be powered while flashing.
 \begin{figure}[H]
   \centering
   \includegraphics[width=12cm,keepaspectratio]{smallfig/DSC02184-small.jpeg}
-  \caption{JTAG connected AVR Dragon to ATmega1284P CPU}
+  \caption{JTAG connected AVR Dragon to ATmega1284P}
 \end{figure}
 Since we are using the AVR Dragon with JTAG, we need to inform the avrdude programmer about it.
 Edit {\it{Makefile}} and append the following line at the bottom of the file:
@@ -296,7 +296,7 @@ After compiled, the project can be flashed using AVR Dragon.
 Now we should have the NTP client running on AVR Raven.
 
 \section{LCD Display}
-Presented LCD display on AVR Raven is controlled by ATmega3290P CPU.
+The LCD display on AVR Raven is controlled by the ATmega3290P CPU.
 To control this display, we must program this connect AVR Dragon with the other JTAG interface
 on AVR Raven.
 After connected, issue the following commands to load the Contiki demo program:

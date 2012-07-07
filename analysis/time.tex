@@ -6,7 +6,8 @@ The low-level clock interface described in the previous section
 is used by Contiki to provide the system time through the time interface.
 Since the value of the {\it{seconds}} variable is zero after the system booted,
 it actually represents the system uptime.
-The value of the {\it{seconds}} variable can be obtained by the application using the {\it{clock\_seconds}} call.
+The {\it{seconds}} variable is of the long data type and its
+value can be obtained using the {\it{clock\_seconds}} call by the application.
 However, there is no call for setting this variable in Contiki 2.5.
 In the current Git version at the time of writing, a new call {\it{clock\_set\_seconds}}
 can be used for this purpose.
@@ -18,7 +19,7 @@ unbalanced increments of the {\it{seconds}} variable.
 The precision of one second is also not adequate for the NTP client.
 Further precision can be acquired by reading the {\it{scount}} variable,
 as it provides a resolution of $\frac{1}{CLOCK\_SECOND}$~seconds.
-Moreover, the hardware counter can be also queried, as it includes the time passed since
+Moreover, the hardware counter can be also queried as it includes the time passed since
 the last update of the {\it{scount}} variable.
 Two read operations are needed then - read {\it{scount}} and read {\it{TCNT2}}.
 Since the {\it{scount}} variable depends on asynchronous interrupts produced by
@@ -30,13 +31,13 @@ To provide consistent time values, a proper solution must be designed.
 If stimers should not be broken by setting the {\it{seconds}} or {\it{scount}} variable,
 and Contiki should be able to provide the current time in a higher precision,
 a new call interface must be designed.
-This call interface shall use a time specification structure similar
-to the existing POSIX standard~\cite{posix}.
+This call interface shall use a timescale and a time specification structure in compliance
+with the existing POSIX standard~\cite{posix}.
 Such a structure for representing the time values is also not present in Contiki.
 
 Similarly, there is no call for adjusting the time in Contiki.
 Due to memory constraints, software structures controlling the time adjustments are too heavyweight
-for use in an embedded operating system running on 8-bit CPUs.
+for use in an embedded operating system on 8-bit CPUs.
 Due to low CPU frequencies, the code of an interrupt service routine can not be complex
 and sophisticated clock discipline algorithms should be avoided.
 A call for adjusting the time should therefore use abilities
@@ -50,4 +51,4 @@ Such changes would influence the system time and the dependent Contiki timers.
 However, applications requiring uninfluenced timers
 could use the Contiki rtimers, described in section~\ref{sec:contiki-timers},
 because they use a separate hardware clock unaffected by these changes
-(Timer/Counter~3 on AVR Raven platform).
+(Timer/Counter~3 in case of the AVR Raven platform).

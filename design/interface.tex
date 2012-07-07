@@ -7,7 +7,7 @@ way of setting, getting and adjusting the time for an NTP client in Contiki OS.
 A new interface for setting, getting and eventually adjusting the time
 must therefore be developed.
 
-Setting the time should not cause a misbehaviour of the Contiki timers
+Setting the time should not cause a misbehaviour of the Contiki timers,
 described in section~\ref{sec:analysis-time}.
 A modification of the {\it{scount}} and the {\it{seconds}} variable must be therefore avoided.
 This can be achieved using an additional variable, containing the system boot time,
@@ -15,21 +15,42 @@ and modifying only that variable by the call for setting the time.
 This way, the {\it{seconds}} variable will be further representing the system uptime
 and the current real time can be obtained by $boottime + seconds$.
 Since the {\it{scount}} also can not be changed, setting the time is only possible
-within a precision of one second.
-%Finer time setting must be made using the time adjustments.
+within a resolution of one second.
+The call for adjusting the time takes one parameter - the time to set, that is, the current real time in
+seconds since the POSIX prime epoch (1 January 1970).
+Because the current real time can not be negative, the parameter is of the unsigned data type.
+Listing~\ref{lst:design-settime} shows the call interface for setting the time.
+\begin{lstlisting}[caption={Call interface for setting the time},label={lst:design-settime}]
+void clock_set_time(unsigned long sec);
+\end{lstlisting}
 
 By contrast, a call for getting the current time must be able to provide a higher precision.
-Therefore, a new time specification structure must introduced as well.
+The one second resolution is also not adequate for adjusting the time.
+Therefore, a new time specification structure must be introduced.
 To conform to the POSIX standard~\cite{posix}, this structure consists of two parts -
 one representing seconds and the other representing nanoseconds.
-The first part represents the number of elapsed seconds since the POSIX epoch.
-The nanosecond precision was chosen as modern systems also aim towards this
-precision~\cite{posix,ntp-precision} and
-the microsecond precision would also require at least 32-bit data type -
-one second has 1~000~000 microseconds, which is more than the maximum expressible value of
-an unsigned 16-bit data type $2^{16}$-1 (65~535).
+The structure definition is shown in listing~\ref{lst:design-timespec-structure}.
+The structure name was chosen {\it{time\_spec}} to avoid collisions with existing POSIX-compliant systems.
+This structure consists of two signed long values to represent seconds and nanoseconds.
+The nanosecond precision was chosen as modern systems also aim towards this precision~\cite{posix,ntp-precision}.
+The value 0 seconds and 0 nanoseconds is equal to the POSIX prime epoch (1 January 1970).
+In case of the seconds part, the long data type was chosen
+because the already present value {\it{seconds}} is also of the long type in Contiki.
+To conveniently represent real-time values as well as local clock adjustment values, which may also be negative,
+the type was chosen to be signed.
+In case of the nanoseconds part, the signed long data type was chosen
+to conform to the POSIX standard~\cite{posix}
+and to be able to represent positive as well as negative values for local clock adjustments.
+\begin{lstlisting}[caption={Time specification structure},label={lst:design-timespec-structure}]
+struct time_spec {
+  long sec;
+  long nsec;
+};
+\end{lstlisting}
 
-The call for getting the time fills the time specification structure.
+Listing~\ref{lst:design-gettime} shows the call interface for getting the time.
+The call for getting the time fills the time specification structure
+pointed to by the {\it{ts}} parameter.
 The part representing seconds is simply filled with the value of $boottime + seconds$,
 while the part representing nanoseconds should be filled with the maximum precision
 the clock model allows.
@@ -45,24 +66,32 @@ where $counts$ is the number of counter register increments between two successi
 which is 32 by default on AVR Raven, as stated in section~\ref{sec:analysis-clock-interface}.
 %If this part was filled by only using the {\it{scount}} variable,
 %just the resolution of the timer interrupt frequency would be provided.
+\begin{lstlisting}[caption={Call interface for getting the time},label={lst:design-gettime}]
+void clock_get_time(struct time_spec *ts);
+\end{lstlisting}
 
 Since setting the current time is possible only within one second precision,
 finer time setting must be made using the time adjustments.
 Section~\ref{sec:analysis-time} explained, that adjusting the time
 should use the hardware clock as much as possible.
-Adjusting the time changes the value in {\it{OCR2A}} compare register
+Therefore, adjusting the time changes the value in {\it{OCR2A}} compare register
 to delay or shorten the clock tick interval,
 which in turn speeds up or slows down the system time.
+To comply with other operating systems,
+the amount of required adjustments is specified by the time specification structure.
 If the amount of required adjustments is positive, then the system clock is speeded up
 until the adjustment has been completed.
 If the amount of required adjustments is negative, then the clock is slowed down in a similar fashion.
-Such a behaviour is compliant with the POSIX standard~\cite{posix}.
-Since the application shall specify the amount of adjustments through the timestamp,
-a new call must be developed for the determination of how many
+Since the application specifies the amount of adjustments by the time specification structure,
+a new call must be introduced to determinate how many
 clock ticks will be delayed or shortened, respectively.
+Listing~\ref{lst:design-adjtime} shows the call interface for adjusting the time.
+\begin{lstlisting}[caption={Call interface for adjusting the time},label={lst:design-adjtime}]
+void clock_adjust_time(struct time_spec *delta);
+\end{lstlisting}
 
 As a result of this design, a leap second occurrence will be handled like an unexpected change of time -
 the operating system will continue with the wrong system time for some time,
-but an NTP client will set or adjust the system time~\cite{ntp-faq}.
-This will effectively cause the leap second correction to be applied too late,
-what is a trade-off for smaller memory requirements.
+but the NTP client will set or adjust the system time.
+This will effectively cause the leap second correction to be applied too late~\cite{ntp-faq},
+which is a trade-off for smaller memory requirements.
