@@ -26,7 +26,7 @@ escapechar=\&,
 
 For using copy \& paste, ASCII text files can be generated
 using {\it{detex}} or {\it{make text}} command.
-All photos can be found in full size in {\it{img}} directory.
+The full-size photos can be found in {\it{img}} directory.
 
 \section{Preparation}
 In this guide we assume the following equipment:
@@ -43,7 +43,7 @@ In this guide we assume the following equipment:
   \includegraphics[width=9cm,keepaspectratio]{smallfig/DSC02594-small.jpeg}
   \caption{External power supply connected to AVR Raven}
 \end{figure}
-	\item AVR Dragon programer - JTAG connection to AVR Raven - \url{http://www.atmel.com/tools/AVRDRAGON.aspx}
+	\item AVR Dragon programmer - JTAG connection to AVR Raven - \url{http://www.atmel.com/tools/AVRDRAGON.aspx}
 	\item USB A/B Cable for connecting PC with AVR Dragon
 	\item Optional RZ USB stick for communication between PC and AVR Raven
 	(mandatory for network communication) - \url{http://www.atmel.com/tools/RZUSBSTICK.aspx}
@@ -316,7 +316,7 @@ In this case, the Contiki project must include the raven-lcd-interface applicati
 {\it{/contiki/platform/avr-raven/apps/raven-lcd-interface/}}.
 This can be achieved by adding {\it{APPS += raven-lcd-interface}} to the project Makefile.
 The application that wants to write to the LCD must include the "raven-lcd.h" header file.
-The function {\it{raven_lcd_show_text(char *text)}} can be used then for writing to the LCD display.
+The function {\it{raven\_lcd\_show\_text(char *text)}} can be used then for writing to the LCD display.
 See an example in the {\it{contiki/platform/avr-raven/apps/raven-lcd-interface}} directory
 and the article {\it{Serial interface between Raven processors}} in Contiki documentation.
 
