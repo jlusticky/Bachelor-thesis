@@ -41,12 +41,12 @@
 void
 ntp_to_ts(const struct l_fixedpt *ntp, struct time_spec *ts)
 {
-  ts->sec = ntp->int_partl - JAN_1970;
-  ts->nsec = fractionl_to_nsec(ntp->fractionl);
+    ts->sec = ntp->int_partl - JAN_1970;
+	ts->nsec = fractionl_to_nsec(ntp->fractionl);
 }
 
 unsigned long
 fractionl_to_nsec(uint32_t fractionl)
 {
-  return ((uint64_t)(fractionl * 1000000000)) >> 32;
+	return ((uint64_t)(fractionl * 1000000000)) >> 32;
 }
