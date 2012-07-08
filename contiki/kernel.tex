@@ -2,14 +2,15 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{Kernel and processes}\label{sec:contiki-kernel}
-The kernel in Contiki is event-driven and provides a cooperative multitasking
-environment, but the system supports preemptive
-multithreading that can be applied on a per-process basis~\cite{video}.
-The preemption is not implemented in the kernel, but
-preemptive multithreading is implemented as a library that is linked only with programs that
+The Contiki kernel is event-driven and provides a cooperative multitasking
+environment, but the system also supports preemptive
+multithreading that can be applied on a per-process basis~\cite{paper-contiki}.
+The preemptive multithreading support is not implemented in the kernel, but
+it is implemented as a library that is linked only with programs that
 explicitly require multithreading~\cite{paper-contiki}.
-The kernel itself contains no platform specific code, it implements only CPU multiplexing and
-lets device drivers and applications communicate directly with hardware~\cite{video}.
+The kernel itself contains no platform specific code.
+It implements only CPU multiplexing and
+lets device drivers and applications communicate directly with hardware~\cite{paper-contiki}. %!LYDIA - causative
 
 From high levels of abstraction,
 applications in Contiki OS are implemented and run as processes.
