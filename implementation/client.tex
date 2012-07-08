@@ -28,9 +28,9 @@ it can send the {\it{PROCESS\_EVENT\_MSG}} event to the NTP process at any time.
 However, no event is sent to that application when the server response arrives.
 
 %CONFIGURATION
-Parameters such as the remote port, the local port
+Parameters such as the server address, the adjust threshold value
 or the $\tau$ exponent of NTP poll interval can be configured using a standard C define macro
-in the source code as well as in the Makefile.
+in the source code or in the Makefile.
 The unicast mode can be turned off by specifying no remote host.
 In this case, all of the code related to the unicast mode will not be compiled.
 
@@ -42,6 +42,9 @@ can be configured in the Makefile as well.
 
 
 %%%
+The conversion discussed in~\ref{sec:design-client}
+%This conversion uses only shifts and additions
+%and the resulting binary is 
 \begin{lstlisting}[caption=Conversion from NTP fraction part to nanoseconds]
 unsigned long
 fractionl_to_nsec(uint32_t fractionl)
@@ -73,11 +76,10 @@ fractionl_to_nsec(uint32_t fractionl)
   return nsec;
 }
 \end{lstlisting}
+%%TODO
 As the code comments say, an extra attention must be taken of the overall
 multiplication coefficient,
 that can not be greater than 1 in any step.
-Because $fractionl$ can be of any value between $0$ and $2^{32}-1$,
-the overall coefficient greater than 1 could cause overflow and an unexpected result.
 
 According to output from the {\it{avr-size}} tool,
 when compiled with GCC 4.3.5,
@@ -87,16 +89,13 @@ resulted binary file (GCC supplies routine for multiplication and shifting 64-bi
 and floating point operation takes 3~358 bytes more
 than the developed algorithm.
 
-It must be noted, that the above presented conversion is not exactly accurate, particularly
-because of loosing the least significant bits by the first shifts.
-However, this conversion gives maximum error of 5 nanoseconds for all possible values of $fractionl$,
-which is totally adequate for most platforms without floating point unit or
-for platforms where usage of 64-bit arithmetic is expansive.
+
 Besides significantly smaller memory requirements,
 this algorithm provides on AVR Raven even more accurate results than the libgcc
 floating point library supplied by GCC.
 
+%%DONE
 The client and the developed interface uses no IP version specific code,
 therefore a communication over IPv4 should be also possible.
-This was due to a missing simple solution for
-communicating over IPv4 on IEEE~802.15.4 link layer not tested though.
+This was not tested though, due to a missing simple solution for
+IPv4 communication over IEEE~802.15.4 link layer.

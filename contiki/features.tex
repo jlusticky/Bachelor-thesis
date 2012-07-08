@@ -3,43 +3,42 @@
 
 \section{Features}
 Contiki OS features lightweight stackless threads called Protothreads.
-Protothreads are a new concept brought to the embedded world by Contiki,
-they are extremely lightweight and compatible with standard C~\cite{paper-protothreads}.
+Protothreads introduced a new concept to the embedded world.
+They are extremely lightweight and compatible with standard C~\cite{paper-protothreads}.
 Each Protothread does not require a separate stack, which fits Protothreads perfectly
 for use in memory constrained embedded systems.
-Protothreads are more detailed discussed in section~\ref{sec:contiki-protothreads}.
+Protothreads are discussed in more detail in section~\ref{sec:contiki-protothreads}.
 
-Contiki also features TCP/IP communication stack called uIP~(micro~IP)
-that conforms to Request For Comments memorandums published by the Internet Engineering Task Force.
-The uIP stack provides communication abilities using both IPv4 and IPv6~\cite{contiki-docs}.
+Apart from Protothreads, Contiki features a TCP/IP communication stack called uIP~(micro~IP)
+that conforms to the Request For Comments memorandums published by the Internet Engineering Task Force.
+The uIP stack allows Contiki to communicate over both IPv4 and IPv6~\cite{contiki-docs}.
 Contiki with its uIP stack is IPv6 Ready Phase 1 certified
-and therefore has right to use the IPv6~Ready silver logo~\cite{ipv6ready-db}.
+and therefore has the right to use the IPv6~Ready silver logo~\cite{ipv6ready-db}.
 Before Contiki's uIP, the embedded world considered IP to be too heavyweight.
-That means all earlier IP implementations for general purpose computers
+All earlier IP implementations for general purpose computers %!LYDIA
 were much bigger than the memory constrained embedded systems could use~\cite{interconnecting}.
-The communication stack uIP is closely described in section~\ref{sec:contiki-uip}.
+The uIP communication stack is further described in section~\ref{sec:contiki-uip}.
 
-Next to the uIP, Contiki is equipped with other communication stack called Rime.
-Rime is a layered communication stack for sensor networks,
-with much thinner layers than traditional architectures~\cite{paper-rime}.
+In addition to uIP, Contiki is equipped with another communication stack called Rime.
+Rime is a layered communication stack for sensor networks and it uses
+much thinner layers than traditional architectures~\cite{paper-rime}.
 Rime is designed to simplify the implementation of communication
 protocols on low-power radios.
 The communication primitives in the Rime stack were chosen
-based on what typical sensor network protocols use -
+based on what the typical sensor network protocols use - %!LYDIA
 single-hop unicast, single-hop broadcast or multi-hop~\cite{contiki-docs,paper-rime}.
 
 Besides Protothreads, uIP and Rime,
-Contiki contains a very simple, relatively small and easy to use filesystem
+Contiki further contains a very simple, relatively small and easy to use filesystem
 called Coffee Filesystem (CFS),
-a graphical user interface called Contiki Toolkit (CTK),
+a graphical user interface called Contiki Toolkit (CTK), an
 Executable Linkable Format (ELF) loader for loading object files into a running Contiki system
 and much more.
 
-The operating system Contiki, uIP and Protothreads are used by hundreds of companies in embedded devices in
-such diverse systems as car engines, oil boring equipment, satellites, and container security systems~\cite{thesis-programming}.
-The software is also used both in academic research
-projects and in university project courses on embedded systems throughout the
-world.
+The operating system Contiki, uIP and Protothreads are used by hundreds of companies on embedded devices in %!LYDIA
+such diverse systems as car engines, oil boring equipments, satellites, and container security systems~\cite{thesis-programming}.
+The software is also used in academic research
+projects and in university project courses all over the world.
 
 \begin{figure}
   \centering

@@ -1,9 +1,9 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky
 
-\section{Contiki NTP client}
+\section{Contiki NTP client}\label{sec:design-client}
 The client application itself is a Contiki process,
-that will use the designed operating system interface from the previous sections
+which will use the designed operating system interface from the previous sections
 and the uIP communication stack.
 
 The client should be able to use both NTP communication modes,
@@ -14,6 +14,24 @@ If the client will use only the broadcast mode, the structures and code
 related to the unicast mode should not be included in the resulting program.
 
 %TODO
+
+As discussed in section~\ref{sec:analysis-application}, the NTP broadcast mode requires no server
+associations.
+In NTP unicast mode, if the NTP client support towards more NTP servers,
+the intersection algorithm, described in section~\ref{sec:ntp-algorithms}, would be needed.
+
+A simple packet receiving is not a matter for constrained systems.
+The NTP broadcast mode packet can be received and processed from any NTP server in the network.
+In NTP unicast mode, the server associations are needed in the client.
+This would complicate the client design and 
+Support for more servers would also need the algorithms described in section~\ref{sec:ntp-algorithms}.
+
+Section described, a network with
+and the algorithm is complicated.
+A single NTP server is the most common use case for an embedded systems network.
+
+but it can send the request to only one specified NTP server.
+
 
 
 The NTP client fills and checks only the seconds part of the NTP timestamp,
@@ -80,40 +98,61 @@ The configuration instead assumes, that an exhausted NTP server rather drops the
 client's packet than sending the response with a KoD code.
 
 
-
+%DONE
 Due to a different origin of the Unix and NTP epoch,
 the number of seconds between NTP and Unix epoch,
 can be simply subtracted from the seconds part of the NTP timestamp.
 But the conversion from the fraction part of the long 64-bit NTP timestamp to nanoseconds,
-used in the local timestamp structure,
+used in the local timestamp structure, %
 is one of the most problematic tasks for memory constrained systems.
 An accurate conversion requires either floating point operations or operations including 64-bit numbers.
 The conversion is given by
 $nsec = fractionl \times 10^9 \div 2^{32}$, where $nsec$ is the nanoseconds part of the local timestamp
 and $fractionl$ is the fraction part of the long 64-bit NTP timestamp.
+
 Since there is no native hardware support for floating point nor 64-bit arithmetic operations,
 the compiler supplies these operations in form of library, called {\it{libgcc}} in case of the GCC compiler,
 which causes a significantly bigger resulting binary file.
 The greatest common divisor of $10^9$ and $2^{32}$ is $2^9$,
 so in fact, a relatively simple multiplication of $fractionl$ by $\frac{5^9}{2^{23}}$ must be computed.
-This can be computed using sequential divisions and multiplications, which
-in turn can be done on 32 bits using shifts and additions~\cite{c99}.
+This can be computed using sequential divisions by the power of 2 and multiplications by the power of 5.
+The C right shift operator divides the unsigned data type by the power of 2
+and the C left shift operator multiplies the unsigned data type by the power of 2~\cite{c99}.
+Therefore, the multiplication by 5 can be done using two left shifts and
+adding the original value ($5x = 4x + x$).
+The only constraint is that the overall coefficient of these operations must not be greater than 1,
+that is, the value must be in the range from $0$ to $2^{32}-1$ in every step.
+Otherwise, the value could overflow and the result would be incorrect.
+Division can not cause such a situation but multiplication could.
+The original value could be divided by a greater divisor,
+but this would lead to a greater inaccuracy due to the lost of the least significant bits.
+Because of this, multiplication done as soon as possible provides more accurate results.
+The ideal conversion sequence is therefore given by formula~\ref{equ:conversion}.
+\begin{equation}
+\label{equ:conversion}
+%\frac{10^9}{2^{32}} = \frac{2^9 \times 5^9}{2^9 \times 2^{23}} =
+%\frac{5^9}{2^{23}} =
+nsec = fractionl \times \frac{5}{2^3} \times \frac{5}{2^3} \times \frac{5}{2^3} \times \frac{5^2}{2^3} \times \frac{5}{2^3}  \times \frac{5}{2^3} \times \frac{5^2}{2^3} \times \frac{1}{2^2}
+\end{equation}
 
-$\frac{10^9}{2^{32}} = \frac{2^9 \times 5^9}{2^9 \times 2^{23}} =
-\frac{5^9}{2^{23}} = \frac{5}{2^3} \times \frac{5}{2^3} \times \frac{5}{2^3} \times \frac{5^2}{2^3}
-\times \frac{5}{2^3}  \times \frac{5}{2^3} \times \frac{5^2}{2^3} \times \frac{1}{2^2}$
-%the last must be done, 2 and 5 are both prime nubmers!
+%TODO
+It must be noted, that the above presented conversion is not exactly accurate, particularly
+because of loosing the least significant bits by the first shifts.
+However, this conversion gives maximum error of 5 nanoseconds for all possible values of $fractionl$,
+which is totally adequate for most platforms without floating point unit or
+for platforms where usage of 64-bit arithmetic is expansive.
 
-
+%DONE
 After the timestamps were converted, the local clock offset is computed
 as given in section~\ref{sec:ntp-algorithms}.
 Depending on the absolute value of the local clock offset,
 the system time is either set or adjusted using the {\it{clock\_set\_time}}
 or {\it{clock\_adjust\_time}} call, respectively.
 The clock is set if the time difference is equal or greater than
-the threshold value, which is 3 seconds by default. %!TODO
-The reference NTP implementation uses 125 ms~\cite{rfc5905}
-It has been the Internet
-experience that the need to change the system time in increments
-greater than +-128 ms is extremely rare and is usually associated
-with a hardware or software malfunction or system reboot~\cite{rfc1589}.
+the threshold value.
+The NTP specification suggest 0.125~seconds as the default~\cite{rfc5905}.
+Because the designed call for setting the time, described in section~\ref{sec:analysis-interface},
+can set the time only within a resolution of one second,
+the threshold value must be at least one second.
+
+%The threshold value should be easily adjusted to specific needs.

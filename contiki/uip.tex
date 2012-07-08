@@ -10,70 +10,69 @@ Before uIP, the TCP/IP architecture was considered to be heavyweight
 due to its perceived need for processing power and memory.
 The IP protocol was seen as too large to fit into the constrained environment -
 existing implementations of the IP protocol family for general purpose computers would need hundreds
-of kilobytes, whereas a typical constrained system has only a few tens of kilobytes of memory~\cite{interconnecting}.
-For this reason, several non-IP stacks were developed.
+of kilobytes, whereas a typical constrained system has only a few tens of kilobytes of memory~\cite{interconnecting}. %!LYDIA
+Several non-IP stacks were developed for this reason.
 
 In the early 2000's, however, this view was challenged by lightweight implementations of the IP
 protocol family for smart objects such as the uIP stack~\cite{interconnecting}.
-uIP showed that the IP architecture would fit nicely into the typical constrained systems,
-without removing any of the essential mechanisms from IP.
+uIP showed that the IP architecture would fit nicely into the typical constrained system
+without removing any of the essential IP mechanisms.
 Note that these resources, which are considered constrained today, are fairly close to the
 resources of general purpose computers that were available when IP was designed~\cite{interconnecting}.
-Since its initial release, the uIP stack has become widely used in networked
-embedded systems~\cite{interconnecting, thesis-programming}.
+The uIP stack has become widely used in networked embedded systems
+since its initial release~\cite{interconnecting, thesis-programming}.
 
 uIP provides two different application programming interfaces to programmers:
-a BSD sockets-like API called Protosockets and raw event-driven API.
-Protosockets are based on Protothreads putting the same limitation on them - such as
-no way of storing automatic local variables and an impossibility of using the C {\it switch} statement.
+a BSD sockets-like API called Protosockets and a raw event-driven API.
+Protosockets are based on Protothreads, which is putting the same limitation on them - such as %LYDIA what imposes
+no way to store the local variables and an impossibility to use the C {\it switch} statement.
 Protosockets only work with TCP connections~\cite{contiki-docs}.
-Since NTP uses UDP, Protosockets will not be further
+Since NTP uses the User Datagram Protocol, Protosockets will not be further
 discussed in this thesis. For more information about Protosockets
 please refer to the Contiki documentation~\cite{contiki-docs}.
 
 uIP contains only the absolute minimum of required features to fulfill the protocol standard.
-It can only handle a single network interface and contains the IP, ICMP, UDP and TCP protocols~\cite{contiki-docs}.
-In order to reduce memory requirements and code size,
+It can handle only a single network interface and contains the IP, ICMP, UDP and TCP protocols~\cite{contiki-docs}. %!LYDIA
+In order to reduce memory requirements and the code size, %!LYDIA
 the uIP implementation uses an event-based API, which is fundamentally different
 from the most common TCP/IP API, the BSD sockets API, present on Unix-like systems
 and defined by the POSIX standard~\cite{thesis-programming,posix}.
 An application is invoked in response to certain events and
-it is up to the application that is receiving events from uIP to handle all
-work with data to be transmitted. E.g. if the data is lost in the network,
-the application will be invoked and then has to resend the data.
+it is up to the application that is receives the events from uIP to handle all the
+work with data to be transmitted - e.g. if the data is lost in the network, %!LYDIA
+the application will be invoked and it has to resend the data. %!LYDIA - time
 This approach is based on the fact that it should be simple for the application
 to rebuild the same data.
 This way, the uIP stack does not need to use explicit dynamic memory allocation.
-Instead, it uses a single global buffer for holding packets and has a fixed
+Instead, it uses a single global buffer for holding the packets and it has a fixed
 table for holding the connection state.
-The global packet buffer is large enough to contain one packet of maximum size~\cite{contiki-docs}.
+The global packet buffer is large enough to contain one packet of maximum size~\cite{contiki-docs}. %!LYDIA of a
 
 When a packet arrives from the network, the device driver places it in the
-global buffer and calls the TCP/IP stack.
-If the packet contains data, the TCP/IP stack will notify the corresponding application.
-Because the data in the buffer will be overwritten by the next incoming packet,
-the application will either have to act immediately on the data or copy the data into
+global buffer and calls the uIP stack.
+If the packet contains data, the uIP stack will notify the corresponding application. %!LYDIA
+Because the data in the buffer will be overwritten by the next incoming packet, %!LYDIA
+the application will either have to act immediately on the data or copy the data into %!LYDIA act on
 its own buffer for later processing.
-The packet buffer will not be overwritten by new packets before the application has processed the data~\cite{contiki-docs}.
-Packets that arrive when the application is processing the data must be queued,
+The packet buffer will not be overwritten by new packets before the application has processed the data~\cite{contiki-docs}. %!LYDIA by
+Packets arriving when the application is processing the data must be queued
 either by the network device or by the device driver.
-That means uIP relies on the hardware when it comes to buffering.
+This means that uIP relies on the hardware when it comes to buffering.
 Most single-chip Ethernet controllers have on-chip buffers
-that are large enough to contain at least 4 maximum sized Ethernet frames~\cite{contiki-docs}.
-This way, uIP does not have to have its own buffer structures and thus
-only a minimal memory amount is required.
-Possible packet loss is a trade-off for minimalism and ability to communicate using TCP/IP.
+that are large enough to contain at least 4 maximum sized Ethernet frames~\cite{contiki-docs}. %!LYDIA
+This way, uIP does not have to have its own buffer structures and thus requires only a minimal memory amount. %!LYDIA
+Possible packet loss is a trade-off for minimalism and ability to communicate using TCP/IP. %!LYDIA - articles
 It is not such a big problem for communication using TCP on the transport layer
 because of the acknowledgement scheme used in TCP to prevent data loss.
-However data carried on UDP can be irrecoverably lost.
+However, data carried on UDP can be irrecoverably lost.
 
 As was expected, measurements show that the uIP implementation provides very low
-throughput, particularly when communicating with a PC host~\cite{thesis-towards}.
+throughput, particularly when it communicates with a PC host~\cite{thesis-towards}.
 However, small systems that uIP is targeting, usually do not produce enough data
 to make the performance degradation a serious problem~\cite{thesis-towards}.
 
 Despite being so small, uIP is not only RFC compliant, but also IPv6 Ready Phase 1 certified.
 uIP is written in the C programming language and it is fully integrated with the Contiki operating system.
 In uIP, there are even some more tricks to shrink the stack
-but a complete uIP description is outside the scope of this thesis.
+but their complete description is outside the scope of this thesis.
 Please refer to the Contiki documentation for more details~\cite{contiki-docs}.
