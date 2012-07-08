@@ -56,7 +56,7 @@ coincident with the POSIX timescale.
 If the new calls in the time interface should use the standard POSIX timescale,
 conversion between the NTP and POSIX timestamps must be calculated.
 
-The Transmit Timestamp sent by the client can be set to any arbitrary value.
+The client can set the Transmit Timestamp in its query to any arbitrary value.
 This is in compliance with the NTPv4 specification~\cite{rfc5905}.
 It is important for the client to store the sent timestamp,
 since it is later used by the client to check the server's response.
@@ -74,6 +74,6 @@ is given by $POSIX.frac = NTP.frac~\times~POSIX.res~\div~2^{32}$,
 where $POSIX.frac$ is the POSIX fraction field value,
 $NTP.frac$ is the NTP fraction field value and
 $POSIX.res$ is the POSIX timestamp resolution ($10^6$ or $10^9$).
-The accurate conversion requires either floating point operations or operations with 64 bit numbers.
+The accurate conversion requires either floating point operations or operations with 64-bit numbers.
 These operations can be memory expensive, especially on 8-bit microcontrollers,
 and their usage must be carefully considered or another suitable solution must be designed.

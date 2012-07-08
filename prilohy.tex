@@ -6,9 +6,9 @@ Listing~\ref{lst:app-protothreads-example} shows
 an example of delaying text on an LCD panel using Protothreads.
 It is taken from
 Adam Dunkels' Protothreads website~\cite{adam-protothreads} and slightly modified.
-Protothreads can be used for introducing delays inside a function without using a full threading model.
+Protothreads can be used to introduce delays inside a function without using a full threading model.
 The example shows a function writing characters to an LCD panel.
-Suppose each character is shown for one second, then the next character replaces the previous.
+Suppose that each character is shown for one second, then the next character replaces the previous.
 \begin{lstlisting}[numbers=left,caption={Example using Protothreads},label=lst:app-protothreads-example]
 #include "pt.h"
 #include "timer.h"
@@ -62,7 +62,7 @@ How does it work? The macro PT\_BEGIN is expanded to {\it switch} statement whil
 code for compilation.
 The PT\_WAIT\_UNTIL macro expands to {\it case} and setting the local continuation
 to the value, so that next time this function is run, it jumps to this {\it case}.
-The structure holding the state is defined outside of the function so its context is not lost when
+The structure holding the state is defined outside of the function, so its context is not lost when
 the function returns. The simplest state structure would hold just the local continuation variable.
 
 Listing~\ref{lst:app-protothreads-preprocessed} shows
