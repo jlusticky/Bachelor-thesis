@@ -12,9 +12,9 @@
  * Second conversion uses 32 bit, no floating point numbers, logical shift
  * (which effectively divides number) and logical shift with addition
  * (which effectively multiplicates number).
- * Such conversion gives maximum error of 5 nanoseconds,
- * which is totaly adequate for most platforms without floating point unit or
- * for platforms where usage of 64bit is expansive (embedded systems).
+ * Such a conversion gives maximum error of 5 nanoseconds,
+ * which is totally adequate for most platforms without the floating point unit or
+ * for platforms where the 64-bit arithmetic is expensive (embedded systems).
  *
  *
  * Copyright (c) 2011, 2012 Josef Lusticky

@@ -9,3 +9,14 @@ So in fact, the code presented in the section~\ref{}
 is not a pseudocode, instead it is the real code used.
 
 This makes portability simple.... porting the code to a new platform simple.
+
+
+%%CLOCK LIBRARY EXTENSION
+Since the counter register can be of a different name on another AVR CPU
+and the clock interface is common for all AVR CPUs,
+a new general name {\it{CLOCK\_COMPARE\_REGISTER}} was defined in the {\it{clock\_init}} setup code
+for the compare register {\it{OCR2A}}.
+Similarly, the {\it{CLOCK\_COMPARE\_REGISTER}} was defined for the counter register {\it{TCNT2}},
+the default value of the clock compare register was defined as {\it{CLOCK\_COMPARE\_DEFAULT\_VALUE}}
+and the {\it{CLOCK\_CTC\_MODE}} was defined as 1, since the hardware clock is used in CTC mode,
+which adds one counter register increment as described in section~\ref{sec:analysis-interface}.
