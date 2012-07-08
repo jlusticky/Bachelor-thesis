@@ -48,7 +48,5 @@ ntp_to_ts(const struct l_fixedpt *ntp, struct time_spec *ts)
 unsigned long
 fractionl_to_nsec(uint32_t fractionl)
 {
-  uint64_t i = fractionl * 1000000000;
-  uint64_t j = i >> 32;
-  return (unsigned long)j;
+  return ((uint64_t)(fractionl * 1000000000)) >> 32;
 }
