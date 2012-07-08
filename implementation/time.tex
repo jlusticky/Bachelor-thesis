@@ -4,12 +4,13 @@
 \section{Time interface extension}
 Since there is no way of setting, getting and adjusting the time in Contiki OS,
 the interface for setting, getting and adjusting time was developed in this thesis.
-%% TODO
-The implementation the designed time interface extension~\ref{sec:analysis-interface}.
+%!TODO
+The implementation uses the designed time interface from section~\ref{sec:design-interface}.
 
 \subsection{Time specification structure}
 A new structure for expressing time values was implemented.
-Section~\ref{sec:analysis-interface} described the reasons for the chosen data types
+This structure is shown in listing~\ref{lst:implementation-timespec-structure}.
+Section~\ref{sec:design-interface} described the reasons for the chosen data types
 in this structure.
 The implicit assumption is that the compiler chooses at least 32-bit data width for the long data type.
 According to ISO C99 standard~\cite{c99},
@@ -18,6 +19,12 @@ shall be greater or equal $2^{31}$-1 (2~147~483~647)~\cite{c99}.
 This in fact results in at least a 32-bit variable unless the compilation setting is changed.
 Such a time representation will wrap around in year 2038
 and has to be changed in the future~\cite{posix}.
+\begin{lstlisting}[caption={Time specification structure},label={lst:implementation-timespec-structure}]
+struct time_spec {
+  long sec;
+  long nsec;
+};
+\end{lstlisting}
 
 
 \subsection{Setting the time}
@@ -25,11 +32,12 @@ Setting the time is only possible within one second precision -
 finer time setting must be made using the time adjustments.
 The implemented {\it{clock\_set\_time}} function computes when the system started
 in seconds since the POSIX epoch and saves the result in the newly implemented {\it{boottime}} variable.
-This avoids the misbehaviour of Contiki stimers, described in section~\ref{sec:desing-interface}.
+This avoids the misbehaviour of Contiki stimers, described in section~\ref{sec:design-interface}.
 
 Thanks to the implemented {\it{clock\_set\_time}} function and {\it{boottime}} variable,
 the running Contiki system is able to tell the uptime, the current real time and the time when the system was booted.
-\begin{lstlisting}
+Listing~\ref{lst:implementation-settime} shows the function for setting the time.
+\begin{lstlisting}[caption={Function for setting the time},label={lst:implementation-settime}]
 volatile unsigned long boottime;
 
 void
@@ -47,10 +55,15 @@ The implemented {\it{clock\_get\_time}} function is then able to tell the
 current time in seconds since the POSIX epoch by simply adding {\it{boottime}}
 and {\it{seconds}}.
 
-Nanoseconds part is filled by reading the {\it{scount}} variable and the hardware counter register.
+The nanoseconds part is filled by reading the {\it{scount}} variable and the hardware counter register.
 The comparison avoids the need to disable clock interrupts to avoid unexpected results.
 This is a common practice on the AVR CPUs in Contiki, as described in~\ref{sec:design-clock}.
-\begin{lstlisting}
+In order to minimise the possible comparison mismatch,
+the consistent values are obtained first and after that used for computation.
+The seconds part is compared a similar manner - if the seconds part is not consistent,
+the other values will not be consistent as well.
+Listing~\ref{lst:implementation-gettime} shows the function for getting the time.
+\begin{lstlisting}[caption={Function for getting the time},label={lst:implementation-gettime}]
 void
 clock_get_time(struct time_spec *ts)
 {
@@ -63,12 +76,13 @@ clock_get_time(struct time_spec *ts)
     } while (counter != CLOCK_COUNTER_REGISTER);
 
     ts->nsec = tmp_scount * (1000000000 / CLOCK_SECOND) +
-               counter * (1000000000 / (CLOCK_SECOND * (CLOCK_COMPARE_DEFAULT_VALUE + CLOCK_CTC_MODE)));
+               counter * (1000000000 / (CLOCK_SECOND *
+                         (CLOCK_COMPARE_DEFAULT_VALUE + CLOCK_CTC_MODE)));
   } while(ts->sec != (boottime + seconds));
 }
 \end{lstlisting}
-Because {\it{1000000000}} and {\it{CLOCK\_SECOND}} are both constants, the compiler is able to
-calculate the result of the division when it is compiling.
+Because both {\it{1000000000}} and {\it{CLOCK\_SECOND}} are constants, the compiler is able to
+calculate the result of the division during the compile time.
 Furthermore as both numbers are integers, the result is integer as well~\cite{c99}.
 Most of the CPU time is therefore spent on the multiplications where the variables
 {\it{counter}} and {\it{tmp\_scount}} are involved. %! LYDIA
@@ -76,29 +90,26 @@ If the code is compiled using GCC version 4.3.5,
 one such a multiplication of two 32-bit variables takes 33 instructions including {\it{call}} and {\it{ret}}
 instructions for entering and returning from the {\it{\_\_mulsi3}} routine, which computes the result.
 This results in 48 clock cycles overhead,
-which takes 6~000 nanoseconds with an 8~MHz CPU clock, %!LYDIA
+which takes 6~000 nanoseconds with an 8~MHz CPU clock,
 according to the AVR Instruction Set manual~\cite{avr-instruction-set}.
 The timestamp provided is therefore not exact.
-Since the consumed time strongly depends on the architecture and compiler specifications,
+Since the time consumed strongly depends on the architecture and compiler specifications,
 no correction was implemented to remove this inaccuracy.
 The application must be instead aware that the timestamp is not exactly accurate.
+
 
 \subsection{Adjusting the time}
 A new function computing the amount of required adjusted ticks was implemented.
 The {\it{clock\_adjust\_time}} function stores the computed result in
-a new variable called {\it{adjcompare}}.
-The data type of this variable was chosen to be of the signed 16-bit type.
-The limit imposed on time adjustments is therefore $2^{15}$ counter register increments %!LYDIA
-for slowing down the clock and $2^{15}-1$ for speeding up the clock.
-This equals to $2^{15}~\times~0.000244140625 = 8$~seconds
-and $(2^{15} - 1)~\times~0.000244140625 \doteq 7.999756$~seconds, respectively.
-
+a new variable called {\it{adjcompare}}, which is further discussed in section~\ref{sec:implementation-clock}.
+If the passed amount of required adjustments is positive, then the system clock is speeded up until
+the adjustment has been completed, and vice versa.
 If the passed amount of adjustments is 0~seconds and 0~nanoseconds,
-the adjustments in progress are stopped, but any already completed part is not undone.
+then the adjustments in progress are stopped, but any already completed part is not undone.
 The passed time values that are between two successive multiples of the clock resolution are truncated.
-\begin{lstlisting}
-volatile int16_t adjcompare;
-
+Listing~\ref{lst:implementation-adjtime} shows the function for adjusting the time.
+%\enlargethispage{\baselineskip}
+\begin{lstlisting}[caption={Function for adjusting the time},label={lst:implementation-adjtime}]
 void
 clock_adjust_time(struct time_spec *delta)
 {
@@ -108,11 +119,14 @@ clock_adjust_time(struct time_spec *delta)
       adjcompare = 0;
       return;
     } else {
-      adjcompare = -delta->nsec / (1000000000 / (CLOCK_SECOND * (CLOCK_COMPARE_DEFAULT_VALUE + CLOCK_CTC_MODE)));
+      adjcompare = -delta->nsec / (1000000000 / (CLOCK_SECOND *
+                   (CLOCK_COMPARE_DEFAULT_VALUE + CLOCK_CTC_MODE)));
     }
   } else {
-    adjcompare = -delta->sec * (CLOCK_SECOND * (CLOCK_COMPARE_DEFAULT_VALUE + CLOCK_CTC_MODE)) +
-                 -delta->nsec / (1000000000 / (CLOCK_SECOND * (CLOCK_COMPARE_DEFAULT_VALUE + CLOCK_CTC_MODE)));
+    adjcompare = -delta->sec * (CLOCK_SECOND *
+                 (CLOCK_COMPARE_DEFAULT_VALUE + CLOCK_CTC_MODE)) +
+                 -delta->nsec / (1000000000 / (CLOCK_SECOND *
+                 (CLOCK_COMPARE_DEFAULT_VALUE + CLOCK_CTC_MODE)));
   }
 }
 \end{lstlisting}

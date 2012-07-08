@@ -8,7 +8,7 @@ Section~\ref{sec:analysis-time} showed that there can be unpredictable
 results caused by a race condition when reading the {\it{scount}} variable
 and the counter register {\it{TCNT2}} afterwards.
 Although the read could be wrapped with an interrupt disable,
-the common solution on AVR platform in Contiki is to perform more read operations,
+the common solution on AVR CPUs in Contiki is to perform more read operations,
 compare the results and perform read operations again if the results are not consistent.
 Figure~\ref{fig:design-read} shows such a solution.
 
@@ -25,7 +25,7 @@ For storing the result, a new variable must be introduced.
 If the value of this variable is zero, no adjustments are in progress.
 Otherwise, the default value of the compare register is incremented or decremented by 1
 and written to {\it{OCR2A}}.
-This effectively causes adjusting the time, as described in section~\ref{sec:analysis-interface}.
+This effectively causes adjusting the time, as described in section~\ref{sec:analysis-time}.
 When the time was adjusted enough,
 the default value of the compare register is written back to {\it{OCR2A}}.
 

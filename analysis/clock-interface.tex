@@ -5,8 +5,8 @@
 As described in section~\ref{sec:contiki-timers},
 Contiki provides a basic clock interface particularly for use of timers
 with a simple goal - measuring time.
-This interface is common for all supported platforms,
-but the particular implementation is platform specific.
+This interface is common for all supported hardware platforms,
+but the particular implementation is platform-specific.
 The definition of the common interface is located in the {\it{core/sys/clock.h}} file
 and the specific implementations can be found in the {\it{clock.c}} file
 in the {\it{cpu/}} directory of the Contiki source code.
@@ -15,13 +15,15 @@ The clock interface provides the {\it{clock\_init}} call for initialising the ha
 that is automatically called during the boot sequence of Contiki.
 On AVR Raven, the {\it{clock\_init}} call sets up
 appropriate registers and the interrupt service routine as described in section~\ref{sec:analysis-hwclock}.
-This call is implemented as a C macro for AVR CPUs, that evaluates to a specific setup code for each
-different AVR CPU during the compilation, and is defined in the {\it{cpu/avr/dev/clock-avr.h}} file.
+
+This call is implemented as a C macro and is defined in the {\it{cpu/avr/dev/clock-avr.h}} file for AVR CPUs
+This macro evaluates to a specific setup code for each different AVR CPU during the compile time.
 The setup code is not common to all AVR CPUs because of differences among them - e.g. there are usually
 only three Timer/Counter modules, but AVR ATmega1284P has four Timer/Counter modules~\cite{avr-datasheet}.
 
 The hardware clock interrupt, described in section~\ref{sec:analysis-hwclock},
-is called {\it{clock tick}}, or {\it{timer tick}}, and at each clock tick, the interrupt service routine increments
+is called {\it{clock tick}}, or {\it{timer tick}}.
+At each clock tick, the interrupt service routine increments
 a system clock value stored in the memory.
 On AVR CPUs, there is a variable counting these clock ticks, called {\it{scount}},
 and a variable counting seconds, called {\it{seconds}}.
@@ -37,9 +39,9 @@ On compare match in the CTC mode, the {\it{TCNT2}} counter register is reset to 
 shown in figure~\ref{fig:design-timing-diagram}.
 The value zero is also included in the counting - the 0th count of the timer also takes one tick.
 Therefore the value of the {\it{OCR2A}} compare register must be ${\frac{f_{T2}}{CLOCK\_SECOND}} - 1$
-when using the CTC mode.
+in the CTC mode.
 The default value of {\it{CLOCK\_SECOND}} for AVR Raven in Contiki is 128,
 which implies the default value of the compare register ${\frac{4096}{128}} - 1 = 31$.
-The {\it{CLOCK\_SECOND}} value is defined in {\it{platform/avr-raven/contiki-conf.h}} file.
+The {\it{CLOCK\_SECOND}} value is defined in the {\it{platform/avr-raven/contiki-conf.h}} file.
 The value of the compare register is specified in the {\it{clock\_init}} call
-and is computed during the compilation.
+and is computed during the compile time.

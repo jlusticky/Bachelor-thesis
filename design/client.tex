@@ -149,9 +149,9 @@ Depending on the absolute value of the local clock offset,
 the system time is either set or adjusted using the {\it{clock\_set\_time}}
 or {\it{clock\_adjust\_time}} call, respectively.
 The clock is set if the time difference is equal or greater than
-the threshold value.
-The NTP specification suggest 0.125~seconds as the default~\cite{rfc5905}.
-Because the designed call for setting the time, described in section~\ref{sec:analysis-interface},
+the offset threshold value.
+The NTP specification suggests 0.125~seconds as the default~\cite{rfc5905}.
+Because the designed call for setting the time, described in section~\ref{sec:design-interface},
 can set the time only within a resolution of one second,
 the threshold value must be at least one second.
 

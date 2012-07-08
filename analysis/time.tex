@@ -44,7 +44,7 @@ A call for adjusting the time should therefore use abilities
 provided by the hardware clock as much as possible.
 
 Updating the value in the {\it{OCR2A}} compare register
-can be used for adjusting the time, because decrementing the compare register
+can be used to adjust the time, because decrementing the compare register
 value causes a faster increment of the {\it{scount}} variable, which in turn causes
 a faster increment of the {\it{seconds}} variable and vice versa.
 Such changes would influence the system time and the dependent Contiki timers.

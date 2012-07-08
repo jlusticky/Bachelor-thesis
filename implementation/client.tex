@@ -28,14 +28,16 @@ it can send the {\it{PROCESS\_EVENT\_MSG}} event to the NTP process at any time.
 However, no event is sent to that application when the server response arrives.
 
 %CONFIGURATION
-Parameters such as the server address, the adjust threshold value
+Parameters such as the server address, the offset threshold value
 or the $\tau$ exponent of NTP poll interval can be configured using a standard C define macro
 in the source code or in the Makefile.
+The default offset threshold value was chosen 3 seconds,
+(approx. 1\% of this amount can be adjusted in 1~second).
 The unicast mode can be turned off by specifying no remote host.
 In this case, all of the code related to the unicast mode will not be compiled.
 
 The remote NTP server can be specified in the Makefile or
-by using the {\it{REMOTE\_HOST}} define macro.
+by the {\it{REMOTE\_HOST}} define macro.
 If no remote host is specified, the NTP client assumes that only the NTP broadcast communication mode will be used.
 The link layer MAC address and the NTP poll exponent $\tau$
 can be configured in the Makefile as well.

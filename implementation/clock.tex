@@ -1,22 +1,50 @@
 %=========================================================================
 % (c) 2011, 2012 Josef Lusticky
 
-\section{Clock library extension}
-%!TODO
-The {\it{clock\_init}} call was extended with macros...
+\section{Clock library extension}\label{sec:implementation-clock}
+Section~\ref{sec:analysis-clock-interface} described, that
+the {\it{clock\_init}} call evaluates to a specific setup code
+for each different AVR CPU during the compilation.
+Other AVR CPUs could use a different hardware clock,
+but the time interface is common for all AVR CPUs.
+Therefore, new general names for each part of the hardware clock
+must be defined in the {\it{clock\_init}} call.
 
-So in fact, the code presented in the section~\ref{}
-is not a pseudocode, instead it is the real code used.
+The compare register {\it{OCR2A}} is defined as {\it{CLOCK\_COMPARE\_REGISTER}},
+the counter register {\it{TCNT2}} is defined as {\it{CLOCK\_COMPARE\_REGISTER}}
+the default value of the clock compare register is defined as {\it{CLOCK\_COMPARE\_DEFAULT\_VALUE}}
+and the {\it{CLOCK\_CTC\_MODE}} is defined as 1, because the hardware clock is used in CTC mode,
+%which adds one counter register increment,
+as described in section~\ref{sec:analysis-interface}.
+So in fact, the code presented in the previous section is not a pseudocode.
+Such an extension also makes porting the code to other platforms simple.
 
-This makes portability simple.... porting the code to a new platform simple.
+The {\it{clock\_adjust\_time}} function uses the new {\it{adjcompare}} variable,
+as described in the previous section.
+The data type of this variable was chosen to be of the signed 16-bit type.
+The limit imposed on time adjustments is therefore $2^{15}$ counter register increments %!LYDIA
+for slowing down the clock and $2^{15}-1$ for speeding up the clock.
+This equals to $2^{15}~\times~0.000244140625 = 8$~seconds
+and $(2^{15} - 1)~\times~0.000244140625 \doteq 7.999756$~seconds, respectively.
+The {\it{volatile}} modifier must be used in conjunction with this variable,
+because the variable may be updated in the interrupt service routine.
+Listing~\ref{lst:implementation-isr} shows the variable definition
+and its use in the interrupt service routine for adjusting the time.
+\begin{lstlisting}[caption={Adjustments pseudocode in interrupt service routine},label={lst:implementation-isr}]
+volatile int16_t adjcompare;
 
-
-%%CLOCK LIBRARY EXTENSION
-Since the counter register can be of a different name on another AVR CPU
-and the clock interface is common for all AVR CPUs,
-a new general name {\it{CLOCK\_COMPARE\_REGISTER}} was defined in the {\it{clock\_init}} setup code
-for the compare register {\it{OCR2A}}.
-Similarly, the {\it{CLOCK\_COMPARE\_REGISTER}} was defined for the counter register {\it{TCNT2}},
-the default value of the clock compare register was defined as {\it{CLOCK\_COMPARE\_DEFAULT\_VALUE}}
-and the {\it{CLOCK\_CTC\_MODE}} was defined as 1, since the hardware clock is used in CTC mode,
-which adds one counter register increment as described in section~\ref{sec:analysis-interface}.
+ISR(AVR_OUTPUT_COMPARE_INT)
+{
+  ...
+  if (adjcompare == 0) { // if not adjusting
+    CLOCK_COMPARE_REGISTER = CLOCK_COMPARE_DEFAULT_VALUE;
+  } else if (adjcompare > 0) { // if slowing down
+    adjcompare--;
+    CLOCK_COMPARE_REGISTER = CLOCK_COMPARE_DEFAULT_VALUE + 1;
+  } else { // if speeding up
+    adjcompare++;
+    CLOCK_COMPARE_REGISTER = CLOCK_COMPARE_DEFAULT_VALUE - 1;
+  }
+  ...
+}
+\end{lstlisting}
