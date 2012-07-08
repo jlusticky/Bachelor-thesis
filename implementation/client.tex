@@ -42,6 +42,11 @@ If no remote host is specified, the NTP client assumes that only the NTP broadca
 The link layer MAC address and the NTP poll exponent $\tau$
 can be configured in the Makefile as well.
 
+Dynamic increasing or decreasing the client's Poll interval in response to
+Kiss-o'-Death packets, described in section~\ref{sec:ntp-network}, is not implemented.
+The implementation instead assumes, that an exhausted NTP server rather drops the incoming
+client's packet than sending the response with a KoD code.
+
 
 %%%
 The conversion discussed in~\ref{sec:design-client}

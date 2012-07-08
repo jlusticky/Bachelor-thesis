@@ -17,11 +17,13 @@ related to the unicast mode should not be included in the resulting program.
 
 As discussed in section~\ref{sec:analysis-application}, the NTP broadcast mode requires no server
 associations.
+A simple packet receiving is not a matter for constrained systems.
+The NTP broadcast mode packet can be received and processed from any NTP server in the network.
+
+
 In NTP unicast mode, if the NTP client support towards more NTP servers,
 the intersection algorithm, described in section~\ref{sec:ntp-algorithms}, would be needed.
 
-A simple packet receiving is not a matter for constrained systems.
-The NTP broadcast mode packet can be received and processed from any NTP server in the network.
 In NTP unicast mode, the server associations are needed in the client.
 This would complicate the client design and 
 Support for more servers would also need the algorithms described in section~\ref{sec:ntp-algorithms}.
@@ -36,10 +38,10 @@ but it can send the request to only one specified NTP server.
 
 The NTP client fills and checks only the seconds part of the NTP timestamp,
 because the conversion to the NTP format would increase the interval
-between the timestamp determination and the packet dispatch.
+between the timestamp determination and the dispatch of the filled packet.
 
 After the filled NTP packet is sent, the client schedules
-sending of the next NTP packet in $2^{\tau}$ seconds
+the dispatch of the next NTP packet in $2^{\tau}$ seconds
 using the event timer library.
 In NTPv4, $\tau$ ranges from 4, resulting in NTP poll interval of 16 seconds,
 to 17, resulting in NTP poll interval of 36 hours.
@@ -92,20 +94,19 @@ But since local variables can not be reused in the Contiki process when the proc
 this would cause either an extra memory overhead or a complicate client design.
 
 
-Dynamic increasing or decreasing the client's Poll interval in response to
-Kiss-o'-Death packets, described in section~\ref{sec:ntp-network}, is not implemented.
-The configuration instead assumes, that an exhausted NTP server rather drops the incoming
-client's packet than sending the response with a KoD code.
+
 
 
 %DONE
-Due to a different origin of the Unix and NTP epoch,
-the number of seconds between NTP and Unix epoch,
+Section~\ref{sec:design-interface} described that the client uses the POSIX timescale,
+whereas NTP uses the NTP timescale.
+Because the time is reckoned in seconds by both the timescales,
+the number of seconds between the NTP epoch and the POSIX epoch
 can be simply subtracted from the seconds part of the NTP timestamp.
 But the conversion from the fraction part of the long 64-bit NTP timestamp to nanoseconds,
-used in the local timestamp structure, %
+used in the local timestamp structure,
 is one of the most problematic tasks for memory constrained systems.
-An accurate conversion requires either floating point operations or operations including 64-bit numbers.
+An accurate conversion requires either floating point operations or operations including 64-bit numbers~\cite{c99}.
 The conversion is given by
 $nsec = fractionl \times 10^9 \div 2^{32}$, where $nsec$ is the nanoseconds part of the local timestamp
 and $fractionl$ is the fraction part of the long 64-bit NTP timestamp.
@@ -115,9 +116,11 @@ the compiler supplies these operations in form of library, called {\it{libgcc}} 
 which causes a significantly bigger resulting binary file.
 The greatest common divisor of $10^9$ and $2^{32}$ is $2^9$,
 so in fact, a relatively simple multiplication of $fractionl$ by $\frac{5^9}{2^{23}}$ must be computed.
-This can be computed using sequential divisions by the power of 2 and multiplications by the power of 5.
-The C right shift operator divides the unsigned data type by the power of 2
-and the C left shift operator multiplies the unsigned data type by the power of 2~\cite{c99}.
+The problem is that there is no portable solution for the operation of type $int\_64 := int\_32 \times int\_32$.
+But the conversion could be performed on 32 bits using sequential
+divisions by the power of 2 and multiplications by the power of 5.
+In the standard C programming language, the bitwise right shift operator divides the unsigned data type by the power of 2
+and the bitwise left shift operator multiplies the unsigned data type by the power of 2~\cite{c99}.
 Therefore, the multiplication by 5 can be done using two left shifts and
 adding the original value ($5x = 4x + x$).
 The only constraint is that the overall coefficient of these operations must not be greater than 1,
@@ -135,11 +138,11 @@ The ideal conversion sequence is therefore given by formula~\ref{equ:conversion}
 nsec = fractionl \times \frac{5}{2^3} \times \frac{5}{2^3} \times \frac{5}{2^3} \times \frac{5^2}{2^3} \times \frac{5}{2^3}  \times \frac{5}{2^3} \times \frac{5^2}{2^3} \times \frac{1}{2^2}
 \end{equation}
 
-It must be noted, that the above presented conversion is not exactly accurate, particularly
-because the least significant bits are lost by the first shifts. %!LYDIA by
+It must be noted, that the above presented conversion is not exactly accurate,
+because the least significant bits are lost by right shifts. %!LYDIA by
 The accuracy can be determined by looping through all the possible values of $fractionl$ %!LYDIA by
 and comparing the results with the reference algorithm that uses the floating point operations.
-This measurement reports the maximum error of 5 nanoseconds,
+Such a measurement reports the maximum error of 5 nanoseconds,
 which is totally adequate for most platforms without the floating point unit or
 for platforms where the 64-bit arithmetic is expensive.
 
@@ -154,5 +157,3 @@ The NTP specification suggests 0.125~seconds as the default~\cite{rfc5905}.
 Because the designed call for setting the time, described in section~\ref{sec:design-interface},
 can set the time only within a resolution of one second,
 the threshold value must be at least one second.
-
-%The threshold value should be easily adjusted to specific needs.
