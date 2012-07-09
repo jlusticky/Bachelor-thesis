@@ -116,8 +116,7 @@ the compiler supplies these operations in form of library, called {\it{libgcc}} 
 which causes a significantly bigger resulting binary file.
 The greatest common divisor of $10^9$ and $2^{32}$ is $2^9$,
 so in fact, a relatively simple multiplication of $fractionl$ by $\frac{5^9}{2^{23}}$ must be computed.
-The problem is that there is no portable solution for the operation of type $int\_64 := int\_32 \times int\_32$.
-But the conversion could be performed on 32 bits using sequential
+This could be computed on 32 bits using sequential
 divisions by the power of 2 and multiplications by the power of 5.
 In the standard C programming language, the bitwise right shift operator divides the unsigned data type by the power of 2
 and the bitwise left shift operator multiplies the unsigned data type by the power of 2~\cite{c99}.

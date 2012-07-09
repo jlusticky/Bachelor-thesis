@@ -40,8 +40,7 @@ Listing~\ref{lst:implementation-settime} shows the function for setting the time
 \begin{lstlisting}[caption={Function for setting the time},label={lst:implementation-settime}]
 volatile unsigned long boottime;
 
-void
-clock_set_time(unsigned long sec)
+void clock_set_time(unsigned long sec)
 {
   boottime = sec - seconds;
 }
@@ -64,8 +63,7 @@ The seconds part is compared a similar manner - if the seconds part is not consi
 the other values will not be consistent as well.
 Listing~\ref{lst:implementation-gettime} shows the function for getting the time.
 \begin{lstlisting}[caption={Function for getting the time},label={lst:implementation-gettime}]
-void
-clock_get_time(struct time_spec *ts)
+void clock_get_time(struct time_spec *ts)
 {
   uint8_t counter, tmp_scount;
   do {
@@ -110,13 +108,11 @@ The passed time values that are between two successive multiples of the clock re
 Listing~\ref{lst:implementation-adjtime} shows the function for adjusting the time.
 %\enlargethispage{\baselineskip}
 \begin{lstlisting}[caption={Function for adjusting the time},label={lst:implementation-adjtime}]
-void
-clock_adjust_time(struct time_spec *delta)
+void clock_adjust_time(struct time_spec *delta)
 {
   if (delta->sec == 0L) {
     if (delta->nsec == 0L) {
-      /* Stop adjustments */
-      adjcompare = 0;
+      adjcompare = 0;  // stop adjustments
       return;
     } else {
       adjcompare = -delta->nsec / (1000000000 / (CLOCK_SECOND *

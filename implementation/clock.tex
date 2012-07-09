@@ -30,18 +30,18 @@ The {\it{volatile}} modifier must be used in conjunction with this variable,
 because the variable may be updated in the interrupt service routine.
 Listing~\ref{lst:implementation-isr} shows the variable definition
 and its use in the interrupt service routine for adjusting the time.
-\begin{lstlisting}[caption={Adjustments pseudocode in interrupt service routine},label={lst:implementation-isr}]
+\begin{lstlisting}[caption={Pseudocode of adjustments in interrupt service routine},label={lst:implementation-isr}]
 volatile int16_t adjcompare;
 
 ISR(AVR_OUTPUT_COMPARE_INT)
 {
   ...
-  if (adjcompare == 0) { // if not adjusting
+  if (adjcompare == 0) {  // if not adjusting
     CLOCK_COMPARE_REGISTER = CLOCK_COMPARE_DEFAULT_VALUE;
-  } else if (adjcompare > 0) { // if slowing down
+  } else if (adjcompare > 0) {  // if slowing down
     adjcompare--;
     CLOCK_COMPARE_REGISTER = CLOCK_COMPARE_DEFAULT_VALUE + 1;
-  } else { // if speeding up
+  } else {  // if speeding up
     adjcompare++;
     CLOCK_COMPARE_REGISTER = CLOCK_COMPARE_DEFAULT_VALUE - 1;
   }

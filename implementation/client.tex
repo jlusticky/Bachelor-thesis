@@ -2,45 +2,86 @@
 % (c) 2011, 2012 Josef Lusticky
 
 \section{Contiki NTP client}
-The structure representing an NTP message was borrowed from OpenNTPD daemon
-and Dragonfly NTP daemon.
+The structure representing an NTP message was borrowed from the OpenNTPD daemon
+and the Dragonfly NTP daemon. %!LYDIA
 This structure is not using the GCC extension for representing a bit field,
 instead uses a single 8-bit integer called {\it{status}}
 for Leap Indicator, Version Number and Mode fields of the NTP packet
 structure described in section~\ref{sec:ntp-network}.
 Accessing each field of the {\it{status}} byte is done using the bitmasks.
 Unlike using the bit field extension,
-such a design is compliant with the standard C language.
+this is compliant with the standard C language~\cite{c99}.
 
-% STATE MACHINE
-The NTP client is written as an event-driven state machine process,
-that yields when there is no event to be served.
-This behaviour is comparable to the daemon mode in other operating systems.
-
-%% packet loss
-Upon sending the packet, the NTP client process sets the event timer and yields
-using the {\it{PROCESS\_YIELD}} statement,
-so no active waiting causes blocking the whole system.
-The NTP process is then invoked either in response to the incoming NTP packet event
-or in response to the timer expiration event.
-If any other running application wants the NTP client to query the server,
-it can send the {\it{PROCESS\_EVENT\_MSG}} event to the NTP process at any time.
-However, no event is sent to that application when the server response arrives.
-
-%CONFIGURATION
-Parameters such as the server address, the offset threshold value
-or the $\tau$ exponent of NTP poll interval can be configured using a standard C define macro
+Parameters such as the remote NTP server address, the offset threshold value
+or the $\tau$ exponent of NTP poll interval can be configured by a standard C define macro
 in the source code or in the Makefile.
 The default offset threshold value was chosen 3 seconds,
 (approx. 1\% of this amount can be adjusted in 1~second).
 The unicast mode can be turned off by specifying no remote host.
 In this case, all of the code related to the unicast mode will not be compiled.
+The remote NTP server address can be either IPv4 or IPv6 address,
+but can not be specified by a domain name.
+The client is written IP-version agnostic and the {\it{UIP\_CONF\_IPV6}} macro is only used
+to print the remote server address when debugging.
 
-The remote NTP server can be specified in the Makefile or
-by the {\it{REMOTE\_HOST}} define macro.
-If no remote host is specified, the NTP client assumes that only the NTP broadcast communication mode will be used.
-The link layer MAC address and the NTP poll exponent $\tau$
-can be configured in the Makefile as well.
+% STATE MACHINE
+The NTP client is written as an event-driven process,
+that yields when there is no event to be served.
+This behaviour is comparable to the daemon mode in other operating systems.
+
+%% packet loss
+Upon sending the packet, the NTP client process sets the event timer,
+yields and waits for the next event by the {\it{PROCESS\_WAIT\_EVENT}} statement.
+Therefore, no active waiting blocks the whole system.
+
+The NTP process is later invoked either in response to the incoming packet event
+or in response to the timer expiration event.
+If any other running application wants the NTP client to query the server,
+it can send the {\it{PROCESS\_EVENT\_MSG}} event to the NTP process at any time.
+However, no event is sent to that application when the server response arrives.
+Applications can instead experience a change of
+the system time by the {\it{clock\_get\_time}} call.
+Listing~\ref{lst:implementation-client} shows the Contiki NTP client pseudocode.
+\begin{lstlisting}[caption={NTP client pseudocode},label={lst:implementation-client}]
+PROCESS_THREAD(event)
+{
+  for(;;) {  // main loop
+    PROCESS_WAIT_EVENT();
+    if(event == tcpip_event) {
+      tcpip_handler();
+    }
+#ifdef REMOTE_HOST  // unicast mode support
+    else if(etimer_expired()) {
+      timeout_handler();
+      etimer_restart();  // set etimer to 2^TAU seconds
+    } else if(event == PROCESS_EVENT_MSG)  // event from another application
+    {
+      timeout_handler();
+    }
+#endif
+  }
+}
+
+tcpip_handler(void)  // process incoming server packet
+{
+  clock_get_time();
+  offset = compute_offset();
+  if(abs(offset) >= ADJUST_THRESHOLD) {
+    clock_set_time();
+  } else {
+    clock_adjust_time();
+  }
+}
+
+#ifdef REMOTE_HOST
+timeout_handler(void)  // send query to REMOTE_HOST
+{
+  clock_get_time();
+  fill_and_send_ntp_packet();
+}
+#endif REMOTE_HOST
+\end{lstlisting}
+
 
 Dynamic increasing or decreasing the client's Poll interval in response to
 Kiss-o'-Death packets, described in section~\ref{sec:ntp-network}, is not implemented.
@@ -53,8 +94,7 @@ The conversion discussed in~\ref{sec:design-client}
 %This conversion uses only shifts and additions
 %and the resulting binary is 
 \begin{lstlisting}[caption=Conversion from NTP fraction part to nanoseconds]
-unsigned long
-fractionl_to_nsec(uint32_t fractionl)
+unsigned long fractionl_to_nsec(uint32_t fractionl)
 {
   unsigned long nsec;
   nsec = fractionl;
@@ -105,9 +145,7 @@ floating point library supplied by GCC.
 %NEW
 Because the current NTP Era ends in 2036,
 the NTP client application code has to be changed in the future~\cite{ntp-y2k}.
-
-%%DONE
-The client and the developed interface uses no IP version specific code,
+The client uses no IP version specific code,
 therefore a communication over IPv4 should be also possible.
 This was not tested though, due to a missing simple solution for
 IPv4 communication over IEEE~802.15.4 link layer.

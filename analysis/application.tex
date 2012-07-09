@@ -74,6 +74,7 @@ is given by $POSIX.frac = NTP.frac~\times~POSIX.res~\div~2^{32}$,
 where $POSIX.frac$ is the POSIX fraction field value,
 $NTP.frac$ is the NTP fraction field value and
 $POSIX.res$ is the POSIX timestamp resolution ($10^6$ or $10^9$).
-The accurate conversion requires either floating point operations or operations with 64-bit numbers.
+The problem is that there is no portable solution for the operation of type $int\_64 := int\_32 \times int\_32$~\cite{c99}.
+Therefore, the accurate conversion requires either floating point operations or operations with 64-bit numbers.
 These operations can be memory expensive, especially on 8-bit microcontrollers,
 and their usage must be carefully considered or another suitable solution must be designed.
