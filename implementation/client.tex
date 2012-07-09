@@ -19,23 +19,23 @@ The default offset threshold value was chosen 3 seconds,
 (approx. 1\% of this amount can be adjusted in 1~second).
 The unicast mode can be turned off by specifying no remote host.
 In this case, all of the code related to the unicast mode will not be compiled.
+
+The client is IP-version agnostic and the {\it{UIP\_CONF\_IPV6}} macro is only used
+to print the remote server address when debugging.
 The remote NTP server address can be either IPv4 or IPv6 address,
 but can not be specified by a domain name.
-The client is written IP-version agnostic and the {\it{UIP\_CONF\_IPV6}} macro is only used
-to print the remote server address when debugging.
+Communication over IPv4 was not tested though, due to a missing simple solution for
+IPv4 communication over IEEE~802.15.4 link layer. %!LYDIA
 
-% STATE MACHINE
-The NTP client is written as an event-driven process,
-that yields when there is no event to be served.
-This behaviour is comparable to the daemon mode in other operating systems.
-
-%% packet loss
-Upon sending the packet, the NTP client process sets the event timer,
-yields and waits for the next event by the {\it{PROCESS\_WAIT\_EVENT}} statement.
-Therefore, no active waiting blocks the whole system.
+% DONE
+The NTP client is written as an event-driven process, that never exits.
+Upon sending the NTP query, the NTP client process sets the event timer,
+yields and waits for the next event by using the {\it{PROCESS\_WAIT\_EVENT}} statement.
+This is comparable to the daemon mode in other operating systems.
 
 The NTP process is later invoked either in response to the incoming packet event
 or in response to the timer expiration event.
+This way, no active waiting blocks the whole system.
 If any other running application wants the NTP client to query the server,
 it can send the {\it{PROCESS\_EVENT\_MSG}} event to the NTP process at any time.
 However, no event is sent to that application when the server response arrives.
@@ -142,8 +142,3 @@ than the developed algorithm.
 Besides significantly smaller memory requirements,
 this algorithm provides on AVR Raven more accurate results than the libgcc
 floating point library supplied by GCC.
-
-The client uses no IP version specific code,
-therefore a communication over IPv4 should be also possible.
-This was not tested though, due to a missing simple solution for
-the IPv4 communication over IEEE~802.15.4 link layer.
