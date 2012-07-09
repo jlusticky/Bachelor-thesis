@@ -24,7 +24,7 @@ since its initial release~\cite{interconnecting, thesis-programming}.
 
 uIP provides two different application programming interfaces to programmers:
 a BSD sockets-like API called Protosockets and a raw event-driven API.
-Protosockets are based on Protothreads, which is putting the same limitation on them - such as %LYDIA what imposes
+Protosockets are based on Protothreads, which puts the same limitation on them - such as %LYDIA what imposes
 no way to store the local variables and an impossibility to use the C {\it switch} statement.
 Protosockets only work with TCP connections~\cite{contiki-docs}.
 Since NTP uses the User Datagram Protocol, Protosockets will not be further
@@ -40,7 +40,7 @@ and defined by the POSIX standard~\cite{thesis-programming,posix}.
 An application is invoked in response to certain events and
 it is up to the application that is receives the events from uIP to handle all the
 work with data to be transmitted - e.g. if the data is lost in the network, %!LYDIA
-the application will be invoked and it has to resend the data. %!LYDIA - time
+the application will be invoked and it has to resend the data.
 This approach is based on the fact that it should be simple for the application
 to rebuild the same data.
 This way, the uIP stack does not need to use explicit dynamic memory allocation.
@@ -74,5 +74,5 @@ to make the performance degradation a serious problem~\cite{thesis-towards}.
 Despite being so small, uIP is not only RFC compliant, but also IPv6 Ready Phase 1 certified.
 uIP is written in the C programming language and it is fully integrated with the Contiki operating system.
 In uIP, there are even some more tricks to shrink the stack
-but their complete description is outside the scope of this thesis.
+but its complete description is outside the scope of this thesis. %!LYDIA
 Please refer to the Contiki documentation for more details~\cite{contiki-docs}.

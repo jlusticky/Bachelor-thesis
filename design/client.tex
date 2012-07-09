@@ -100,7 +100,7 @@ this would cause either an extra memory overhead or a complicate client design.
 %DONE
 Section~\ref{sec:design-interface} described that the client uses the POSIX timescale,
 whereas NTP uses the NTP timescale.
-Because the time is reckoned in seconds by both the timescales,
+Because the time is reckoned in seconds by both timescales,
 the number of seconds between the NTP epoch and the POSIX epoch
 can be simply subtracted from the seconds part of the NTP timestamp.
 But the conversion from the fraction part of the long 64-bit NTP timestamp to nanoseconds,
@@ -113,7 +113,8 @@ and $fractionl$ is the fraction part of the long 64-bit NTP timestamp.
 
 Since there is no native hardware support for floating point nor 64-bit arithmetic operations,
 the compiler supplies these operations in form of library, called {\it{libgcc}} in case of the GCC compiler,
-which causes a significantly bigger resulting binary file.
+which causes a significantly bigger resulting binary file
+(kilobytes in case of floating point operations and hundreds of bytes in case of 64-bit operations).
 The greatest common divisor of $10^9$ and $2^{32}$ is $2^9$,
 so in fact, a relatively simple multiplication of $fractionl$ by $\frac{5^9}{2^{23}}$ must be computed.
 This could be computed on 32 bits using sequential

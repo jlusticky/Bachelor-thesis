@@ -89,11 +89,21 @@ The implementation instead assumes, that an exhausted NTP server rather drops th
 client's packet than sending the response with a KoD code.
 
 
-%%%
-The conversion discussed in~\ref{sec:design-client}
-%This conversion uses only shifts and additions
-%and the resulting binary is 
-\begin{lstlisting}[caption=Conversion from NTP fraction part to nanoseconds]
+Listing~\ref{} shows the conversion from the NTP timestamp to the POSIX timestamp,
+as discussed in~\ref{sec:design-client}.
+The conversion uses only shifts and additions, which makes the resulting binary file
+significantly smaller.
+Because the current NTP Era ends in 2036,
+the conversion of seconds has to be changed in the future~\cite{ntp-y2k}.
+\begin{lstlisting}[caption={Conversion from NTP timestamp to POSIX timestamp},label={lst:implementation-conversion}]
+#define	JAN_1970  2208988800UL    /* 1970 - 1900 in seconds */
+
+void ntp_to_ts(const struct l_fixedpt *ntp, struct time_spec *ts)
+{
+  ts->sec = ntp->int_partl - JAN_1970;
+  ts->nsec = fractionl_to_nsec(ntp->fractionl);
+}
+
 unsigned long fractionl_to_nsec(uint32_t fractionl)
 {
   unsigned long nsec;
@@ -102,7 +112,7 @@ unsigned long fractionl_to_nsec(uint32_t fractionl)
   nsec = (nsec >> 1) + (nsec >> 3); // nsec = (5*nsec) / 8 = (25*fractionl)/64
   nsec = (nsec >> 1) + (nsec >> 3); // nsec = fractionl * 5^3/2^9
   /* Now we can multiply by 5^2 because then the total
-   * multiplication coefficient for the original number fractionl
+   * multiplication coefficient of the original number fractionl
    * will be: fractionl * (5^5)/((2^3)^4) = fractionl * 0.762939453,
    * which is less then 1, so it can not overflow.
    */
@@ -123,29 +133,17 @@ unsigned long fractionl_to_nsec(uint32_t fractionl)
   return nsec;
 }
 \end{lstlisting}
-%%TODO
-As the code comments say, an extra attention must be taken of the overall
-multiplication coefficient,
-that can not be greater than 1 in any step.
-
-According to output from the {\it{avr-size}} tool,
-when compiled with GCC 4.3.5,
-using the 64-bit arithmetic for conversion
-takes 656 bytes more in %program section of
-resulted binary file (GCC supplies routine for multiplication and shifting 64-bit integers)
-and floating point operation takes 3~358 bytes more
+According to the output from the {\it{avr-size}} tool,
+the use of 64-bit arithmetic operations for the conversion
+takes 728 bytes more in the
+resulted binary file (GCC supplies routines for multiplication and shifting 64-bit integers)
+and floating point operations take 3~358 bytes more
 than the developed algorithm.
-
-
 Besides significantly smaller memory requirements,
-this algorithm provides on AVR Raven even more accurate results than the libgcc
+this algorithm provides on AVR Raven more accurate results than the libgcc
 floating point library supplied by GCC.
 
-
-%NEW
-Because the current NTP Era ends in 2036,
-the NTP client application code has to be changed in the future~\cite{ntp-y2k}.
 The client uses no IP version specific code,
 therefore a communication over IPv4 should be also possible.
 This was not tested though, due to a missing simple solution for
-IPv4 communication over IEEE~802.15.4 link layer.
+the IPv4 communication over IEEE~802.15.4 link layer.

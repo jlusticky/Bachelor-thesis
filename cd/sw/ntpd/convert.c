@@ -64,7 +64,7 @@ fractionl_to_nsec(uint32_t fractionl)
 	nsec = (nsec >> 1) + (nsec >> 3); // (125*i) / 512 = (5^3*i) / 2^9
 
 	/* Now we can multiply by 5^2 because then the total
-	 * multiplication coefficient for the original number fractionl
+	 * multiplication coefficient of the original number fractionl
 	 * will be: fractionl * (1/(2^3)^4)*5^5 = fractionl * 0.762939453,
 	 * which is less then 1, so it can not overflow.
 	 */

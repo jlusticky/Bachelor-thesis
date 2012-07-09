@@ -100,7 +100,7 @@ int main(void)
 		xmf = (xmf >> 1) + (xmf >> 3); // (125*i) / 512 = (5^3*i) / 2^9
 
 		/* Now we can multiply by 5^2 because then the total
-		 * multiplication coefficient for the original number i
+		 * multiplication coefficient of the original number i
 		 * will be: i * (5^5)/((2^3)^4) = i * 0.762939453,
 		 * which is less then 1, so it can not overflow.
 		 */
