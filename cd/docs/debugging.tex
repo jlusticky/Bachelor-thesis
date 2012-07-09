@@ -68,11 +68,11 @@ create a port (1212) for connecting with the GDB debugger.
 \begin{lstlisting}
 	&\textdollar& avarice -g -j usb -P atmega1284p --erase --program --file hello-world.hex -B 1MHz :1212
 \end{lstlisting}
-After then we start the GDB debugger with our compiled binary file.
+After that, we start the GDB debugger with our compiled binary file as a parameter.
 \begin{lstlisting}
 the following will run gdb and drop us to its command line:
 	&\textdollar& avr-gdb hello-wolrd.avr-raven
-connect to 1212 port for communicating with the hardware, after then we can debug as usual:
+connect to 1212 port for communicating with the hardware, then we can debug as usual:
 	target remote :1212
 run the program (we should set some brakepoints before):
 	continue

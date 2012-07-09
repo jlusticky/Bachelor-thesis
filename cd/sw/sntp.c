@@ -302,7 +302,7 @@ main(int argc, char *argv[])
 				(unsigned long) (((double) ntohl(recvmsg.xmttime.fractionl) * 1000000000) / 0x100000000UL));
 		}
 
-		if (ival == 0) // if i was not specified, terminate after one packet
+		if (ival == 0) // if i was not specified, terminate after sending one packet
 		{
 			return 0;
 		}
