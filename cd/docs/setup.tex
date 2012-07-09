@@ -238,8 +238,9 @@ Navigate to webserver-ipv6-raven project and compile it for AVR Raven hardware:
 \end{lstlisting}
 
 
-The last thing is flashing our compiled binary file to AVR Raven. We need to do it manually because this project does not have the upload target.
-As before we need hex and eeprom file for flashing:
+The last thing is flashing our compiled binary file to AVR Raven.
+We need to do it manually because this project does not have the upload target.
+We need a hex and eeprom file for flashing:
 \begin{lstlisting}
 	&\textdollar& avr-objcopy -R .eeprom -R .fuse -R .signature -O ihex webserver6-avr-raven.elf webserver6-avr-raven.hex
 	&\textdollar& avr-objcopy -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex webserver6-avr-raven.elf webserver6-avr-raven.eeprom
