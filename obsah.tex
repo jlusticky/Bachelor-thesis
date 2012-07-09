@@ -60,15 +60,21 @@ of the existing code.
 The clock library was extended to provide a platform-agnostic hardware clock interface
 with a minimal memory overhead.
 The time interface could therefore be ported to different hardware platforms easily.
+The call for getting the time provides the maximum precision the hardware clock allows.
+Setting the time is only possible within one second precision in order to avoid
+a misbehaviour of the existing timer libraries.
+The time adjustments, that require sophisticated clock discipline algorithms,
+were due to a complicate design and memory constraints not implemented.
 
 The developed NTP client for Contiki OS uses the developed time interface to keep an accurate time on the device.
 The Contiki NTP client is able to use the NTP unicast and broadcast modes.
-%In NTP unicast mode, only a single upstream NTP server is supported,
-%while packets NTP broadcast mode
 The unique timestamp conversion provides a portable solution to avoid
 memory expensive floating point or 64-bit arithmetic operations in a constrained environment.
 The measurements show that the Contiki NTP client provides an accurate time
 synchronisation mechanism to the Contiki operating system.
+The Contiki NTP client is a Simple Network Time Protocol client,
+that can send requests to only one specified NTP server.
+NTP algorithms for the time determination from more server responses were therefore not implemented.
 
 The Network Time Protocol is suitable for embedded systems and constrained devices
 forming the modern Internet and it will arguably find its place among them in the near future.
