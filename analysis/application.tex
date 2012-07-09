@@ -57,7 +57,7 @@ conversion between the NTP and POSIX timestamps will have to be calculated.
 The client can set the Transmit Timestamp in its query to any arbitrary value.
 This is in compliance with the NTPv4 specification~\cite{rfc5905}.
 It is important for the client to store the sent timestamp,
-since it is later used by the client to check the server response.
+because it is later used by the client to check the server response.
 That practically means, that the conversion from the POSIX timestamp to the 64-bit long NTP timestamp
 is not needed when the client sends the request.
 However, the conversion vice versa is needed when the client calculates

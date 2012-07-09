@@ -54,6 +54,6 @@ the interrupt service routine in this case~\cite{avr-datasheet}.
 
 The interrupt service routine can be further used for updating the value in the {\it{OCR2A}} compare register.
 However, changing {\it{OCR2A}} to a value closer to zero when the counter is running
-must be done with care since the CTC mode does not have a double buffering feature.
+must be done with care because the CTC mode does not have a double buffering feature.
 If the new value written to {\it{OCR2A}} is lower than the current
 value of {\it{TCNT2}}, the counter will miss the compare match~\cite{avr-datasheet}.

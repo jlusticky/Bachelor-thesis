@@ -24,16 +24,16 @@ escapechar=\&,
 This guide shows how to setup different tools for debugging.
 Each of them has some pros and cons and each of them is preferred for other kind of development.
 
-Debugging using the GNU Debugger with JTAG is easy to setup, works directly on the hardware
+Debugging by the GNU Debugger with JTAG is easy to setup, works directly on the hardware
 and usually needs only software available from a repository and no additional hardware setup.
 But debugging using GDB might not be sufficient for all cases of development (such as the Timer/Counter modules).
 
-A simulation of Contiki project with AVR Studio 4 can conveniently show all contents of memory
+Simulation of Contiki project with AVR Studio 4 can conveniently show all contents of memory
 as well as registers - even each bit of them.
 Values can be changed any time and this technique requires no hardware.
-However, since AVR Studio~4 is only available for Windows OS,
+However, because AVR Studio~4 is only available for Windows OS,
 a computer running Windows or virtual machine running Windows is required.
-There is also no simple way of debugging a device using a network communication.
+There is also no simple way of debugging a device that uses network communication.
 
 Debugging using serial output needs no extra software setup and is suitable
 for debugging the whole system directly on the hardware.

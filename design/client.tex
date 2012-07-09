@@ -84,7 +84,7 @@ The conversion is given by
 $nsec = fractionl \times 10^9 \div 2^{32}$, where $nsec$ is the nanoseconds part of the local timestamp
 and $fractionl$ is the fraction part of the long 64-bit NTP timestamp.
 
-Since there is no native hardware support for floating point nor 64-bit arithmetic operations,
+Because there is no native hardware support for floating point nor 64-bit arithmetic operations,
 the compiler supplies these operations in form of library, called {\it{libgcc}} in case of the GCC compiler,
 which causes a significantly bigger resulting binary file
 (kilobytes in case of floating point operations and hundreds of bytes in case of 64-bit operations).

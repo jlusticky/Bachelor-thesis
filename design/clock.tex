@@ -48,13 +48,3 @@ If faster adjustments were needed, the compare register would have to be updated
 However, updating the compare register with more different values would require
 a more complicated software design
 and lower values could cause a miss of the compare match as described in section~\ref{sec:analysis-hwclock}.
-
-% TO NTP INTERFACE
-%When writing to compare register, the value is transferred to a
-%temporary register, and latched after two positive edges of a source clock~\cite{avr-datasheet}.
-%The user should not write a new value before the contents
-%of the temporary register have been transferred to its destination.
-%To detect that a transfer to the destination register has taken place,
-%the Asynchronous Status Register - ASSR has been implemented.
-%Since writing to compare register occurs only once within interrupt CONTEXT, % context?
-%this detection is not mandatory.

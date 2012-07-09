@@ -29,13 +29,13 @@ After invoked, the Protothread continues executing the code following the {\it{P
 To understand the implementation of Protothreads and how they actually work,
 please refer to appendix~\ref{app:protothreads}, where an example of use is shown.
 
-Since Protothreads are implemented using standard C, a library providing Protothreads can be used everywhere,
+Since Protothreads are implemented in standard C, a library providing Protothreads can be used everywhere,
 where the C toolchain is available.
 But there are some constraints to consider.
 Because Protothreads are stackless, a Protothread can run only within a single C function. %!LYDIA
 There is also no way of storing automatic local variables~\cite{contiki-docs}. %LYDIA of
 And since Protothreads are implemented using the C {\it switch} statement, and these can %!LYDIA
-not be nested, the code that uses Protothreads cannot use the {\it switch} statements itself.
+not be nested, the code that uses Protothreads can not use the {\it switch} statements itself.
 A workaround for storing local variables is to prepend them with the {\it static} keyword,
 which makes them being put into the data segment %!LYDIA
 by the compiler and thus remembering their values between the function calls~\cite{paper-protothreads}.

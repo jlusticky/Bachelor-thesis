@@ -26,7 +26,7 @@ which is given by $\delta = (t_4 - t_1) - (t_3 - t_2)$.
 In broadcast communication mode, Origin and Receive Timestamps are not accounted.
 The client computes its local clock offset which is given by $\theta = t_3 - t_4$.
 The implicit assumption in the above is that one-way delay from server to client is zero.
-Since this is never the case, it is useful to provide an
+Because this is never the case, it is useful to provide an
 initial volley where the client exchanges several packets with the server in
 order to calibrate the propagation delay~\cite{rfc5905}.
 
@@ -62,7 +62,3 @@ and getting slightly different answers from them.
 	\label{fig:ntp-intersection}
 	\bigskip
 \end{figure}
-
-%Since the clients complying with a subset of NTP, called
-%the Simple Network Time Protocol (SNTPv4) [RFC4330], do not need to
-%implement the mitigation algorithms ... ~\cite{rfc5905}.

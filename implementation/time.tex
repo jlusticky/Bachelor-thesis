@@ -91,7 +91,7 @@ This results in 48 clock cycles overhead,
 which takes 6~000 nanoseconds with an 8~MHz CPU clock,
 according to the AVR Instruction Set manual~\cite{avr-instruction-set}.
 The timestamp provided is therefore not exact.
-Since the time consumed strongly depends on the architecture and compiler specifications,
+Because the time consumed strongly depends on the architecture and compiler specifications,
 no correction was implemented to remove this inaccuracy.
 The application must be instead aware that the timestamp is not exactly accurate.
 

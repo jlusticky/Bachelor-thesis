@@ -4,10 +4,11 @@
 \section{Network and timestamps}\label{sec:ntp-network}
 The network specification of NTP defines
 the protocol to use the User Datagram Protocol (UDP) on port number 123~\cite{ianna-ports,rfc5905}.
-Reliable message delivery such as TCP can actually make the delivery of
-NTP packet less reliable since retries
+Reliable message delivery such as the Transmission Control Protocol (TCP)
+can actually make the delivery of
+NTP packets less reliable because retries
 would increase the delay value and other errors~\cite{rfc5905}.
-This is mostly due to overhead of communication with TCP on the transport layer.
+%This is mostly due to overhead caused by communication over TCP on the transport layer.
 
 NTP handles the time through timestamps - a record of time.
 An NTP timestamp has two fields: the seconds field expressing the number of seconds

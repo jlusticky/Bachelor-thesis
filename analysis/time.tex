@@ -4,7 +4,7 @@
 \section{Time interface}\label{sec:analysis-time}
 The low-level clock interface described in the previous section
 is used by Contiki to provide the system time through the time interface.
-Since the value of the {\it{seconds}} variable is zero after the system booted,
+Because the value of the {\it{seconds}} variable is zero after the system booted,
 it actually represents the system uptime.
 The {\it{seconds}} variable is of the long data type and its
 value can be obtained using the {\it{clock\_seconds}} call by the application.
@@ -22,7 +22,7 @@ as it provides a resolution of $\frac{1}{CLOCK\_SECOND}$~seconds.
 Moreover, the hardware counter can be also queried as it includes the time passed since
 the last update of the {\it{scount}} variable.
 Two read operations are needed then - read {\it{scount}} and read {\it{TCNT2}}.
-Since the {\it{scount}} variable depends on asynchronous interrupts produced by
+Because the {\it{scount}} variable depends on asynchronous interrupts produced by
 the clock module, the followed query of the counter register causes a race condition.
 The timer clock runs asynchronously from the CPU clock and
 the result may be unpredictable if read while the timer is running.

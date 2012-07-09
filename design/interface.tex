@@ -82,7 +82,7 @@ the amount of required adjustments is specified by the time specification struct
 If the amount of required adjustments is positive, then the system clock is speeded up
 until the adjustment has been completed.
 If the amount of required adjustments is negative, then the clock is slowed down in a similar fashion.
-Since the application specifies the amount of adjustments by the time specification structure,
+Because the application specifies the amount of adjustments by the time specification structure,
 a new call must be introduced to determinate how many
 clock ticks will be delayed or shortened, respectively.
 Listing~\ref{lst:design-adjtime} shows the call interface for adjusting the time.

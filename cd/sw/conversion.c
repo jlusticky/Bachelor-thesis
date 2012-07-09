@@ -110,12 +110,12 @@ int main(void)
 		xmf = (xmf >> 1) + (xmf >> 3);
 
 		/* Again we can multiply by 5^2.
-		 * Total coefficient will be i * (5^9)/((2^3)^7) = i * 0.931322575
+		 * The total coefficient will be i * (5^9)/((2^3)^7) = i * 0.931322575
 		 */
 		xmf = (xmf << 1) + xmf + (xmf >> 3); // xmf*3 + xmf/8 = (25*xmf) / 8
 
 		/* Last shift to agree with division by 2^23 can not be
-		 * done earlier since coefficient would always be greater than 1.
+		 * done earlier because the total coefficient would always be greater than 1.
 		 */
 		xmf = xmf >> 2;
 /// end

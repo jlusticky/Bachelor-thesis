@@ -74,12 +74,12 @@ fractionl_to_nsec(uint32_t fractionl)
 	nsec = (nsec >> 1) + (nsec >> 3);
 
 	/* Again we can multiply by 5^2.
-	 * Total coefficient will be fractionl * (1/(2^3)^7)*5^9 = fractionl * 0.931322575
+	 * The total coefficient will be fractionl * (1/(2^3)^7)*5^9 = fractionl * 0.931322575
 	 */
 	nsec = (nsec << 1) + nsec + (nsec >> 3); // nsec*3 + nsec/8 = (25*nsec) / 8
 
 	/* Last shift to agree with division by 2^23 can not be
-	 * done earlier since coefficient would always be greater than 1.
+	 * done earlier because the total coefficient would always be greater than 1.
 	 */
 	nsec = nsec >> 2;
 #elif 0
