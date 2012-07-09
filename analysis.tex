@@ -12,27 +12,27 @@ On top of the clock interface is an interface for providing the system time.
 To implement a reasonably useful NTP client,
 the operating system must be able to set, get and eventually adjust the system time
 through the time interface.
-Though not mandatory, adjusting the time is an important function,
-if the time shall be always a monotonically increasing function.
+Though not mandatory, adjusting the time is important
+in case the time shall be always a monotonically increasing function.
 
 Apart from that, an ability to communicate over UDP is also required for the NTP client.
 This is a task of the operating system network interface.
 
 The NTP client is an application, that communicates with the NTP server through the network interface
 and uses the time interface of the operating system.
-It further calculates the clock offset of the NTP sever's clock
-as describes in section~\ref{sec:ntp-algorithms}.
+It further calculates the local clock offset of the NTP sever's clock
+as described in section~\ref{sec:ntp-algorithms}.
 
 \begin{figure}
   \centering
   \includegraphics[width=13cm,keepaspectratio]{fig/analysis.png}
-  \caption{NTP client overview} %!TODO
-  \label{fig:analysis-overview} %!TODO
+  \caption{NTP client overview}
+  \label{fig:analysis-overview}
 \end{figure}
 
 In order to develop the NTP client for Contiki,
 the operating system Contiki and the hardware platform must provide the necessary
-components, as show in figure~\ref{fig:analysis-overview}.
+components, as shown in figure~\ref{fig:analysis-overview}.
 
 To develop and test the Contiki NTP client,
 the AVR Raven platform with the 8-bit ATmega1284P CPU~\cite{avr-datasheet} will be used.

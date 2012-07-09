@@ -3,16 +3,19 @@
 
 \chapter{Measurements}\label{chap:measurements}
 There are several factors that can be measured.
-The clock interrupt frequency measurements show the influence of clock adjustments
+The clock interrupt frequency measurements show the influence of the clock adjustments
 on the number of clock ticks (interrupts) per second.
 The clock offset measurements show the time difference between the reference clock and
 the local clock.
 The clock phase measurements show the phase difference between the reference clock and
-the local clock, that is, when each second is accounted.
+the local clock, that is, when each second is accounted. %!LYDIA
+All of the presented plots and their respective source values can be found on the CD
+attached to this thesis.
+The table of CD contents is listed in appendix~\ref{app:cd-contents}.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=13cm,keepaspectratio]{fig/radvd-routing.png}
-	\caption{Contiki NTP Client communicating with the Meinberg NTP server}
+	\caption{Network topology for measurements}
 	\label{fig:measurements-routing}
 \end{figure}
 Figure~\ref{fig:measurements-routing} shows the network topology used for the measurements.
@@ -33,32 +36,32 @@ When there are no clock adjustments in progress, the value of the output compare
 The clock interrupt frequency
 is supposed to be equal to a~value of the {\it{CLOCK\_SECOND}} macro, which is 128 by default on AVR~Raven
 and is given by formula~\ref{equ:measurements-128}.
-Figure~\ref{fig:app-osc-no-adjust} in appendix~\ref{app:interrupt-frequency} shows the output from oscilloscope
+Figure~\ref{fig:app-osc-no-adjust} in appendix~\ref{app:interrupt-frequency} shows the oscilloscope output 
 for this case.
 \begin{equation}
 \label{equ:measurements-128}
 \frac{\frac{f_{asy}}{prescaler}}{counts} = \frac{\frac{32768}{8}}{32} = 128
 \end{equation}
 
-Figure~\ref{fig:app-osc-speed-up} in appendix~\ref{app:interrupt-frequency} shows the~output from oscilloscope
+Figure~\ref{fig:app-osc-speed-up} in appendix~\ref{app:interrupt-frequency} shows the oscilloscope output
 when slowing down the clock.
-The~clock interrupt frequency
+The clock interrupt frequency
 is supposed to be equal to $124.\overline{12}$~Hz and is given by formula~\ref{equ:measurements-124}.
 \begin{equation}
 \label{equ:measurements-124}
 \frac{\frac{f_{asy}}{prescaler}}{counts + 1} = \frac{\frac{32768}{8}}{32+1} = 124.\overline{12}
 \end{equation}
 
-Figure~\ref{fig:app-osc-slow-down} in appendix~\ref{app:interrupt-frequency} shows the output from oscilloscope
+Figure~\ref{fig:app-osc-slow-down} in appendix~\ref{app:interrupt-frequency} shows the oscilloscope output
 when speeding up the clock.
-The~clock interrupt frequency
+The clock interrupt frequency
 is supposed to be approximately equal to 132.129~Hz and is given by formula~\ref{equ:measurements-132}.
 \begin{equation}
 \label{equ:measurements-132}
 \frac{\frac{f_{asy}}{prescaler}}{counts - 1} = \frac{\frac{32768}{8}}{32-1} \doteq 132.129
 \end{equation}
 
-The~measured values are not exactly equal to those expected.
+The measured values are not exactly equal to those expected.
 This is mostly due to a room temperature influence on the clock source
 (32~768~Hz quartz crystal oscillator),
 but it could also be air pressure or magnetic fields, etc.
@@ -107,7 +110,7 @@ The GPS based clock Meinberg~GPS~167 and digital oscilloscope UNI-T~2025CEL
 were used for measuring the clock phase difference.
 Meinberg~GPS clock rises an impulse when each second is accounted.
 Contiki on AVR~Raven was configured to write a logic~1
-to~bit~7 of~Port~D when each second is accounted,
+to~bit~7 of~Port~D when each second is accounted
 and to write a logic~0 to~the same bit after~25 clock ticks.
 
 When the NTP client uses the {\it{clock\_adjust\_time}} call,
@@ -118,8 +121,8 @@ and the blue line is the output signal from AVR~Raven.
 \begin{figure}[H]
   \centering
   \includegraphics[width=11cm,keepaspectratio]{fig/osc-adjusting-phase.png}
-  \caption{Second impulses when the clock is being adjusted}
+  \caption{Second impulses when clock adjustments are in progress}
   \label{fig:measurements-osc-adjusting-phase}
 \end{figure}
-Figures showing the clock out of phase and the clock in phase with
+Figures showing the clock out of phase and in phase with
 the reference clock can be found in appendix~\ref{app:phase}.

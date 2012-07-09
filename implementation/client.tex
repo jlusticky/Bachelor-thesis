@@ -3,7 +3,7 @@
 
 \section{Contiki NTP client}
 The structure representing an NTP message was borrowed from the OpenNTPD daemon
-and the Dragonfly NTP daemon. %!LYDIA
+and the Dragonfly NTP daemon.
 This structure is not using the GCC extension for representing a bit field,
 instead uses a single 8-bit integer called {\it{status}}
 for Leap Indicator, Version Number and Mode fields of the NTP packet
@@ -89,7 +89,7 @@ The implementation instead assumes, that an exhausted NTP server rather drops th
 client's packet than sending the response with a KoD code.
 
 
-Listing~\ref{} shows the conversion from the NTP timestamp to the POSIX timestamp,
+Listing~\ref{lst:implementation-conversion} shows the conversion from the NTP timestamp to the POSIX timestamp,
 as discussed in~\ref{sec:design-client}.
 The conversion uses only shifts and additions, which makes the resulting binary file
 significantly smaller.

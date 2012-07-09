@@ -10,7 +10,7 @@ the UDP network communication is not an issue for Contiki OS.
 The NTP client needs server associations in the NTP unicast communication mode.
 However, too many server associations complicate the client design.
 In fact, in the most common case, there can be only a single NTP master server
-in the whole network.
+in the whole network~\ref{rfc5905}.
 A single server association requires just a simple calculation of the local clock offset
 $\theta$, whereas more server associations require the intersection algorithm
 described in section~\ref{sec:ntp-algorithms}.
@@ -22,7 +22,7 @@ requires no server associations and no packet filling process on the client side
 Moreover, because the client does not have to actively send any NTP packets,
 an energy consumption of the client is reduced.
 Contiki supports broadcast packets as well as sending multicast packets~\cite{contiki-docs}.
-An implementation of the NTP broadcast mode is therefore also possible.
+An implementation of NTP broadcast mode is therefore also possible.
 Joining multicast groups through Internet Group Management Protocol (IGMP)
 and receiving non-local multicast packets
 was not supported at the time of writing~\cite{contiki-docs}.

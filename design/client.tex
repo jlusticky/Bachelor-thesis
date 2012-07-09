@@ -18,7 +18,7 @@ related to the unicast mode should not be included in the resulting program.
 As discussed in section~\ref{sec:analysis-application}, the NTP broadcast mode requires no server
 associations.
 A simple packet receiving is not a matter for constrained systems.
-The NTP broadcast mode packet can be received and processed from any NTP server in the network.
+ %% CHECK !! The NTP broadcast mode packet can be received and processed from any NTP server in the network.
 
 
 In NTP unicast mode, if the NTP client support towards more NTP servers,
@@ -30,9 +30,21 @@ Support for more servers would also need the algorithms described in section~\re
 
 Section described, a network with
 and the algorithm is complicated.
-A single NTP server is the most common use case for an embedded systems network.
+A single NTP server is the most common use case for a Simple Network Time Protocol client.
+
+A simple NTP client (SNTP client) has a single NTP server~\cite{rfc5905}.
+
 
 but it can send the request to only one specified NTP server.
+
+
+
+
+%TODO - Future work:
+%It is useful to provide an initial volley where the client operating in
+%client mode exchanges several packets with the server, so as to
+%calibrate the propagation delay and to run the Autokey security
+%protocol, after which the client reverts to broadcast client mode~\cite{rfc5905}.
 
 
 
@@ -137,14 +149,17 @@ The ideal conversion sequence is therefore given by formula~\ref{equ:conversion}
 %\frac{5^9}{2^{23}} =
 nsec = fractionl \times \frac{5}{2^3} \times \frac{5}{2^3} \times \frac{5}{2^3} \times \frac{5^2}{2^3} \times \frac{5}{2^3}  \times \frac{5}{2^3} \times \frac{5^2}{2^3} \times \frac{1}{2^2}
 \end{equation}
-
 It must be noted, that the above presented conversion is not exactly accurate,
 because the least significant bits are lost by right shifts. %!LYDIA by
 The accuracy can be determined by looping through all the possible values of $fractionl$ %!LYDIA by
 and comparing the results with the reference algorithm that uses the floating point operations.
 Such a measurement reports the maximum error of 5 nanoseconds,
 which is totally adequate for most platforms without the floating point unit or
-for platforms where the 64-bit arithmetic is expensive.
+for platforms where 64-bit multiplication is expensive.
+The implementation of the above as well as the program used for the
+error measurement can be found on the CD attached to this thesis.
+The table of CD contents is listed in appendix~\ref{app:cd-contents}.
+
 
 After the timestamps were converted, the local clock offset is computed
 as given in section~\ref{sec:ntp-algorithms}.

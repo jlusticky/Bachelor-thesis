@@ -66,7 +66,7 @@ This is the only field distinguishing between server and client in NTP.
 In the client-server communication model, the client sets this field to value 3 (client) in the request,
 and the server sets it to value 4 (server) in the response.
 In broadcast communication model, the server sets this field to value 5 (broadcast).
-Other modes are not used by SNTP servers and clients~\cite{rfc4330}.
+Other modes are not used by SNTP servers and clients~\cite{rfc5905}.
 \item
 Stratum is an 8-bit integer representing the stratum as described in section~\ref{sec:ntp-topology}.
 If the Stratum field is 0, which implies unspecified or invalid, the

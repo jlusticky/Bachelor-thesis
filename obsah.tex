@@ -45,7 +45,7 @@ Network Time Protocol version~4 and design and implementation of an NTP client f
 
 \input{measurements.tex}
 
-%! finish
+
 \chapter{Conclusion}
 The Network Time Protocol has been operating over 30 years as of early 2012
 and remains the longest running, continuously operating application
@@ -53,66 +53,36 @@ protocol in the Internet~\cite{ntp-y2k}.
 This thesis demonstrated, that its use can be further extended to a new platform of constrained devices,
 such as embedded systems.
 
-The developed NTP client for Contiki OS is able to use the NTP unicast and broadcast mode.
-The implemented time interface extends Contiki OS towards real-time support,
+The developed time interface extends Contiki OS towards the real-time support,
 while requiring minimal memory amounts.
-The unique timestamp conversion provides a perfect solution to avoid the
-memory expensive floating point or 64-bit arithmetic operations.
-The measured results show that the Contiki NTP client keeps a reasonably accurate time.
+This interface provides new calls to get, set and adjust the system time without any modification
+of the existing code.
+The clock library was extended to provide a platform-agnostic hardware clock interface
+with a minimal memory overhead.
+The time interface could therefore be ported to different hardware platforms easily.
 
-The Network Time Protocol is suitable for constrained devices
-forming the modern Internet and will arguably find its place among them in the near future.
+The developed NTP client for Contiki OS uses the developed time interface to keep an accurate time on the device.
+The Contiki NTP client is able to use the NTP unicast and broadcast modes.
+%In NTP unicast mode, only a single upstream NTP server is supported,
+%while packets NTP broadcast mode
+The unique timestamp conversion provides a portable solution to avoid
+memory expensive floating point or 64-bit arithmetic operations in a constrained environment.
+The measurements show that the Contiki NTP client provides an accurate time
+synchronisation mechanism to the Contiki operating system.
 
-%The implemented clock functionality
+The Network Time Protocol is suitable for embedded systems and constrained devices
+forming the modern Internet and it will arguably find its place among them in the near future.
 
 
+%Refid~\cite{rfc5905}?? - not necessary
 
+%Ability to communicate with more servers. Requires clock selection algorithms.
 
-TODO - Future work:
-It is useful to provide an initial volley where the client operating in
-client mode exchanges several packets with the server, so as to
-calibrate the propagation delay and to run the Autokey security
-protocol, after which the client reverts to broadcast client mode~\cite{rfc5905}.
+%Advanced clock discipline algorithms -
+%The clock discipline process is a system process that controls the
+%time and frequency of the system clock~\cite{rfc5905},
 
-Refid~\cite{rfc5905}?? - not necessary
-
-Ability to communicate with more servers. Requires clock selection algorithms.
-
-Advanced clock discipline algorithms -
-The clock discipline process is a system process that controls the
-time and frequency of the system clock~\cite{rfc5905},
-
-%Add timestamp into i-node in CFS.
-
-%--
-%ntpv4.pdf:
-%SNTP is intended for primary
-%servers equipped with a single reference clock, as well as clients with a single upstream server
-%and no dependent clients.
 
 %It is useful to provide an
 %initial volley where the client operating in mode 3 exchanges several packets with the server in
 %order to calibrate the propagation delay % ntp/algorithms.tex
-
-%The operating system is assumed to provide two functions, one to set the time
-%directly, for example the Unix settimeofday()1 function, and another to adjust the time in small
-%increments advancing or retarding the time by a designated amount, for example the Unix
-%adjtime() function. In the intended design the clock discipline process uses the adjtime() function
-%if the adjustment is less than a designated threshold, and the settimeofday() function if above the
-%threshold.
-
-%An SNTP client using the on-wire protocol has a single server and no downstream clients. It can
-%operate with any subset of the NTP on-wire protocol, the simplest using only the transmit
-%timestamp of the server packet and ignoring all other fields. However, the additional complexity
-%to implement the full on-wire protocol is minimal and is encouraged.
-
-
-%--
-%rfc5905:
-%In the case of NTP as specified herein, NTP broadcast clients are
-%vulnerable to disruption by misbehaving or hostile SNTP or NTP
-%broadcast servers elsewhere in the Internet.  Such disruption can be
-%minimized by several approaches.  Filtering can be employed to limit
-%the access of NTP clients to known or trusted NTP broadcast servers.
-%Such filtering will prevent malicious traffic from reaching the NTP
-%clients.
