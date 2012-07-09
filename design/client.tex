@@ -6,77 +6,71 @@ The client application itself is a Contiki process,
 which will use the designed operating system interface from the previous sections
 and the uIP communication stack.
 
-The client is be able to use both NTP communication modes,
+The client is able to use both NTP communication modes,
 the NTP broadcast mode and the NTP unicast mode.
 If the client will use only the broadcast mode, the structures and code
 related to the unicast mode should not be included in the resulting program.
 NTP broadcast mode packets can be received and processed from any NTP server in the network.
-To avoid a complicate design when the NTP unicast mode is used,
+To avoid a complicated design when the NTP unicast mode is used,
 the client is able to communicate only with one specified NTP server.
 
-%%TODO
 The NTP client fills and checks only the seconds part of the NTP timestamp,
 because the conversion to the NTP format would increase the interval
 between the timestamp determination and the dispatch of the filled packet.
-
 After the filled NTP packet is sent, the client schedules
-the dispatch of the next NTP packet in $2^{\tau}$ seconds
-using the event timer library.
+dispatching of the next NTP packet in $2^{\tau}$ seconds %!LYDIA
+by using the event timer library.
 In NTPv4, $\tau$ ranges from 4, resulting in NTP poll interval of 16 seconds,
 to 17, resulting in NTP poll interval of 36 hours.
 However, the event timer library imposes a limit on the scheduled time.
 This limit is platform specific and depends on the {\it{CLOCK\_SECOND}} value,
 e.g. the $\tau$ value can not be greater than 8 on AVR Raven assuming 128 interrupts per second.
 Upon scheduling the event timer, the client process yields
-and another process can be run.
+and another process could be run.
 The client process is later invoked either by the uIP stack event
 announcing the server response
 or by the event timer in case no server response arrived.
-The event timer therefore effectively solves
-the possible packet loss problem described in section~\ref{sec:analysis-application}.
 
+Due to a missing simple solution for IPv4 communication over IEEE~802.15.4 link layer,
+only IPv6 communication will be tested on the AVR Raven platform.
+DNS resolution is not supported for this reason
+and the remote server must be specified by address.
 
-%%
 The packet loss problem was described in section~\ref{sec:analysis-application}.
-However, packet loss is not a matter for NTP if using either broadcast or unicast mode.
-In broadcast mode, a lost server packet causes no setting or adjusting the client's system time.
+However, packet loss is not a an issue if the client process uses the event timer library.
+In broadcast mode, a lost server packet causes no setting or adjusting the system time.
 The client simply waits without disruption for the next NTP broadcast message.
 If the client needs to figure out it's local clock offset at the moment,
-it can simply query the server using the NTP unicast mode.
-
-%%%TODO
-
+it can query the server by using the NTP unicast mode.
+In unicast mode, the client process is invoked in response to the expired event timer
+and queries the server again.
 
 When the server response arrives,
 the destination timestamp determination is one of the first tasks the client does.
 After that, the client makes packet sanity tests, including
 checking whether the response is from the synchronised server.
-
-A determination of the NTP communication mode follows.
 In the unicast mode, the Originate timestamp is compared with the stored sent timestamp.
-
 The received packet is considered bogus in case of mismatch and further processing is stopped.
 Otherwise, the NTP timestamps are converted to the local timestamp format and
 the local clock offset is computed as described in section~\ref{sec:ntp-algorithms}.
 After the local clock offset is computed,
 the stored transmitted timestamp is immediately set to zero
 to protect against a replay of the last transmitted packet.
-
 In broadcast mode, the received packet is always considered correct
 and the local clock offset is computed as the difference between the local stored timestamp
-and the received Transmit timestamp.
+and the received Transmit Timestamp.
 The local clock offset determined from the broadcast mode
 is influenced by the network propagation delay and therefore less accurate.
-
 The NTP client could exchange several packets with the server to calibrate the propagation delay.
 But since local variables can not be reused in the Contiki process when the process yields,
-this would cause either an extra memory overhead or a complicate client design.
+this would cause either an extra memory overhead or a complicated client design.
 
+Dynamic increasing or decreasing the client's Poll interval in response to
+Kiss-o'-Death packets, described in section~\ref{sec:ntp-network}, would also
+require a complicated design.
+The client instead assumes, that an exhausted NTP server rather drops the incoming
+client query than sending the response with a KoD code.
 
-
-
-
-%DONE
 Section~\ref{sec:design-interface} described that the client uses the POSIX timescale,
 whereas NTP uses the NTP timescale.
 Because the time is reckoned in seconds by both timescales,
@@ -126,7 +120,6 @@ for platforms where 64-bit multiplication is expensive.
 The implementation of the above as well as the program used for the
 error measurement can be found on the CD attached to this thesis.
 The table of CD contents is listed in appendix~\ref{app:cd-contents}.
-
 
 After the timestamps were converted, the local clock offset is computed
 as given in section~\ref{sec:ntp-algorithms}.

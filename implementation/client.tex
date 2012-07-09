@@ -20,8 +20,8 @@ The default offset threshold value was chosen 3 seconds,
 The unicast mode can be turned off by specifying no remote host.
 In this case, all of the code related to the unicast mode will not be compiled.
 
-The client is IP-version agnostic and the {\it{UIP\_CONF\_IPV6}} macro is only used
-to print the remote server address when debugging.
+The client is IP-version agnostic and the {\it{UIP\_CONF\_IPV6}} macro is used only
+when printing the remote server address for debugging purposes.
 The remote NTP server address can be either IPv4 or IPv6 address,
 but can not be specified by a domain name.
 Communication over IPv4 was not tested though, due to a missing simple solution for
@@ -31,14 +31,15 @@ The NTP client is written as an event-driven process, that never exits.
 Upon sending the NTP query, the NTP client process sets the event timer,
 yields and waits for the next event by using the {\it{PROCESS\_WAIT\_EVENT}} statement.
 This is comparable to the daemon mode in other operating systems.
-
 The NTP process is later invoked either in response to the incoming packet event
 or in response to the timer expiration event.
+The type of the event is determined by the {\it{if}} statement.
 This way, no active waiting blocks the whole system.
-If any other running application wants the NTP client to query the server,
+
+If any other application wants the NTP client to query the server,
 it can send the {\it{PROCESS\_EVENT\_MSG}} event to the NTP process at any time.
 However, no event is sent to that application when the server response arrives.
-Applications can instead experience a change of
+The application can instead experience a change of
 the system time by the {\it{clock\_get\_time}} call.
 Listing~\ref{lst:implementation-client} shows the Contiki NTP client pseudocode.
 \begin{lstlisting}[caption={NTP client pseudocode},label={lst:implementation-client}]
@@ -81,19 +82,12 @@ timeout_handler(void)  // send query to REMOTE_HOST
 #endif REMOTE_HOST
 \end{lstlisting}
 
-
-Dynamic increasing or decreasing the client's Poll interval in response to
-Kiss-o'-Death packets, described in section~\ref{sec:ntp-network}, is not implemented.
-The implementation instead assumes, that an exhausted NTP server rather drops the incoming
-client's packet than sending the response with a KoD code.
-
-
 Listing~\ref{lst:implementation-conversion} shows the conversion from the NTP timestamp to the POSIX timestamp,
-as discussed in~\ref{sec:design-client}.
+as presented in~\ref{sec:design-client}.
 The conversion uses only shifts and additions, which makes the resulting binary file
 significantly smaller.
 Because the current NTP Era ends in 2036,
-the conversion of seconds has to be changed in the future~\cite{ntp-y2k}.
+the conversion between the seconds fields has to be changed in the future~\cite{ntp-y2k}.
 \begin{lstlisting}[caption={Conversion from NTP timestamp to POSIX timestamp},label={lst:implementation-conversion}]
 #define	JAN_1970  2208988800UL    /* 1970 - 1900 in seconds */
 
@@ -139,5 +133,5 @@ resulted binary file (GCC supplies routines for multiplication and shifting 64-b
 and floating point operations take 3~358 bytes more
 than the developed algorithm.
 Besides significantly smaller memory requirements,
-this algorithm provides on AVR Raven more accurate results than the libgcc
-floating point library supplied by GCC.
+it was observed that this algorithm provides on AVR Raven
+more accurate results than the libgcc floating point library supplied by GCC.

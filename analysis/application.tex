@@ -6,12 +6,11 @@ Apart from the time interface, the NTP client application
 also needs to use the operating system network interface.
 Thanks to the uIP stack, described in section~\ref{sec:contiki-uip},
 the UDP network communication is not an issue for Contiki OS.
-
 The NTP client needs server associations in the NTP unicast communication mode.
 However, too many server associations complicate the client design.
 In fact, in the most common case, there can be only a single NTP master server
 in the whole network~\cite{rfc5905}.
-A single server association requires just a simple calculation of the local clock offset
+A single server association requires only a simple calculation of the local clock offset
 $\theta$, whereas more server associations require the intersection algorithm
 described in section~\ref{sec:ntp-algorithms}.
 Implementation of such an algorithm, requiring advanced data structures, should be avoided
@@ -29,9 +28,7 @@ was not supported at the time of writing~\cite{contiki-docs}.
 
 The NTP client should be able to communicate over both IPv4 and IPv6.
 Thanks to the uIP stack, this is not an issue for Contiki.
-Due to a missing simple solution for IPv4 communication over IEEE~802.15.4 link layer,
-only IPv6 communication will be tested on the AVR Raven platform.
-Another constraint is that both IP versions can not be used simultaneously in Contiki
+The only constraint is that both IP versions can not be used simultaneously
 and the decision must be made during the compilation~\cite{contiki-docs}.
 Although the {\it{UIP\_CONF\_IPV6}} macro can be used to determine what IP version
 support is being compiled, the NTP client application should be written IP-version agnostic.
@@ -54,20 +51,20 @@ The NTP client will further calculate the local clock offset using the NTP times
 as described in section~\ref{sec:ntp-algorithms}.
 As mentioned in section~\ref{sec:ntp-time}, the NTP timescale is not
 coincident with the POSIX timescale.
-If the new calls in the time interface should use the standard POSIX timescale,
-conversion between the NTP and POSIX timestamps must be calculated.
+If the new calls in the time interface will use the standard POSIX timescale,
+conversion between the NTP and POSIX timestamps will have to be calculated.
 
 The client can set the Transmit Timestamp in its query to any arbitrary value.
 This is in compliance with the NTPv4 specification~\cite{rfc5905}.
 It is important for the client to store the sent timestamp,
-since it is later used by the client to check the server's response.
+since it is later used by the client to check the server response.
 That practically means, that the conversion from the POSIX timestamp to the 64-bit long NTP timestamp
 is not needed when the client sends the request.
 However, the conversion vice versa is needed when the client calculates
 the local clock offset from the received timestamps.
 
-Since both timescales reckon the time in seconds, the conversion from
-the NTP timestamp seconds field value and the POSIX timestamp seconds field value is simple.
+Since both timescales reckon the time in seconds, the conversion between
+the seconds fields of the timestamps is simple.
 However, the conversion from the NTP fraction field value ($2^{-32}$)
 to the POSIX fraction field value (microseconds or nanoseconds) is problematic.
 The relation between the POSIX fraction field and the NTP fraction field
@@ -76,6 +73,6 @@ where $POSIX.frac$ is the POSIX fraction field value,
 $NTP.frac$ is the NTP fraction field value and
 $POSIX.res$ is the POSIX timestamp resolution ($10^6$ or $10^9$).
 The problem is that there is no portable solution for the operation of type $int\_64 := int\_32 \times int\_32$~\cite{c99}.
-Therefore, the conversion requires either floating point operations or operations with 64-bit numbers.
+Therefore, the conversion requires either floating point operations or operations including 64-bit numbers.
 These operations can be memory expensive, especially on 8-bit microcontrollers,
-and their use must be carefully considered or another suitable solution must be designed.
+and their use must be considered carefully or another suitable solution must be designed.

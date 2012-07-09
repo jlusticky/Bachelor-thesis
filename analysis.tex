@@ -14,15 +14,15 @@ the operating system must be able to set, get and eventually adjust the system t
 through the time interface.
 Though not mandatory, adjusting the time is important
 in case the time shall be always a monotonically increasing function.
-
 Apart from that, an ability to communicate over UDP is also required for the NTP client.
 This is a task of the operating system network interface.
 
 The NTP client is an application, that communicates with the NTP server through the network interface
 and uses the time interface of the operating system.
-It further calculates the local clock offset of the NTP sever's clock
-as described in section~\ref{sec:ntp-algorithms}.
-
+It further calculates the local clock offset as described in section~\ref{sec:ntp-algorithms}.
+In order to develop the NTP client for Contiki,
+the operating system Contiki and the hardware platform must provide the necessary
+components, as shown in figure~\ref{fig:analysis-overview}.
 \begin{figure}
   \centering
   \includegraphics[width=13cm,keepaspectratio]{fig/analysis.png}
@@ -30,13 +30,9 @@ as described in section~\ref{sec:ntp-algorithms}.
   \label{fig:analysis-overview}
 \end{figure}
 
-In order to develop the NTP client for Contiki,
-the operating system Contiki and the hardware platform must provide the necessary
-components, as shown in figure~\ref{fig:analysis-overview}.
-
 To develop and test the Contiki NTP client,
 the AVR Raven platform with the 8-bit ATmega1284P CPU~\cite{avr-datasheet} will be used.
-This platform features the IEEE~802.15.4 (Low-Rate Wireless Personal Area Networks) link layer support.
+This platform features the IEEE~802.15.4 (Low-Rate Wireless Personal Area Network) link layer support.
 Together with an adaptation layer called 6LoWPAN (IPv6 over Low power Wireless Personal Area Networks),
 AVR Raven is able to communicate over IPv6.
 
