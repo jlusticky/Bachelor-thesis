@@ -36,10 +36,8 @@ Contiki is also able to use the Domain Name System for the resolution of IPv4 ad
 DNS resolution of IPv6 addresses was not implemented in Contiki OS
 at the time of writing~\cite{contiki-docs}.
 
-% 1 - see design
 A problem might be a possible packet loss when communication uses UDP on the transport layer.
 The reason, why this can happen often in Contiki, is explained in section~\ref{sec:contiki-uip}.
-% 2
 In NTP unicast mode, the packet loss might occur either for the client's query to the server
 or for the server's response to the client.
 If the client's query loss occurs, no server response will be sent.
