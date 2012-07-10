@@ -18,7 +18,7 @@ The NTP client fills and checks only the seconds part of the NTP timestamp,
 because the conversion to the NTP format would increase the interval
 between the timestamp determination and the dispatch of the filled packet.
 After the filled NTP packet is sent, the client schedules
-sending the next NTP packet in $2^{\tau}$ seconds %!LYDIA
+sending the next NTP packet in $2^{\tau}$ seconds
 by using the event timer library.
 In NTPv4, $\tau$ ranges from 4, resulting in NTP poll interval of 16 seconds,
 to 17, resulting in NTP poll interval of 36 hours.
@@ -73,7 +73,7 @@ client's query than sending a response with the KoD code.
 
 Section~\ref{sec:design-interface} described that the client uses the POSIX timescale,
 whereas NTP uses the NTP timescale.
-Since both timescales reckon the time in seconds, %!LYDIA
+Since both timescales reckon the time in seconds,
 the number of seconds between the NTP epoch and the POSIX epoch
 can be simply subtracted from the seconds part of the NTP timestamp.
 But the conversion from the fraction part of the long 64-bit NTP timestamp to nanoseconds,
