@@ -46,14 +46,14 @@ This behaviour is illustrated in figure~\ref{fig:design-timing-diagram}
   \label{fig:design-timing-diagram}
 \end{figure}
 
-Additionally, when a compare match occurs,
+Additionally, when the compare match occurs,
 an interrupt is raised and the interrupt service routine is executed.
 The flag indicating occurred match {\it{OCF2A}} is
 cleared automatically by hardware when executing
 the interrupt service routine in this case~\cite{avr-datasheet}.
 
 The interrupt service routine can be further used for updating the value in the {\it{OCR2A}} compare register.
-However, changing {\it{OCR2A}} to a value closer to zero when the counter is running
+However, changing {\it{OCR2A}} to a value closer to zero while the counter is running
 must be done with care because the CTC mode does not have a double buffering feature.
 If the new value written to {\it{OCR2A}} is lower than the current
-value of {\it{TCNT2}}, the counter will miss the compare match~\cite{avr-datasheet}.
+value of {\it{TCNT2}}, the compare match will be missed~\cite{avr-datasheet}.

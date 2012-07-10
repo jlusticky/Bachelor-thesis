@@ -11,7 +11,7 @@ Setting the time should not cause a misbehaviour of the Contiki timers,
 described in section~\ref{sec:analysis-time}.
 A modification of the {\it{scount}} and the {\it{seconds}} variable must be therefore avoided.
 This can be achieved using an additional variable, containing the system boot time,
-and modifying only that variable by the call for setting the time.
+and modifying only this variable by a call for setting the time.
 This way, the {\it{seconds}} variable will be further representing the system uptime
 and the current real time can be obtained by $boottime + seconds$.
 Since the {\it{scount}} also can not be changed, setting the time is only possible
@@ -30,7 +30,7 @@ Therefore, a new time specification structure must be introduced.
 To conform to the POSIX standard~\cite{posix}, this structure consists of two parts.
 The structure definition is shown in listing~\ref{lst:design-timespec-structure}.
 The structure name was chosen {\it{time\_spec}} to avoid collisions with existing POSIX-compliant systems.
-This structure consists of two signed long values to represent seconds and nanoseconds.
+This structure consists of two signed long values representing seconds and nanoseconds.
 The nanosecond precision was chosen because modern systems also aim towards this precision
 and the microsecond precision would require at least the same data width~\cite{posix,ntp-precision}.
 The value 0 seconds and 0 nanoseconds is equal to the POSIX prime epoch (1 January 1970).
@@ -63,7 +63,7 @@ This way, a resolution of
 $\frac{1}{CLOCK\_SECOND~\times~counts} = \frac{1}{128~\times~32} = 0.000244140625$~seconds
 can be acquired,
 where $counts$ is the number of counter register increments between two successive interrupts,
-which is 32 by default on AVR Raven, as stated in section~\ref{sec:analysis-clock-interface}.
+which is 32 by default on AVR Raven, as explained in section~\ref{sec:analysis-clock-interface}.
 %If this part was filled by only using the {\it{scount}} variable,
 %just the resolution of the timer interrupt frequency would be provided.
 \begin{lstlisting}[caption={Call interface for getting the time},label={lst:design-gettime}]

@@ -22,7 +22,7 @@ Such an extension also makes porting the code to other platforms simple.
 The {\it{clock\_adjust\_time}} function uses the new {\it{adjcompare}} variable,
 as described in the previous section.
 The data type of this variable was chosen to be of the signed 16-bit type.
-The limit imposed on time adjustments is therefore $2^{15}$ counter register increments %!LYDIA
+The limit imposed on time adjustments is therefore $2^{15}$ counter register increments
 for slowing down the clock and $2^{15}-1$ for speeding up the clock.
 This equals to $2^{15}~\times~0.000244140625 = 8$~seconds
 and $(2^{15} - 1)~\times~0.000244140625 \doteq 7.999756$~seconds, respectively.

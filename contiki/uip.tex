@@ -25,7 +25,7 @@ since its initial release~\cite{interconnecting, thesis-programming}.
 uIP provides two different application programming interfaces to programmers:
 a BSD sockets-like API called Protosockets and a raw event-driven API.
 Protosockets are based on Protothreads, which puts the same limitations on them - such as
-no way to store the local variables and an impossibility to use the C {\it switch} statement.
+no way to store the local variables and an impossibility to use C {\it switch} statements.
 Protosockets only work with TCP connections~\cite{contiki-docs}.
 Because NTP uses the User Datagram Protocol, Protosockets will not be further
 discussed in this thesis. For more information about Protosockets
@@ -46,7 +46,7 @@ to rebuild the same data.
 This way, the uIP stack does not need to use explicit dynamic memory allocation.
 Instead, it uses a single global buffer for holding the packets and it has a fixed
 table for holding the connection state.
-The global packet buffer is large enough to contain one packet of the maximum size~\cite{contiki-docs}. %!LYDIA of a
+The global packet buffer is large enough to contain one packet of the maximum size~\cite{contiki-docs}.
 
 When a packet arrives from the network, the device driver places it in the
 global buffer and calls the uIP stack.

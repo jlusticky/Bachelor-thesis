@@ -31,32 +31,32 @@ The client process is later invoked either by the uIP stack event
 announcing the server response
 or by the event timer in case no server response arrived.
 
-Due to a missing simple solution for IPv4 communication over IEEE~802.15.4 link layer,
+For the lack of simple solution for IPv4 communication over IEEE~802.15.4 link layer,
 only IPv6 communication will be tested on the AVR Raven platform.
 DNS resolution is not supported for this reason
 and the remote server must be specified by address.
 
 The packet loss problem was described in section~\ref{sec:analysis-application}.
 However, a packet loss is not an issue if the client process uses the event timer library.
-In the broadcast mode, a lost server packet causes no setting or adjusting the system time.
+In broadcast mode, a lost server packet causes no setting or adjusting the system time.
 The client simply waits without disruption for the next NTP broadcast message.
 If the client needs to figure out its local clock offset at the moment,
 it can query the server by using the NTP unicast mode.
-In the unicast mode, the client process is invoked in response to the expired event timer
+In unicast mode, the client process is invoked in response to the expired event timer
 and queries the server again.
 
 When the server response arrives,
 the destination timestamp determination is one of the first tasks the client does.
 After that, the client makes packet sanity tests, including
 checking whether the response is from a synchronised server.
-In the unicast mode, the Originate Timestamp is compared with the stored sent timestamp. %!LYDIA
-The received packet is considered bogus in case of a mismatch and further processing is stopped. %!LYDIA
+In unicast mode, the Originate Timestamp is compared with the stored sent timestamp.
+The received packet is considered bogus in case of mismatch and further processing is stopped. %!LYDIA
 Otherwise, the NTP timestamps are converted to the local timestamp format and
 the local clock offset is computed as described in section~\ref{sec:ntp-algorithms}.
 After the local clock offset is computed,
 the stored transmitted timestamp is immediately set to zero
 to protect against a replay of the last transmitted packet.
-In the broadcast mode, the received packet is always considered correct
+In broadcast mode, the received packet is always considered correct
 and the local clock offset is computed as the difference between the local stored timestamp
 and the received Transmit Timestamp.
 The local clock offset determined from the broadcast mode
@@ -101,7 +101,7 @@ that is, the value must be in the range from $0$ to $2^{32}-1$ in every step.
 Otherwise, the value could overflow and the result would be incorrect.
 Division can not cause such a situation but multiplication could.
 The original value could be divided by a greater divisor,
-but this would lead to a greater inaccuracy due to the lost of the least significant bits.
+but this would lead to a greater inaccuracy because of loosing the least significant bits.
 Because of this, multiplication done as soon as possible provides more accurate results.
 The ideal conversion sequence is therefore given by formula~\ref{equ:conversion}.
 \begin{equation}
@@ -111,8 +111,8 @@ The ideal conversion sequence is therefore given by formula~\ref{equ:conversion}
 nsec = fractionl \times \frac{5}{2^3} \times \frac{5}{2^3} \times \frac{5}{2^3} \times \frac{5^2}{2^3} \times \frac{5}{2^3}  \times \frac{5}{2^3} \times \frac{5^2}{2^3} \times \frac{1}{2^2}
 \end{equation}
 It must be noted, that the above presented conversion is not exactly accurate,
-because the least significant bits are lost by right shifts. %!LYDIA by
-The accuracy can be determined by looping through all the possible values of $fractionl$ %!LYDIA by
+because the least significant bits are lost because of right shifting.
+The accuracy can be determined by iterating over all the possible values of $fractionl$
 and comparing the results with the reference algorithm that uses the floating point operations.
 Such a measurement reports the maximum error of 5 nanoseconds,
 which is totally adequate for most platforms without the floating point unit or

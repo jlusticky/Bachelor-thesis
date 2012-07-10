@@ -47,11 +47,11 @@ Similarly, if the server's response loss occurs, no message will be received by 
 Not to block the whole system till the response arrives
 is therefore a desired behaviour of the client.
 
-The NTP client will further calculate the local clock offset using the NTP timestamps
+The NTP client will further calculate the local clock offset using the NTP timestamps,
 as described in section~\ref{sec:ntp-algorithms}.
 As mentioned in section~\ref{sec:ntp-time}, the NTP timescale is not
 coincident with the POSIX timescale.
-If the new calls in the time interface will use the standard POSIX timescale,
+If the new calls in the time interface use the standard POSIX timescale,
 conversion between the NTP and POSIX timestamps will have to be calculated.
 
 The client can set the Transmit Timestamp in its query to any arbitrary value.

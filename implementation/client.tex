@@ -24,8 +24,8 @@ The client is IP-version agnostic and the {\it{UIP\_CONF\_IPV6}} macro is used o
 when printing the remote server address for debugging purposes.
 The remote NTP server address can be either IPv4 or IPv6 address,
 but can not be specified by a domain name.
-Communication over IPv4 was not tested though, due to a missing simple solution for
-IPv4 communication over IEEE~802.15.4 link layer. %!LYDIA
+Communication over IPv4 was not tested though, for the lack of simple solution for
+IPv4 communication over IEEE~802.15.4.
 
 The NTP client is written as an event-driven process, that never exits.
 Upon sending the NTP query, the NTP client process sets the event timer,
@@ -96,7 +96,7 @@ as presented in~\ref{sec:design-client}.
 The conversion uses only shifts and additions, which makes the resulting binary file
 significantly smaller.
 Because the current NTP Era ends in 2036,
-the conversion between the seconds fields has to be changed in the future~\cite{ntp-y2k}. %!LYDIA
+the conversion between the seconds fields has to be changed in the future~\cite{ntp-y2k}.
 
 According to the output from the {\it{avr-size}} tool,
 the use of 64-bit arithmetic operations for the conversion

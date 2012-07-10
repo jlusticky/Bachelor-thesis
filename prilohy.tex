@@ -58,10 +58,10 @@ it is entered again.
 When the condition specified in PT\_WAIT\_UNTIL is met,
 the next iteration of the {\it{for}} loop (line 17) is started and the next character is displayed.
 
-How does it work? The macro PT\_BEGIN is expanded to {\it switch} statement while preprocessing the
+How does it work? The macro PT\_BEGIN is expanded to a {\it switch} statement while preprocessing the
 code for compilation.
 The PT\_WAIT\_UNTIL macro expands to {\it case} and setting the local continuation
-to the value, so that next time this function is run, it jumps to this {\it case}.
+to the value, so that the next time this function is run, it jumps to this {\it case}.
 The structure holding the state is defined outside of the function, so its context is not lost when
 the function returns. The simplest state structure would hold just the local continuation variable.
 

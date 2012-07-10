@@ -16,7 +16,7 @@ that is automatically called during the boot sequence of Contiki.
 On AVR Raven, the {\it{clock\_init}} call sets up
 appropriate registers and the interrupt service routine as described in section~\ref{sec:analysis-hwclock}.
 
-This call is implemented as a C macro and is defined in the {\it{cpu/avr/dev/clock-avr.h}} file for AVR CPUs
+This call is implemented as a C macro and is defined for AVR CPUs in the {\it{cpu/avr/dev/clock-avr.h}} file.
 This macro evaluates to a specific setup code for each different AVR CPU during the compile time.
 The setup code is not common to all AVR CPUs because of differences among them - e.g. there are usually
 only three Timer/Counter modules, but AVR ATmega1284P has four Timer/Counter modules~\cite{avr-datasheet}.

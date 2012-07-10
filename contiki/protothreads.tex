@@ -3,10 +3,10 @@
 
 \section{Protothreads}\label{sec:contiki-protothreads}
 Protothreads provide a way for C functions to run quasi-parallel,
-that is, a C function work in a way similar to a thread~\cite{paper-protothreads}.
+that is, a C function works in a way similar to a thread~\cite{paper-protothreads}.
 In Contiki, Protothreads allow to wait for incoming events without blocking the whole system.
 While waiting for an event to occur, another function could be run.
-The core of this solution is the C {\it switch} statement used in conjunction with a variable (called local continuation)
+The core of this solution is a C {\it switch} statement used in conjunction with a variable (called local continuation)
 containing the position, where the function was blocked~\cite{paper-protothreads}.
 The function continues from this point next time.
 
@@ -33,8 +33,8 @@ Since Protothreads are implemented in standard C, a library providing Protothrea
 where the C toolchain is available.
 But there are some constraints to consider.
 Because Protothreads are stackless, a Protothread can run only within a single C function.
-There is also no way of storing automatic local variables~\cite{contiki-docs}. %LYDIA of
-And since Protothreads are implemented using the C {\it switch} statement, and these can %!LYDIA
+There is also no way to store automatic local variables~\cite{contiki-docs}. %LYDIA of
+And since Protothreads are implemented using a C {\it switch} statement, and these can %!LYDIA
 not be nested, the code that uses Protothreads can not use the {\it switch} statements itself.
 A workaround for storing local variables is to prepend them with the {\it static} keyword,
 which makes them being put into the data segment

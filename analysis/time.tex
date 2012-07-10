@@ -12,7 +12,7 @@ However, there is no call for setting this variable in Contiki 2.5.
 In the current Git version at the time of writing, a new call {\it{clock\_set\_seconds}}
 can be used for this purpose.
 Because this call simply rewrites the {\it{seconds}} variable, it breaks the stimer library,
-and should be therefore avoided by the NTP client.
+and should therefore be avoided by the NTP client.
 Similarly, setting the {\it{scount}} variable would cause
 unbalanced increments of the {\it{seconds}} variable.
 
@@ -31,7 +31,7 @@ To provide consistent time values, a proper solution must be designed.
 If stimers should not be broken by setting the {\it{seconds}} or {\it{scount}} variable,
 and Contiki should be able to provide the current time in a higher precision,
 a new call interface must be designed.
-This call interface shall use the timescale and the time specification structure in compliance %!LYDIA - articles
+This call interface shall use the timescale and the time specification structure in compliance
 with the POSIX standard~\cite{posix}.
 Such a structure for representing the time values is also not present in Contiki.
 
