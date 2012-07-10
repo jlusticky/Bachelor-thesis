@@ -18,7 +18,7 @@ The NTP client fills and checks only the seconds part of the NTP timestamp,
 because the conversion to the NTP format would increase the interval
 between the timestamp determination and the dispatch of the filled packet.
 After the filled NTP packet is sent, the client schedules
-dispatching of the next NTP packet in $2^{\tau}$ seconds %!LYDIA
+sending the next NTP packet in $2^{\tau}$ seconds %!LYDIA
 by using the event timer library.
 In NTPv4, $\tau$ ranges from 4, resulting in NTP poll interval of 16 seconds,
 to 17, resulting in NTP poll interval of 36 hours.
@@ -37,26 +37,26 @@ DNS resolution is not supported for this reason
 and the remote server must be specified by address.
 
 The packet loss problem was described in section~\ref{sec:analysis-application}.
-However, packet loss is not a an issue if the client process uses the event timer library.
-In broadcast mode, a lost server packet causes no setting or adjusting the system time.
+However, a packet loss is not an issue if the client process uses the event timer library.
+In the broadcast mode, a lost server packet causes no setting or adjusting the system time.
 The client simply waits without disruption for the next NTP broadcast message.
-If the client needs to figure out it's local clock offset at the moment,
+If the client needs to figure out its local clock offset at the moment,
 it can query the server by using the NTP unicast mode.
-In unicast mode, the client process is invoked in response to the expired event timer
+In the unicast mode, the client process is invoked in response to the expired event timer
 and queries the server again.
 
 When the server response arrives,
 the destination timestamp determination is one of the first tasks the client does.
 After that, the client makes packet sanity tests, including
-checking whether the response is from the synchronised server.
-In the unicast mode, the Originate timestamp is compared with the stored sent timestamp.
-The received packet is considered bogus in case of mismatch and further processing is stopped.
+checking whether the response is from a synchronised server.
+In the unicast mode, the Originate Timestamp is compared with the stored sent timestamp. %!LYDIA
+The received packet is considered bogus in case of a mismatch and further processing is stopped. %!LYDIA
 Otherwise, the NTP timestamps are converted to the local timestamp format and
 the local clock offset is computed as described in section~\ref{sec:ntp-algorithms}.
 After the local clock offset is computed,
 the stored transmitted timestamp is immediately set to zero
 to protect against a replay of the last transmitted packet.
-In broadcast mode, the received packet is always considered correct
+In the broadcast mode, the received packet is always considered correct
 and the local clock offset is computed as the difference between the local stored timestamp
 and the received Transmit Timestamp.
 The local clock offset determined from the broadcast mode
@@ -69,11 +69,11 @@ Dynamic increasing or decreasing the client's Poll interval in response to
 Kiss-o'-Death packets, described in section~\ref{sec:ntp-network}, would also
 require a complicated design.
 The client instead assumes, that an exhausted NTP server rather drops the incoming
-client query than sending the response with a KoD code.
+client's query than sending a response with the KoD code.
 
 Section~\ref{sec:design-interface} described that the client uses the POSIX timescale,
 whereas NTP uses the NTP timescale.
-Because the time is reckoned in seconds by both timescales,
+Since both timescales reckon the time in seconds, %!LYDIA
 the number of seconds between the NTP epoch and the POSIX epoch
 can be simply subtracted from the seconds part of the NTP timestamp.
 But the conversion from the fraction part of the long 64-bit NTP timestamp to nanoseconds,

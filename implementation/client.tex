@@ -35,6 +35,14 @@ The NTP process is later invoked either in response to the incoming packet event
 or in response to the timer expiration event.
 The type of the event is determined by the {\it{if}} statement.
 This way, no active waiting blocks the whole system.
+Before entering the main loop, the client sends
+its first NTP query after 6 seconds of uptime to set the system time.
+Otherwise, the first set of the system time would happen
+after the event timer expires ($2^{\tau}$~seconds).
+The value of 6 seconds should provide enough time for Contiki to
+configure the network interface.
+If the network interface is not configured at that time,
+the client enters the main loop and schedules sending the next packet as described above.
 
 If any other application wants the NTP client to query the server,
 it can send the {\it{PROCESS\_EVENT\_MSG}} event to the NTP process at any time.

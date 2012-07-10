@@ -8,16 +8,16 @@ Reliable message delivery such as the Transmission Control Protocol (TCP)
 can actually make the delivery of
 NTP packets less reliable because retries
 would increase the delay value and other errors~\cite{rfc5905}.
-%This is mostly due to overhead caused by communication over TCP on the transport layer.
+This is mostly due to the communication overhead of TCP.
 
-NTP handles the time through timestamps - a record of time.
-An NTP timestamp has two fields: the seconds field expressing the number of seconds
-and the fraction field expressing fraction of a second~\cite{rfc5905}.
-All NTP timestamps are represented in 2-complement format, with
+NTP handles the time through timestamps - records of time.
+An NTP timestamp has two fields: a seconds field expressing the number of seconds
+and a fraction field expressing a fraction of a second~\cite{rfc5905}.
+All NTP timestamps are represented in 2's complement format, with
 bits numbered in big-endian fashion from zero starting at the left, or high-order position~\cite{rfc5905}.
 There are two timestamp formats in the NTP packet structure:
-long 64-bit and short 32-bit as shown in figure~\ref{fig:ntp-timestamps}.
-The 64-bit long timestamp used by NTP consists of a 32-bit unsigned seconds
+a long 64-bit format and a short 32-bit format, as shown in figure~\ref{fig:ntp-timestamps}.
+The 64-bit long timestamp consists of a 32-bit unsigned seconds
 field spanning $2^{32}$ seconds (approx. 136 years from 1900 to 2036) and a 32-bit fraction field resolving
 $2^{-32}$ seconds (approx. 232 picoseconds)~\cite{rfc5905}.
 The short 32-bit timestamp includes a 16-bit unsigned seconds field
@@ -31,15 +31,15 @@ and a 16-bit fraction field.
 	\bigskip
 \end{figure}
 
-Besides these two, there is one more NTP timestamp format - the 128-bit NTP Date format.
-It includes a 64-bit signed seconds field and 64-bit fraction field.
-For convenience in mapping between formats,
+Besides these two formats, there is one more NTP timestamp format - the 128-bit NTP Date format.
+It includes a 64-bit signed seconds field and a 64-bit fraction field.
+For convenience in mapping between the formats,
 the seconds field is divided into 32-bit Era Number field
 and 32-bit Era Offset field.
-This 128-bit NTP Date format is however not transmitted over the network
+This 128-bit NTP Date format is, however, not transmitted over the network
 and is only used where sufficient storage and word size is available~\cite{rfc5905}.
 There is practically no need of knowing about this format for embedded systems
-at least until year 2036, when 64-bit long timestamp wraps around and
+at least until the year 2036, when the 64-bit long timestamp wraps around and
 the Era Number will be incremented from zero to one.
 But strictly speaking, the NTP timestamp is the truncated NTP Date format~\cite{rfc5905}.
 
@@ -85,10 +85,10 @@ system clock, in log2 seconds.
 For instance, a value of -20
 corresponds to a precision of about one microsecond ($2^{-20}$~s)~\cite{rfc5905}.
 \item
-Root Delay is short 32-bit NTP timestamp expressing
+Root Delay is a short 32-bit NTP timestamp expressing
 total round-trip delay to the reference clock~\cite{rfc5905}.
 \item
-Root Dispersion is short 32-bit NTP timestamp expressing
+Root Dispersion is a short 32-bit NTP timestamp expressing
 total dispersion to the reference clock~\cite{rfc5905}.
 \item
 Reference Identifier is a 32-bit code identifying the particular server used for synchronisation
@@ -103,29 +103,29 @@ and can be used by the client together with stratum field to detect loops in the
 If communicating over IPv4, the identifier is IPv4 address.
 If communicating over IPv6, it is the first four octets of the MD5 hash of the IPv6 address~\cite{rfc5905}.
 \item
-Reference Timestamp is long 64-bit NTP timestamp expressing the time
+Reference Timestamp is a long 64-bit NTP timestamp expressing the time
 when the system clock was last synchronised against reference clock~\cite{rfc5905}.
 \item
-Originate Timestamp (or Origin Timestamp) is long 64-bit NTP timestamp expressing the time
+Originate Timestamp (or Origin Timestamp) is a long 64-bit NTP timestamp expressing the time
 at the client when the request departed for the server~\cite{rfc5905}.
 Originate Timestamp field is copied
 unchanged by the server from Transmit Timestamp field of the client's request.
 It is important that the server copies this field intact,
 as the NTP client uses it to check the server's response.
 \item
-Receive Timestamp is long 64-bit NTP timestamp expressing the time
+Receive Timestamp is a long 64-bit NTP timestamp expressing the time
 at the server when the request arrived from the client~\cite{rfc5905}.
 \item
-Transmit Timestamp is long 64-bit NTP timestamp expressing the time
+Transmit Timestamp is a long 64-bit NTP timestamp expressing the time
 at the server when the response left for the client~\cite{rfc5905}.
 \end{itemize}
 
 The short 32-bit timestamp format is used for Root Dispersion and Root Delay fields,
 because they do not need the scope and precision of the long 64-bit timestamp format.
-The common unicast communication scenario is shown in figure~\ref{fig:ntp-client-server}
+A common unicast communication scenario is shown in figure~\ref{fig:ntp-client-server}
 for better understanding of the NTP packet filling process and meaning of
 Reference (ref), Originate (org), Receive (rec) and Transmit (xmt) timestamps.
-Please note that this figure shows only communication mode and
+Please note that this figure shows the
 timestamps used by NTP for local clock offset and round-trip delay calculation.
 Algorithms used for such calculations are described in section~\ref{sec:ntp-algorithms}.
 
