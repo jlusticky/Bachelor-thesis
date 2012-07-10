@@ -15,27 +15,27 @@ The overhead of allocating multiple stacks can consume large amounts of
 available memory in memory constrained systems~\cite{paper-protothreads}.
 In contrast, each Protothread requires only a few bytes for storing the state of execution.
 
-A Protothread is driven by repeated calls of the function in which the Protothread is running. %LYDIA
+A Protothread is driven by repeated calls to the function in which the Protothread is running.
 Each time the function is called, the Protothread will run until it blocks or exits.
 Protothreads are implemented using the local continuations. The local continuation represents the current state
 of execution at a particular position in the program, but does not provide any call history or local variables~\cite{contiki-docs}.
 
 The Protothreads API consists of four basic operations: initialisation {\it{PT\_INIT()}}, execution {\it{PT\_BEGIN()}},
 conditional blocking {\it{PT\_WAIT\_UNTIL()}} and exit {\it{PT\_END()}}~\cite{paper-protothreads}.
-However, the experience with rewriting event-driven state machines to Protothreads revealed %!LYDIA
+However, experience with rewriting event-driven state machines to Protothreads revealed
 the importance of an unconditional blocking wait {\it{PT\_YIELD()}},
 which temporarily blocks the Protothread until the next time the Protothread is invoked~\cite{thesis-programming}.
-After invoked, the Protothread continues executing the code following the {\it{PT\_YIELD()}} statement. %!LYDIA invocation
+After invoked, the Protothread continues executing the code following the {\it{PT\_YIELD()}} statement.
 To understand the implementation of Protothreads and how they actually work,
 please refer to appendix~\ref{app:protothreads}, where an example of use is shown.
 
 Since Protothreads are implemented in standard C, a library providing Protothreads can be used everywhere,
 where the C toolchain is available.
 But there are some constraints to consider.
-Because Protothreads are stackless, a Protothread can run only within a single C function. %!LYDIA
+Because Protothreads are stackless, a Protothread can run only within a single C function.
 There is also no way of storing automatic local variables~\cite{contiki-docs}. %LYDIA of
 And since Protothreads are implemented using the C {\it switch} statement, and these can %!LYDIA
 not be nested, the code that uses Protothreads can not use the {\it switch} statements itself.
 A workaround for storing local variables is to prepend them with the {\it static} keyword,
-which makes them being put into the data segment %!LYDIA
+which makes them being put into the data segment
 by the compiler and thus remembering their values between the function calls~\cite{paper-protothreads}.
