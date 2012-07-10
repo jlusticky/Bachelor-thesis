@@ -3,7 +3,7 @@
 
 \section{Contiki NTP client}\label{sec:design-client}
 The client application itself is a Contiki process,
-which will use the designed operating system interface from the previous sections
+which uses the designed operating system interface from the previous sections
 and the uIP communication stack.
 
 The client is able to use both NTP communication modes,
@@ -27,13 +27,13 @@ This limit is platform specific and depends on the {\it{CLOCK\_SECOND}} value,
 e.g. the $\tau$ value can not be greater than 8 on AVR Raven assuming 128 interrupts per second.
 Upon scheduling the event timer, the client process yields
 and another process could be run.
-The client process is later invoked either by the uIP stack event
+The client process is later invoked either by an event
 announcing the server response
 or by the event timer in case no server response arrived.
 
-For the lack of simple solution for IPv4 communication over IEEE~802.15.4 link layer,
+For the lack of a simple solution for IPv4 communication over IEEE~802.15.4 link layer,
 only IPv6 communication will be tested on the AVR Raven platform.
-DNS resolution is not supported for this reason
+DNS resolution is not supported by the NTP client for this reason
 and the remote server must be specified by address.
 
 The packet loss problem was described in section~\ref{sec:analysis-application}.
@@ -47,10 +47,10 @@ and queries the server again.
 
 When the server response arrives,
 the destination timestamp determination is one of the first tasks the client does.
-After that, the client makes packet sanity tests, including
+After that, the client makes packet sanity tests, such as
 checking whether the response is from a synchronised server.
 In unicast mode, the Originate Timestamp is compared with the stored sent timestamp.
-The received packet is considered bogus in case of mismatch and further processing is stopped. %!LYDIA
+The received packet is considered bogus in case of mismatch and further processing is stopped.
 Otherwise, the NTP timestamps are converted to the local timestamp format and
 the local clock offset is computed as described in section~\ref{sec:ntp-algorithms}.
 After the local clock offset is computed,
@@ -85,8 +85,8 @@ $nsec = fractionl \times 10^9 \div 2^{32}$, where $nsec$ is the nanoseconds part
 and $fractionl$ is the fraction part of the long 64-bit NTP timestamp.
 
 Because there is no native hardware support for floating point nor 64-bit arithmetic operations,
-the compiler supplies these operations in form of library, called {\it{libgcc}} in case of the GCC compiler,
-which causes a significantly bigger resulting binary file
+the compiler supplies these operations in form of a library, called {\it{libgcc}} in case of the GCC compiler.
+This causes a significantly bigger resulting binary file
 (kilobytes in case of floating point operations and hundreds of bytes in case of 64-bit operations).
 The greatest common divisor of $10^9$ and $2^{32}$ is $2^9$,
 so in fact, a relatively simple multiplication of $fractionl$ by $\frac{5^9}{2^{23}}$ must be computed.
@@ -102,7 +102,7 @@ Otherwise, the value could overflow and the result would be incorrect.
 Division can not cause such a situation but multiplication could.
 The original value could be divided by a greater divisor,
 but this would lead to a greater inaccuracy because of loosing the least significant bits.
-Because of this, multiplication done as soon as possible provides more accurate results.
+Because of this, the multiplication done as soon as possible provides more accurate results.
 The ideal conversion sequence is therefore given by formula~\ref{equ:conversion}.
 \begin{equation}
 \label{equ:conversion}
@@ -116,9 +116,9 @@ The accuracy can be determined by iterating over all the possible values of $fra
 and comparing the results with the reference algorithm that uses the floating point operations.
 Such a measurement reports the maximum error of 5 nanoseconds,
 which is totally adequate for most platforms without the floating point unit or
-for platforms where 64-bit multiplication is expensive.
+for platforms where 64-bit multiplications are expensive.
 The implementation of the above as well as the program used for the
-error measurement can be found on the CD attached to this thesis.
+error determination can be found on the CD attached to this thesis.
 The table of CD contents is listed in appendix~\ref{app:cd-contents}.
 
 After the timestamps were converted, the local clock offset is computed
@@ -126,9 +126,9 @@ as given in section~\ref{sec:ntp-algorithms}.
 Depending on the absolute value of the local clock offset,
 the system time is either set or adjusted using the {\it{clock\_set\_time}}
 or {\it{clock\_adjust\_time}} call, respectively.
-The clock is set if the time difference is equal or greater than
+The clock is set if the time difference is greater than or equal to
 the offset threshold value.
-The NTP specification suggests 0.125~seconds as the default~\cite{rfc5905}.
+The NTP specification suggests 0.125~seconds as the default offset threshold value~\cite{rfc5905}.
 Because the designed call for setting the time, described in section~\ref{sec:design-interface},
 can set the time only within a resolution of one second,
 the threshold value must be at least one second.

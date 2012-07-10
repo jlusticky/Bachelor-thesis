@@ -33,8 +33,8 @@ Since Protothreads are implemented in standard C, a library providing Protothrea
 where the C toolchain is available.
 But there are some constraints to consider.
 Because Protothreads are stackless, a Protothread can run only within a single C function.
-There is also no way to store automatic local variables~\cite{contiki-docs}. %LYDIA of
-And since Protothreads are implemented using a C {\it switch} statement, and these can %!LYDIA
+There is also no way of storing automatic local variables~\cite{contiki-docs}.
+And since Protothreads are implemented using a C {\it switch} statement, which can
 not be nested, the code that uses Protothreads can not use the {\it switch} statements itself.
 A workaround for storing local variables is to prepend them with the {\it static} keyword,
 which makes them being put into the data segment

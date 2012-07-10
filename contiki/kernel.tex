@@ -16,13 +16,13 @@ From high levels of abstraction,
 applications in Contiki OS are implemented and run as processes.
 Protothreads, the lightweight threads described in section~\ref{sec:contiki-protothreads},
 are used in Contiki to implement processes.
-Both the Contiki kernel and Contiki applications use
+Both the Contiki kernel and applications use
 Protothreads extensively to achieve cooperative multitasking~\cite{contiki-wiki-faq}.
 Every Contiki process consists of a process control block and a process thread~\cite{contiki-wiki-processes}.
 The process control block contains run-time information about the process and
 the process thread contains the code of the process.
 Among other things, the process control block contains
-the textual name of the process, a pointer to the process thread and state of the process.
+a textual name of the process, a pointer to the process thread and a state of the process.
 The process thread is implemented as a single Protothread,
 that is invoked from the process scheduler in the Contiki kernel~\cite{contiki-wiki-processes}.
 
@@ -34,9 +34,9 @@ Processes are therefore running quasi-parallel in Contiki.
 
 The process control block is not declared or defined directly,
 but through the {\it{PROCESS()}} macro.
-This macro takes two parameters: the variable name of the process control block
+This macro takes two parameters: a variable name of the process control block
 and a textual name of the process,
-which is used in debugging and when printing out lists of active processes to users~\cite{contiki-wiki-processes}.
+which is used when debugging the system~\cite{contiki-wiki-processes}.
 The process control block is shown in listing~\ref{lst:contiki-pcb}.
 \bigskip
 \begin{lstlisting}[caption={Process control block in Contiki OS (source~\cite{contiki-wiki-processes})},label={lst:contiki-pcb}]
@@ -50,11 +50,11 @@ struct process {
 \end{lstlisting}
 
 All code execution is initiated by the Contiki kernel
-that acts like a simple dispatcher calling these functions~\cite{contiki-docs}.
+that acts like a simple dispatcher calling the functions~\cite{contiki-docs}.
 Just like Protothreads, processes are also implemented using macros,
-making them fully standard C compatible.
+making them standard C compatible.
 
-In Contiki, the code runs in either of two execution contexts:
+In Contiki, code runs in either of two execution contexts:
 cooperative, in which code never preempts other code, and preemptive,
 which preempts the execution of cooperative code and returns control
 when the preemptive code is finished.
@@ -69,7 +69,7 @@ The code running in both execution contexts is illustrated in figure~\ref{fig:co
   \label{fig:contiki-execution-context}
 \end{figure}
 
-Interprocess communication is done by posting events in Contiki OS -
+Interprocess communication is achieved by posting events in Contiki OS -
 processes communicate with each other by posting events to each other~\cite{paper-contiki}.
 There are two types of events: synchronous and asynchronous.
 Synchronous events are directly delivered to the receiving process when posted and
@@ -87,20 +87,3 @@ The kernel loops through this event queue and delivers
 the event to the process by invoking the process.
 The receiver of an asynchronous event can be either a specific process
 or all running processes~\cite{contiki-wiki-processes}.
-
-%! paper-contiki - dunkels04contiki
-%Being able to power down the device
-%when the network is inactive is often required way to reduce energy consumption.
-%Power conservation mechanisms
-%depend on both the applications and the network protocols.
-%The Contiki kernel contains no explicit power
-%save abstractions, but lets the the application specific parts
-%of the system implement such mechanisms.
-%To help the application decide when to power down the system, the event
-%scheduler exposes the size of the event queue.
-%This information can be used to power down the processor when there
-%are no events scheduled.
-%! paper-contiki
-
-%As stated before, Contiki is well documented and you can find out more about
-%the kernel as well as the system in the documentation~\cite{contiki-docs}.

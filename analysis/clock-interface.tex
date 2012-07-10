@@ -31,15 +31,14 @@ These variables are defined together with the interrupt service routine in the {
 As described in section~\ref{sec:contiki-timers}, there are exactly {\it{CLOCK\_SECOND}} ticks in one second.
 When the {\it{scount}} variable reaches the {\it{CLOCK\_SECOND}} value,
 the {\it{seconds}} variable is incremented and the {\it{scount}} variable is reset.
-The {\it{seconds}} variable is used by the Contiki stimers discussed in section~\ref{sec:contiki-timers}.
+The {\it{seconds}} variable is used by the Contiki stimers, discussed in section~\ref{sec:contiki-timers}.
 
 To obtain {\it{CLOCK\_SECOND}} interrupts per second, there must be
 ${\frac{f_{T2}}{CLOCK\_SECOND}}$ counter register increments between two successive interrupts.
-On compare match in the CTC mode, the {\it{TCNT2}} counter register is reset to zero as
+On compare match in CTC mode, the {\it{TCNT2}} counter register is reset to zero as
 shown in figure~\ref{fig:design-timing-diagram}.
 The value zero is also included in the counting - the 0th count of the timer also takes one tick.
-Therefore the value of the {\it{OCR2A}} compare register must be ${\frac{f_{T2}}{CLOCK\_SECOND}} - 1$
-in the CTC mode.
+Therefore the value of the {\it{OCR2A}} compare register must be ${\frac{f_{T2}}{CLOCK\_SECOND}} - 1$ in CTC mode.
 The default value of {\it{CLOCK\_SECOND}} for AVR Raven in Contiki is 128,
 which implies the default value of the compare register ${\frac{4096}{128}} - 1 = 31$.
 The {\it{CLOCK\_SECOND}} value is defined in the {\it{platform/avr-raven/contiki-conf.h}} file.

@@ -5,16 +5,15 @@
 Section~\ref{sec:analysis-clock-interface} described, that
 the {\it{clock\_init}} call evaluates to a specific setup code
 for each different AVR CPU during the compilation.
-Other AVR CPUs could use a different hardware clock,
-but the time interface is common for all AVR CPUs.
+Other AVR CPUs can be using a different hardware clock.
+However, the time interface is common for all AVR CPUs.
 Therefore, new general names for each part of the hardware clock
 must be defined in the {\it{clock\_init}} call.
 
 The compare register {\it{OCR2A}} is defined as {\it{CLOCK\_COMPARE\_REGISTER}},
-the counter register {\it{TCNT2}} is defined as {\it{CLOCK\_COMPARE\_REGISTER}}
+the counter register {\it{TCNT2}} is defined as {\it{CLOCK\_COUNTER\_REGISTER}},
 the default value of the clock compare register is defined as {\it{CLOCK\_COMPARE\_DEFAULT\_VALUE}}
 and the {\it{CLOCK\_CTC\_MODE}} is defined as 1, because the hardware clock is used in CTC mode,
-%which adds one counter register increment,
 as described in section~\ref{sec:analysis-hwclock}.
 So in fact, the code presented in the previous section is not a pseudocode.
 Such an extension also makes porting the code to other platforms simple.
@@ -26,6 +25,10 @@ The limit imposed on time adjustments is therefore $2^{15}$ counter register inc
 for slowing down the clock and $2^{15}-1$ for speeding up the clock.
 This equals to $2^{15}~\times~0.000244140625 = 8$~seconds
 and $(2^{15} - 1)~\times~0.000244140625 \doteq 7.999756$~seconds, respectively.
+A wider data type of the {\it{adjcompare}} variable would cause greater scope,
+but also an additional memory overhead.
+Since it has to be possible to adjust the time at least within one second,
+a smaller data width of {\it{adjcompare} would cause too small scope.
 The {\it{volatile}} modifier must be used in conjunction with this variable,
 because the variable may be updated in the interrupt service routine.
 Listing~\ref{lst:implementation-isr} shows the variable definition

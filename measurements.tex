@@ -8,7 +8,7 @@ on the number of clock ticks (interrupts) per second.
 The clock offset measurements show the time difference between the reference clock and
 the local clock.
 The clock phase measurements show the phase difference between the reference clock and
-the local clock, that is, when each second is accounted. %!LYDIA
+the local clock, that is, when each second is accounted.
 All of the presented plots and their respective source values can be found on the CD
 attached to this thesis.
 The table of CD contents is listed in appendix~\ref{app:cd-contents}.
@@ -27,14 +27,14 @@ The NTP client was running on the AVR Raven platform in a room at 23~\textcelsiu
 The AVR Raven's bit 7 of Port D and the ground pin were
 connected to the UNI-T~2025CEL digital oscilloscope
 to measure the clock interrupt frequency.
-At the beginning of the interrupt service routine a~logic 1 is written
-to the bit 7 of Port D, what causes a high level of voltage.
-At the end of the interrupt service routine a~logic 0 is written
-to the bit 7 of Port D, what causes a low level of voltage.
+At the beginning of the interrupt service routine a~logic 1 was written
+to the bit 7 of Port D, what caused a high level of voltage.
+At the end of the interrupt service routine a~logic 0 was written
+to the bit 7 of Port D, what caused a low level of voltage.
 
 When there are no clock adjustments in progress, the value of the output compare register is 31 by default.
 The clock interrupt frequency
-is supposed to be equal to a~value of the {\it{CLOCK\_SECOND}} macro, which is 128 by default on AVR~Raven
+is supposed to be equal to the~value of the {\it{CLOCK\_SECOND}} macro, which is 128 by default on AVR~Raven
 and is given by formula~\ref{equ:measurements-128}.
 Figure~\ref{fig:app-osc-no-adjust} in appendix~\ref{app:interrupt-frequency} shows the oscilloscope output 
 for this case.
@@ -62,7 +62,7 @@ is supposed to be approximately equal to 132.129~Hz and is given by formula~\ref
 \end{equation}
 
 The measured values are not exactly equal to those expected.
-This is mostly due to a room temperature influence on the clock source
+This is mostly because of a room temperature influence on the clock source
 (32~768~Hz quartz crystal oscillator),
 but it could also be air pressure or magnetic fields, etc.
 
@@ -82,9 +82,8 @@ but then it causes the offset increase.
 The clock is running faster with approximately 100~PPM,
 where 1~PPM is equal to $10^{-6}$ $\frac{s}{s}$ (0.0001\%).
 That is, the clock error is about 9 seconds a day in this case.
-
-Due to the frequency jitter, that can be also observed,
-is the offset increase not exactly linear.
+The offset increase not exactly linear because of the frequency jitter,
+which can be also observed.
 
 Figure~\ref{fig:measurements-ntp-serial} shows the local clock offset
 acquired from the serial output in case the Contiki NTP client runs on the device.
@@ -99,7 +98,7 @@ is calculated and eventually corrected every 16 seconds.
   \label{fig:measurements-ntp-serial}
 \end{figure}
 The blue line shows the mean local clock offset value,
-that should be equal to zero in a perfect case.
+which should be equal to zero in a perfect case.
 This is however not the case, because of the oscillator frequency error
 shown in figure~\ref{fig:measurements-no-ntp}.
 More figures showing the local clock offset measurements

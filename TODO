@@ -1,47 +1,5 @@
-Content
-=======
-obsah.tex - conclusion
-
-contiki.tex - DONE
-contiki/features.tex - DONE
-contiki/protothreads.tex - DONE
-contiki/uip.tex - DONE
-contiki/kernel.tex - DONE
-contiki/timers.tex - DONE
-
-ntp.tex - DONE
-ntp/topology.tex - DONE
-ntp/time.tex - DONE
-ntp/network.tex - DONE
-ntp/algorithms.tex - DONE
-
-analysis.tex - DONE
-analysis/hwclock.tex - DONE
-analysis/clock-interface.tex - DONE
-analysis/time.tex - DONE
-analysis/client.tex - DONE
-
-
-design.tex - DONE
-design/interface.tex - DONE
-design/clock.tex - WIP
-design/client.tex - WIP
-
-design/network.tex - DONE + review
-design/interface.tex - wip - needs work, move ISR from design/clock.tex
-
-implementation.tex - work in progress - foreword
-implementation/clock.tex - wip
-implementation/interface.tex - wip
-implementation/client.tex - DONE - shorten
-implementation/network.tex - DONE + review
-
-measurements.tex - DONE + review
-
-
 Tasks
 =====
 --
 cd contents
-changes according to feedback - client, implementation intro
 patch

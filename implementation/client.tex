@@ -5,18 +5,18 @@
 The structure representing an NTP message was borrowed from the OpenNTPD daemon
 and the Dragonfly NTP daemon.
 This structure is not using the GCC extension for representing a bit field,
-instead uses a single 8-bit integer called {\it{status}}
+instead it uses a single 8-bit integer called {\it{status}}
 for Leap Indicator, Version Number and Mode fields of the NTP packet
-structure described in section~\ref{sec:ntp-network}.
+structure, described in section~\ref{sec:ntp-network}.
 Accessing each field of the {\it{status}} byte is done using the bitmasks.
 Unlike using the bit field extension,
 this is compliant with the standard C language~\cite{c99}.
 
 Parameters such as the remote NTP server address, the offset threshold value
-or the $\tau$ exponent of NTP poll interval can be configured by a standard C define macro
+or the $\tau$ exponent of the NTP poll interval can be configured by a standard C define macro
 in the source code or in the Makefile.
-The default offset threshold value was chosen 3 seconds,
-(approx. 1\% of this amount can be adjusted in 1~second).
+The default offset threshold value was chosen 3 seconds.
+Approx. 1\% of this amount can be adjusted in 1~second.
 The unicast mode can be turned off by specifying no remote host.
 In this case, all of the code related to the unicast mode will not be compiled.
 
@@ -24,7 +24,7 @@ The client is IP-version agnostic and the {\it{UIP\_CONF\_IPV6}} macro is used o
 when printing the remote server address for debugging purposes.
 The remote NTP server address can be either IPv4 or IPv6 address,
 but can not be specified by a domain name.
-Communication over IPv4 was not tested though, for the lack of simple solution for
+Communication over IPv4 was not tested though, for the lack of a simple solution for
 IPv4 communication over IEEE~802.15.4.
 
 The NTP client is written as an event-driven process, that never exits.
@@ -46,9 +46,10 @@ the client enters the main loop and schedules sending the next packet as describ
 
 If any other application wants the NTP client to query the server,
 it can send the {\it{PROCESS\_EVENT\_MSG}} event to the NTP process at any time.
-However, no event is sent to that application when the server response arrives.
+However, no event is sent to that application when the server response arrives
+or when the system time is changed.
 The application can instead experience a change of
-the system time by the {\it{clock\_get\_time}} call.
+the system time using the {\it{clock\_get\_time}} call.
 Listing~\ref{lst:implementation-client} shows the Contiki NTP client pseudocode.
 \newpage
 \begin{lstlisting}[caption={NTP client pseudocode},label={lst:implementation-client}]
@@ -92,7 +93,7 @@ timeout_handler(void)  // send query to REMOTE_HOST
 \end{lstlisting}
 
 Listing~\ref{lst:implementation-conversion} shows the conversion from the NTP timestamp to the POSIX timestamp,
-as presented in~\ref{sec:design-client}.
+as presented in section~\ref{sec:design-client}.
 The conversion uses only shifts and additions, which makes the resulting binary file
 significantly smaller.
 Because the current NTP Era ends in 2036,
@@ -102,7 +103,7 @@ According to the output from the {\it{avr-size}} tool,
 the use of 64-bit arithmetic operations for the conversion
 takes 728 bytes more in the
 resulting binary file (GCC supplies routines for multiplication and shifting 64-bit integers)
-and floating point operations take 3~358 bytes more
+and the use of floating point operations takes 3~358 bytes more
 than the developed algorithm.
 Besides significantly smaller memory requirements,
 it was observed that this algorithm provides on AVR Raven

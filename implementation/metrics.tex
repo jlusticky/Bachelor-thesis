@@ -11,7 +11,7 @@ The code uses the Contiki indentation style.
 The patch extending the Contiki operating system version 2.5
 inserts 72 new lines of code and modifies 1 line of code.
 The modified line is a backport from the actual Contiki Git version to prevent
-missing the compare match occurrence between the {\it{scount}} variable and
+missing the compare match between the {\it{scount}} variable and
 the {\it{CLOCK\_SECOND}} value.
 
 The patch extending the actual Contiki Git version
@@ -26,9 +26,9 @@ the clock interrupt service routine.
 The NTP client application has 2 code files and 1 header file.
 The code file containing the definition of the NTP process
 has 198 lines of code.
-The second code file contains only various conversions from NTP fraction part
+The second code file contains various conversions from NTP fraction part
 to nanoseconds.
-The user may choose using the C define macro which conversion will be used
+The user may choose by using the C define macro which conversion will be used
 by the NTP client application.
 This file has 52 lines of code.
 

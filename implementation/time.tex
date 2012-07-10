@@ -3,7 +3,7 @@
 
 \section{Time interface extension}
 Since there is no proper way of setting, getting and adjusting the time in Contiki OS,
-the interface for setting, getting and adjusting time must have been developed.
+the interface for setting, getting and adjusting the time must have been developed.
 The implementation uses the designed call interface and time specification structure
 from section~\ref{sec:design-interface}.
 
@@ -17,8 +17,7 @@ According to ISO C99 standard~\cite{c99},
 the maximum value for an object of type signed long
 shall be greater or equal $2^{31}$-1 (2~147~483~647)~\cite{c99}.
 This in fact results in at least a 32-bit variable unless the compilation setting is changed.
-Such a time representation will wrap around in year 2038
-and has to be changed in the future~\cite{posix}.
+Such a time representation will wrap around in the year 2038.
 \begin{lstlisting}[caption={Time specification structure},label={lst:implementation-timespec-structure}]
 struct time_spec {
   long sec;
@@ -30,7 +29,7 @@ struct time_spec {
 \subsection{Setting the time}
 Setting the time is only possible within one second precision -
 finer time setting must be made using the time adjustments.
-The implemented {\it{clock\_set\_time}} function computes when the system started
+The implemented {\it{clock\_set\_time}} function computes when the system booted
 in seconds since the POSIX epoch and saves the result in the newly implemented {\it{boottime}} variable.
 This avoids the misbehaviour of Contiki stimers, described in section~\ref{sec:design-interface}.
 
@@ -55,12 +54,12 @@ current time in seconds since the POSIX epoch by simply adding {\it{boottime}}
 and {\it{seconds}}.
 
 The nanoseconds part is filled by reading the {\it{scount}} variable and the hardware counter register.
-The comparison avoids the need to disable clock interrupts to avoid unexpected results.
+The comparison avoids the need to disable clock interrupts to prevent unexpected results.
 This is a common practice on the AVR CPUs in Contiki, as described in~\ref{sec:design-clock}.
 In order to minimise the possible comparison mismatch,
-the consistent values are obtained first and after that used for computation.
-The seconds part is compared a similar manner - if the seconds part is not consistent,
-the other values will not be consistent as well.
+the consistent values are obtained first and used for computation afterwards.
+The seconds part is compared in a similar manner - if the seconds part is not consistent,
+the other values might not be consistent as well.
 Listing~\ref{lst:implementation-gettime} shows the function for getting the time.
 \begin{lstlisting}[caption={Function for getting the time},label={lst:implementation-gettime}]
 void clock_get_time(struct time_spec *ts)
@@ -81,13 +80,13 @@ void clock_get_time(struct time_spec *ts)
 \end{lstlisting}
 Because both {\it{1000000000}} and {\it{CLOCK\_SECOND}} are constants, the compiler is able to
 calculate the result of the division during the compile time.
-Furthermore as both numbers are integers, the result is integer as well~\cite{c99}.
+Furthermore, as both numbers are integers, the result is integer as well~\cite{c99}.
 Most of the CPU time is therefore spent on the multiplications where the variables
-{\it{counter}} and {\it{tmp\_scount}} are involved. %! LYDIA
+{\it{counter}} and {\it{tmp\_scount}} are involved.
 If the code is compiled using GCC version 4.3.5,
-one such a multiplication of two 32-bit variables takes 33 instructions including {\it{call}} and {\it{ret}}
+one such a multiplication of two 32-bit variables takes 33 instructions including the {\it{call}} and {\it{ret}}
 instructions for entering and returning from the {\it{\_\_mulsi3}} routine, which computes the result.
-This results in 48 clock cycles overhead,
+This results in 48 clock cycles of overhead,
 which takes 6~000 nanoseconds with an 8~MHz CPU clock,
 according to the AVR Instruction Set manual~\cite{avr-instruction-set}.
 The timestamp provided is therefore not exact.
@@ -100,11 +99,11 @@ The application must be instead aware that the timestamp is not exactly accurate
 A new function computing the amount of required adjusted ticks was implemented.
 The {\it{clock\_adjust\_time}} function stores the computed result in
 a new variable called {\it{adjcompare}}, which is further discussed in section~\ref{sec:implementation-clock}.
-If the passed amount of required adjustments is positive, then the system clock is speeded up until
+If the amount of required adjustments is positive, then the system time is speeded up until
 the adjustment has been completed and vice versa.
-If the passed amount of adjustments is 0~seconds and 0~nanoseconds,
-then the adjustments in progress are stopped, but any already completed part is not undone.
-The passed time values that are between two successive multiples of the clock resolution are truncated.
+If the amount of required adjustments is 0~seconds and 0~nanoseconds,
+then are the eventual adjustments in progress stopped, but any already completed part is not undone.
+The time values that are between two successive multiples of the clock resolution are truncated.
 Listing~\ref{lst:implementation-adjtime} shows the function for adjusting the time.
 %\enlargethispage{\baselineskip}
 \begin{lstlisting}[caption={Function for adjusting the time},label={lst:implementation-adjtime}]

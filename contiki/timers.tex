@@ -9,11 +9,11 @@ and for checking if a timer has expired.
 An application must manually check if its timers have expired - this is not done automatically~\cite{contiki-docs}.
 
 Contiki has one clock library and a set of timer libraries: timer, stimer, ctimer, etimer, and rtimer~\cite{contiki-wiki-timers}.
-The clock library provides functionality to handle the system time and also to block the CPU for short time periods.
-It is the interface between Contiki and the platform specific clock functionality~\cite{contiki-docs}.
+The clock library provides functionality to handle the system time and to block the CPU for short time periods.
+It is the interface between Contiki and the platform-specific hardware clock~\cite{contiki-docs}.
 The timer libraries are implemented with the functionality of the clock library as a base~\cite{contiki-wiki-timers}.
 
-The timer and stimer libraries provide the simplest form of timers and are used to check if a time period has passed.
+The timer and stimer libraries provide the simplest form of timers and are used to check whether a time period has passed.
 The difference between these two is the resolution of time -
 timers use system clock ticks, whose value is incremented when an interrupt from the hardware clock occurs,
 while stimers use seconds to offer much longer time periods~\cite{contiki-wiki-timers}.
@@ -29,14 +29,12 @@ Event timers should be used for this purpose.
 Event timers (etimer library) provide a way to generate timed events.
 An event timer will post an event to the process that set the timer when the
 event timer expires~\cite{contiki-docs}.
-The etimer library is implemented as a Contiki process and uses the timer library.
+The etimer library is implemented as a Contiki process and uses the timer library as a base.
 
 Callback timers (ctimer library) provide a timer mechanism that calls a specified
 C function when a ctimer expires~\cite{contiki-docs}.
-%Like event timers, they are used to wait for some time while the rest
-%of the system can work or enter low power mode.
 Thus, they are especially useful in any code that does not have an
-explicit Contiki process such as protocol implementations~\cite{contiki-wiki-timers}.
+explicit Contiki process~\cite{contiki-wiki-timers}.
 
 The Real-time timers (rtimer library) handle the scheduling and execution of
 real-time tasks with predictable execution times~\cite{contiki-docs}.
@@ -45,6 +43,6 @@ the rtimer immediately preempts any running Contiki process in order to let the 
 execute at the scheduled time~\cite{contiki-wiki-timers}.
 This behaviour is illustrated in figure~\ref{fig:contiki-execution-context}.
 The rtimer library uses a separate hardware clock
-to allow higher clock resolution~\cite{contiki-wiki-timers}.
+to allow a higher clock resolution~\cite{contiki-wiki-timers}.
 The small part of the rtimer library is architecture-agnostic,
 but the particular implementation is platform-specific.

@@ -20,7 +20,7 @@ Figure~\ref{fig:design-read} shows such a solution.
 \end{figure}
 
 The call for adjusting the time computes the number of clock ticks
-with the longer or shorter tick interval.
+with a longer or shorter tick interval.
 To store the result, a new variable must be introduced.
 If the value of this variable is zero, no adjustments are in progress.
 Otherwise, the default value of the compare register is incremented or decremented by 1
@@ -47,4 +47,4 @@ The fastest possible adjustment is approximately 0.03~$\frac{s}{s}$.
 If faster adjustments were needed, the compare register would have to be updated with different values. 
 However, updating the compare register with more different values would require
 a more complicated software design
-and lower values could cause a miss of the compare match as described in section~\ref{sec:analysis-hwclock}.
+and lower values could cause missing of the compare match as described in section~\ref{sec:analysis-hwclock}.

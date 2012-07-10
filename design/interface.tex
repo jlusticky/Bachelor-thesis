@@ -7,7 +7,7 @@ way of setting, getting and adjusting the time for an NTP client in Contiki OS.
 A new interface for setting, getting and eventually adjusting the time
 must therefore be developed.
 
-Setting the time should not cause a misbehaviour of the Contiki timers,
+Setting the time should not cause the misbehaviour of the Contiki timers,
 described in section~\ref{sec:analysis-time}.
 A modification of the {\it{scount}} and the {\it{seconds}} variable must be therefore avoided.
 This can be achieved using an additional variable, containing the system boot time,
@@ -64,8 +64,6 @@ $\frac{1}{CLOCK\_SECOND~\times~counts} = \frac{1}{128~\times~32} = 0.00024414062
 can be acquired,
 where $counts$ is the number of counter register increments between two successive interrupts,
 which is 32 by default on AVR Raven, as explained in section~\ref{sec:analysis-clock-interface}.
-%If this part was filled by only using the {\it{scount}} variable,
-%just the resolution of the timer interrupt frequency would be provided.
 \begin{lstlisting}[caption={Call interface for getting the time},label={lst:design-gettime}]
 void clock_get_time(struct time_spec *ts);
 \end{lstlisting}
