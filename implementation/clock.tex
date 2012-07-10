@@ -28,7 +28,7 @@ and $(2^{15} - 1)~\times~0.000244140625 \doteq 7.999756$~seconds, respectively.
 A wider data type of the {\it{adjcompare}} variable would cause greater scope,
 but also an additional memory overhead.
 Since it has to be possible to adjust the time at least within one second,
-a smaller data width of {\it{adjcompare} would cause too small scope.
+a smaller data width of {\it{adjcompare}} would cause too small scope.
 The {\it{volatile}} modifier must be used in conjunction with this variable,
 because the variable may be updated in the interrupt service routine.
 Listing~\ref{lst:implementation-isr} shows the variable definition

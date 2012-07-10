@@ -15,7 +15,6 @@ Suppose that each character is shown for one second, then the next character rep
 #include <string.h>
 
 typedef unsigned short lc_t;
-
 struct pt {
   lc_t lc;                                           /* Local continuation */
 };
@@ -58,13 +57,12 @@ it is entered again.
 When the condition specified in PT\_WAIT\_UNTIL is met,
 the next iteration of the {\it{for}} loop (line 17) is started and the next character is displayed.
 
-How does it work? The macro PT\_BEGIN is expanded to a {\it switch} statement while preprocessing the
-code for compilation.
+How does it work? The macro PT\_BEGIN is expanded to a {\it switch} statement
+by the preprocessor.
 The PT\_WAIT\_UNTIL macro expands to {\it case} and setting the local continuation
 to the value, so that the next time this function is run, it jumps to this {\it case}.
 The structure holding the state is defined outside of the function, so its context is not lost when
 the function returns. The simplest state structure would hold just the local continuation variable.
-
 Listing~\ref{lst:app-protothreads-preprocessed} shows
 the same example after a simplified preprocessing.
 %\newpage
@@ -74,7 +72,6 @@ the same example after a simplified preprocessing.
 #include <string.h>
 
 typedef unsigned short lc_t;
-
 struct pt {
   lc_t lc;                                           /* Local continuation */
 };
