@@ -24,9 +24,9 @@ escapechar=\&,
 
 \maketitle
 
-For using copy \& paste, ASCII text files can be generated
+To use copy \& paste, ASCII text files can be generated
 using {\it{detex}} or {\it{make text}} command.
-The full-size photos can be found in {\it{img}} directory.
+The full-size photos can be found in the {\it{img}} directory.
 
 \section{Preparation}
 In this guide we assume the following equipment:
@@ -273,13 +273,17 @@ use wget for http communication or any other web browser:
 Assuming we have a working network communication,
 we can now use Contiki NTP Client.
 First of all Contiki needs to be patched.
-Navigate to the Contiki directory and apply the patches:
+Extract the Contiki source code to your home directory and copy the contiki-2.5.patch to the same directory.
+Navigate to the Contiki directory and apply the patch:
 \begin{lstlisting}
 	&\textdollar& cd contiki/
-	&\textdollar& patch -p1 contiki2.5.patch %!TODO
+	&\textdollar& patch -p1 < contiki2.5.patch
 \end{lstlisting}
 
 After successfully patched, we can compile the NTP client.
+Copy the NTP client source code from {\it{sw/ntpd/}} to anywhere in your computer and navigate to this directory.
+The Makefile of the NTP client suppose that Contiki source code is in the {\it{\{\$HOME/contiki}} directory.
+If this is not the case, change the {\it{CONTIKI}} variable in the Makefile.
 Before compiling, the MAC address, the remote NTP server address and the TAU exponent of the NTP poll
 interval can be set in the Makefile (poll interval is $2^{TAU}$).
 If we do not set the remote NTP server address, the NTP client assumes that only the NTP broadcast mode
@@ -292,9 +296,10 @@ If we have changed any of the parameters in the Makefile, make clean must be iss
 
 After compiled, the project can be flashed using AVR Dragon.
 \begin{lstlisting}
-	&\textdollar& make ntpd.u %! TODO
+	&\textdollar& make ntpd.u
 \end{lstlisting}
-Now we should have the NTP client running on AVR Raven.
+Now we should have the NTP client running on AVR Raven
+and sending queries to the specified NTP server.
 
 \section{LCD Display}
 The LCD display on AVR Raven is controlled by the ATmega3290P CPU.
