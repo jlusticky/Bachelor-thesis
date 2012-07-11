@@ -59,7 +59,7 @@ evaluation starter kit called RZ Raven - \url{http://www.atmel.com/tools/RZRAVEN
 \begin{itemize}
 	\item Contiki source code - zip version 2.5 from\\
 	\url{http://sourceforge.net/projects/contiki/files/Contiki/Contiki%202.5/contiki-2.5.zip/download}
-	or after cloning the Contiki Git repository by issuing {\it{git checkout 2.5}}
+	or avaliable in the {\it{sw/}} directory or after cloning the Contiki Git repository by issuing {\it{git checkout 2.5}}
 	\item Programmer (flasher) for AVR - avrdude - \url{http://www.nongnu.org/avrdude/}
 	\item GNU AVR toolchain - avr-libc 1.6.8, binutils-avr 2.20.1, gcc-avr 4.3.5 -
 	newever versions may not work with Contiki version 2.5.
@@ -76,9 +76,10 @@ The udev or a whole PC might need to be restarted to apply changes.
 
 
 \section{Compiling and Flashing}
-After everything from step 1 is installed and connected, we can navigate to a Contiki project and flash it to AVR Raven:
+After everything from step 1 is installed and connected,
+we can extract the Contiki source code and navigate to a Contiki project and flash it to AVR Raven:
 \begin{lstlisting}
-change to project directory:
+change to the hello-world project directory:
 	&\textdollar& cd contiki/examples/hello-world
 
 select target platform and save our choice to Makefile.target file:
@@ -273,7 +274,7 @@ use wget for http communication or any other web browser:
 Assuming we have a working network communication,
 we can now use Contiki NTP Client.
 First of all Contiki needs to be patched.
-Extract the Contiki source code to your home directory and copy the contiki-2.5.patch to the same directory.
+Copy the contiki-2.5.patch to the same directory as the Contiki source code.
 Navigate to the Contiki directory and apply the patch:
 \begin{lstlisting}
 	&\textdollar& cd contiki/
@@ -282,7 +283,7 @@ Navigate to the Contiki directory and apply the patch:
 
 After successfully patched, we can compile the NTP client.
 Copy the NTP client source code from {\it{sw/ntpd/}} to anywhere in your computer and navigate to this directory.
-The Makefile of the NTP client suppose that Contiki source code is in the {\it{\{\$HOME/contiki}} directory.
+The Makefile of the NTP client suppose that Contiki source code is in the {\it{\$HOME/contiki}} directory.
 If this is not the case, change the {\it{CONTIKI}} variable in the Makefile.
 Before compiling, the MAC address, the remote NTP server address and the TAU exponent of the NTP poll
 interval can be set in the Makefile (poll interval is $2^{TAU}$).
