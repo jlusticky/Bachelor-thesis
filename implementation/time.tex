@@ -60,7 +60,11 @@ In order to minimise the possible comparison mismatch,
 the consistent values are obtained first and used for computation afterwards.
 The seconds part is compared in a similar manner - if the seconds part is not consistent,
 the other values might not be consistent as well.
-Listing~\ref{lst:implementation-gettime} shows the function for getting the time.
+Listing~\ref{lst:implementation-gettime} shows the function for getting the time,
+where {\it{CLOCK\_CTC\_MODE}} equals 1 and {\it{CLOCK\_COMPARE\_DEFAULT\_VALUE}} is equal to
+the value of the compare register when no time adjustments are in progress.
+\enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
 \begin{lstlisting}[caption={Function for getting the time},label={lst:implementation-gettime}]
 void clock_get_time(struct time_spec *ts)
 {
@@ -105,7 +109,6 @@ If the amount of required adjustments is 0~seconds and 0~nanoseconds,
 then are the eventual adjustments in progress stopped, but any already completed part is not undone.
 The time values that are between two successive multiples of the clock resolution are truncated.
 Listing~\ref{lst:implementation-adjtime} shows the function for adjusting the time.
-%\enlargethispage{\baselineskip}
 \begin{lstlisting}[caption={Function for adjusting the time},label={lst:implementation-adjtime}]
 void clock_adjust_time(struct time_spec *delta)
 {

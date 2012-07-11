@@ -10,10 +10,11 @@ However, the time interface is common for all AVR CPUs.
 Therefore, new general names for each part of the hardware clock
 must be defined in the {\it{clock\_init}} call.
 
-The compare register {\it{OCR2A}} is defined as {\it{CLOCK\_COMPARE\_REGISTER}},
+The compare register {\it{OCR2A}} is defined by macro as {\it{CLOCK\_COMPARE\_REGISTER}},
 the counter register {\it{TCNT2}} is defined as {\it{CLOCK\_COUNTER\_REGISTER}},
-the default value of the clock compare register is defined as {\it{CLOCK\_COMPARE\_DEFAULT\_VALUE}}
-and the {\it{CLOCK\_CTC\_MODE}} is defined as 1, because the hardware clock is used in CTC mode,
+the default value of the clock compare register, when no time adjustments are in progress,
+is defined as {\it{CLOCK\_COMPARE\_DEFAULT\_VALUE}}
+and {\it{CLOCK\_CTC\_MODE}} is defined as 1, because the hardware clock is used in CTC mode,
 as described in section~\ref{sec:analysis-hwclock}.
 So in fact, the code presented in the previous section is not a pseudocode.
 Such an extension also makes porting the code to other platforms simple.
