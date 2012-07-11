@@ -8,7 +8,7 @@ In Contiki, Protothreads allow to wait for incoming events without blocking the 
 While waiting for an event to occur, another function could be run.
 The core of this solution is a C {\it switch} statement used in conjunction with a variable (called local continuation)
 containing the position, where the function was blocked~\cite{paper-protothreads}.
-The function continues from this point when it is called again.
+The function continues from this point when it is later invoked again.
 
 The advantage of Protothreads over ordinary threads is that a Protothread does not require a separate stack.
 The overhead of allocating multiple stacks can consume large amounts of
@@ -35,7 +35,7 @@ But there are some constraints to consider.
 Because Protothreads are stackless, a Protothread can run only within a single C function.
 There is also no way of storing automatic local variables~\cite{contiki-docs}.
 And since Protothreads are implemented using a C {\it switch} statement, which can
-not be nested, the code that uses Protothreads can not use the {\it switch} statements itself.
+not be nested, the code that uses Protothreads can not use {\it switch} statements itself.
 A workaround for storing local variables is to prepend them with the {\it static} keyword,
 which makes them being put into the data segment
 by the compiler and thus remembering their values between the function calls~\cite{paper-protothreads}.

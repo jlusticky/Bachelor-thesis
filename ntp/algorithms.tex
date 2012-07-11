@@ -8,7 +8,7 @@ One of the main goals of NTP is to deal with the network latency~\cite{ntp-overv
 
 As described in section~\ref{sec:ntp-network},
 there are the following 64-bit long timestamps in the NTP packet: Origin, Receive and Transmit Timestamp.
-Upon NTP packet arrival, the client determines another timestamp called
+Upon NTP packet arrival, the client determines another timestamp called,
 Destination Timestamp~\cite{rfc5905}.
 This timestamp is represented as T4 in figure~\ref{fig:ntp-client-server}
 and is not part of the NTP packet structure.

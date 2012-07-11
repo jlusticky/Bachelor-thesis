@@ -8,7 +8,7 @@ Reliable message delivery such as the Transmission Control Protocol (TCP)
 can actually make the delivery of
 NTP packets less reliable because retries
 would increase the delay value and other errors~\cite{rfc5905}.
-This is mostly because of the TCP communication overhead.
+This is mostly because of the communication overhead.
 
 NTP handles the time through timestamps - records of time.
 An NTP timestamp has two fields: a seconds field expressing the number of seconds
@@ -18,7 +18,7 @@ bits numbered in big-endian fashion from zero starting at the left, or high-orde
 There are two timestamp formats in the NTP packet structure:
 a long 64-bit format and a short 32-bit format, as shown in figure~\ref{fig:ntp-timestamps}.
 The 64-bit long timestamp consists of a 32-bit unsigned seconds
-field spanning $2^{32}$ seconds (approx. 136 years from 1900 to 2036) and a 32-bit fraction field resolving
+field, spanning $2^{32}$ seconds (approx. 136 years from 1900 to 2036), and a 32-bit fraction field, resolving
 $2^{-32}$ seconds (approx. 232 picoseconds)~\cite{rfc5905}.
 The short 32-bit timestamp includes a 16-bit unsigned seconds field
 and a 16-bit fraction field.
@@ -34,14 +34,14 @@ and a 16-bit fraction field.
 Besides these two formats, there is one more NTP timestamp format - the 128-bit NTP Date format.
 It includes a 64-bit signed seconds field and a 64-bit fraction field.
 For convenience in mapping between the formats,
-the seconds field is divided into 32-bit Era Number field
-and 32-bit Era Offset field.
+the seconds field of this format is divided into a 32-bit Era Number field
+and a 32-bit Era Offset field.
 This 128-bit NTP Date format is, however, not transmitted over the network
 and is only used where sufficient storage and word size is available~\cite{rfc5905}.
 There is practically no need of knowing about this format for embedded systems
 at least until the year 2036, when the 64-bit long timestamp wraps around and
 the Era Number will be incremented from zero to one.
-But strictly speaking, the NTP timestamp is the truncated NTP Date format~\cite{rfc5905}.
+But strictly speaking, the NTP timestamp is a truncated NTP Date format~\cite{rfc5905}.
 
 \begin{figure}
 	\centering
@@ -51,83 +51,83 @@ But strictly speaking, the NTP timestamp is the truncated NTP Date format~\cite{
 	\bigskip
 \end{figure}
 
-Standard NTP packet structure without extension fields and
+The standard NTP packet structure without extension fields and
 Autokey security protocol is shown in figure~\ref{fig:ntp-packet}.
 This structure is 48 bytes long and contains the following thirteen fields:
 \begin{itemize}
 \item
-Leap Indicator is a 2-bit integer warning of an impending leap
+Leap Indicator is a 2-bit integer, warning of an impending leap
 second to be inserted or deleted in the last minute of the current month~\cite{rfc5905}.
 \item
-Version Number is a 3-bit integer representing the NTP
+Version Number is a 3-bit integer, representing the NTP
 version number, currently~4.
 \item
-Mode is a 3-bit integer representing protocol mode.
-This is the only field distinguishing between server and client in NTP.
+Mode is a 3-bit integer, representing the protocol mode.
+This is the only field distinguishing between servers and clients in NTP.
 In the client-server communication model, the client sets this field to value 3 (client) in the request,
 and the server sets it to value 4 (server) in the response.
-In broadcast communication model, the server sets this field to value 5 (broadcast).
+In the broadcast communication model, the server sets this field to value 5 (broadcast).
 Other modes are not used by SNTP servers and clients~\cite{rfc5905}.
 \item
-Stratum is an 8-bit integer representing the stratum as described in section~\ref{sec:ntp-topology}.
+Stratum is an 8-bit integer, representing the stratum as described in section~\ref{sec:ntp-topology}.
 If the Stratum field is 0, which implies unspecified or invalid, the
 Reference Identifier field can be used to convey messages useful for
 status reporting and access control.
-These are called Kiss-o'-Death (KoD)
+These messages are called Kiss-o'-Death (KoD)
 packets and the ASCII messages they convey are called kiss codes~\cite{rfc5905}.
 \item
-Poll is an 8-bit signed integer representing the maximum interval between
+Poll is an 8-bit signed integer, representing the maximum interval between
 successive messages, in log2 seconds.
 Suggested default limits for minimum and maximum of the poll interval are 6 and 10, respectively~\cite{rfc5905}.
 \item
-Precision is an 8-bit signed integer representing the precision of the
+Precision is an 8-bit signed integer, representing the precision of the
 system clock, in log2 seconds.
 For instance, a value of -20
 corresponds to a precision of about one microsecond ($2^{-20}$~s)~\cite{rfc5905}.
 \item
-Root Delay is a short 32-bit NTP timestamp expressing
+Root Delay is a short 32-bit NTP timestamp, expressing the
 total round-trip delay to the reference clock~\cite{rfc5905}.
 \item
-Root Dispersion is a short 32-bit NTP timestamp expressing
+Root Dispersion is a short 32-bit NTP timestamp, expressing the
 total dispersion to the reference clock~\cite{rfc5905}.
 \item
-Reference Identifier is a 32-bit code identifying the particular server used for synchronisation
-or reference clock.
+Reference Identifier is a 32-bit code, identifying the particular server used for synchronisation
+or the reference clock.
 For packet stratum 0, this is a four-character ASCII string called kiss code.
 Kiss codes are particularly used by the server to tell the client to stop sending packets or
 to increase its polling interval.
 For stratum 1, this is a four-octet, left-justified, zero-padded ASCII
-string assigned to the reference clock (e.g. "GPS" when synchronising against Global Position System clock).
+string assigned to the reference clock (e.g. "GPS" when synchronising against the Global Position System clock).
 Above stratum 1, this is the reference identifier of the server used for synchronisation
-and can be used by the client together with stratum field to detect loops in the NTP hierarchy.
+and can be used by the client together with the stratum field to detect loops in the NTP hierarchy.
 If communicating over IPv4, the identifier is IPv4 address.
 If communicating over IPv6, it is the first four octets of the MD5 hash of the IPv6 address~\cite{rfc5905}.
 \item
-Reference Timestamp is a long 64-bit NTP timestamp expressing the time
-when the system clock was last synchronised against reference clock~\cite{rfc5905}.
+Reference Timestamp is a long 64-bit NTP timestamp, expressing the time
+when the system clock was last synchronised against the reference clock~\cite{rfc5905}.
 \item
-Originate Timestamp (or Origin Timestamp) is a long 64-bit NTP timestamp expressing the time
+Originate Timestamp (or Origin Timestamp) is a long 64-bit NTP timestamp, expressing the time
 at the client when the request departed for the server~\cite{rfc5905}.
-Originate Timestamp field is copied
-unchanged by the server from Transmit Timestamp field of the client's request.
+The Originate Timestamp field is copied
+unchanged by the server from the Transmit Timestamp field of the client's request.
 It is important that the server copies this field intact,
 as the NTP client uses it to check the server's response.
 \item
-Receive Timestamp is a long 64-bit NTP timestamp expressing the time
+Receive Timestamp is a long 64-bit NTP timestamp, expressing the time
 at the server when the request arrived from the client~\cite{rfc5905}.
 \item
-Transmit Timestamp is a long 64-bit NTP timestamp expressing the time
+Transmit Timestamp is a long 64-bit NTP timestamp, expressing the time
 at the server when the response left for the client~\cite{rfc5905}.
 \end{itemize}
 
-The short 32-bit timestamp format is used for Root Dispersion and Root Delay fields,
+The short 32-bit timestamp format is used for the Root Dispersion and Root Delay fields,
 because they do not need the scope and precision of the long 64-bit timestamp format.
-A common unicast communication scenario is shown in figure~\ref{fig:ntp-client-server}
-for better understanding of the NTP packet filling process and meaning of
-Reference (ref), Originate (org), Receive (rec) and Transmit (xmt) timestamps.
-Please note that this figure shows the
-timestamps used by NTP for local clock offset and round-trip delay calculation.
-Algorithms used for such calculations are described in section~\ref{sec:ntp-algorithms}.
+To better understand the NTP packet filling process and the meaning of
+Reference (ref), Originate (org), Receive (rec) and Transmit (xmt) timestamps,
+a common unicast communication scenario is shown in figure~\ref{fig:ntp-client-server}.
+Please note that this figure shows only the
+timestamps used by NTP for the local clock offset and round-trip delay calculation.
+Algorithms used for the calculations are described in section~\ref{sec:ntp-algorithms}.
 
 \begin{figure}
 	\centering

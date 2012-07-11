@@ -38,7 +38,7 @@ the uIP implementation uses an event-based API, which is fundamentally different
 from the most common TCP/IP API, the BSD sockets API, present on Unix-like systems
 and defined by the POSIX standard~\cite{thesis-programming,posix}.
 An application is invoked in response to certain events and
-it is up to the application that is receives the events from uIP to handle all the
+it is up to the application, that receives the events from uIP, to handle all the
 work with data to be transmitted - e.g. if the data packet is lost in the network,
 the application will be invoked and it has to resend the packet.
 This approach is based on the fact that it should be simple for the application
@@ -46,7 +46,7 @@ to rebuild the same data.
 This way, the uIP stack does not need to use explicit dynamic memory allocation.
 Instead, it uses a single global buffer for holding the packets and it has a fixed
 table for holding the connection state.
-The global packet buffer is large enough to contain one packet of the maximum size~\cite{contiki-docs}.
+The global packet buffer is large enough to contain one packet of a maximum size~\cite{contiki-docs}.
 
 When a packet arrives from the network, the device driver places it in the
 global buffer and calls the uIP stack.
