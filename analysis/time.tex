@@ -36,9 +36,9 @@ with the POSIX standard~\cite{posix}.
 Such a structure for representing the time values is also not present in Contiki.
 
 Similarly, there is no call for adjusting the time in Contiki.
-Due to memory constraints, software structures controlling the time adjustments are too heavyweight
+Because of memory constraints, software structures controlling the time adjustments are too heavyweight
 for use in an embedded operating system on 8-bit CPUs.
-Due to low CPU frequencies, the code of an interrupt service routine can not be complex
+Because of low CPU frequencies, the code of an interrupt service routine can not be complex
 and sophisticated clock discipline algorithms should be avoided.
 A call for adjusting the time should therefore use abilities
 provided by the hardware clock as much as possible.
