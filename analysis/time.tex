@@ -18,7 +18,7 @@ unbalanced increments of the {\it{seconds}} variable.
 
 The precision of one second is also not adequate for the NTP client.
 Further precision can be acquired by reading the {\it{scount}} variable,
-as it provides a resolution of $\frac{1}{CLOCK\_SECOND}$~seconds.
+as it provides a resolution of $\frac{1}{CLOCK\_SECOND}$ seconds.
 Moreover, the hardware counter can be also queried, as it includes the time passed since
 the last update of the {\it{scount}} variable.
 Two read operations are needed then - read {\it{scount}} and read {\it{TCNT2}}.

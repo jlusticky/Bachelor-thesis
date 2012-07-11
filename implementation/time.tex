@@ -63,8 +63,8 @@ the other values might not be consistent as well.
 Listing~\ref{lst:implementation-gettime} shows the function for getting the time,
 where {\it{CLOCK\_CTC\_MODE}} equals 1 and {\it{CLOCK\_COMPARE\_DEFAULT\_VALUE}} is equal to
 the value of the compare register when no time adjustments are in progress.
-\enlargethispage{\baselineskip}
-\enlargethispage{\baselineskip}
+%\enlargethispage{\baselineskip}
+%\enlargethispage{\baselineskip}
 \begin{lstlisting}[caption={Function for getting the time},label={lst:implementation-gettime}]
 void clock_get_time(struct time_spec *ts)
 {
