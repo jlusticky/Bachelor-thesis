@@ -55,7 +55,7 @@ This is because Protothreads are not running simultaneously: if the timer expire
 and another Protothread was running, this Protothread would have to wait until
 it is entered again.
 When the condition specified in PT\_WAIT\_UNTIL is met,
-the next iteration of the {\it{for}} loop (line 17) is started and the next character is displayed.
+the next iteration of the {\it{for}} loop (line 16) is started and the next character is displayed.
 
 How does it work? The macro PT\_BEGIN is expanded to a {\it switch} statement
 by the preprocessor.
@@ -82,7 +82,6 @@ struct timer timer;
 int display_text(struct pt *pt, const char *msg)     /* Expanded PT_THREAD */
 {
   switch(pt->lc) {  case 0:                      /* Expanded PT_BEGIN(pt); */
-
     for (int i = 0; i < strlen(msg); i++) {
       lcd_display_char(msg[i]);
       timer_set(&timer, CLOCK_SECOND);             /* Wait for one second. */
@@ -92,9 +91,7 @@ int display_text(struct pt *pt, const char *msg)     /* Expanded PT_THREAD */
       if(!(timer_expired(&timer))) { return PT_WAITING; }         /* macro */
 
     }
-
   pt->lc = 0; return PT_ENDED; }                        /* Expanded PT_END */
-
 }
 
 int main(void)
