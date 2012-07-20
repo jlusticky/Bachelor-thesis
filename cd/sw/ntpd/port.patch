@@ -1,0 +1,37 @@
+diff --git a/cpu/avr/dev/clock-avr.h b/cpu/avr/dev/clock-avr.h
+index 06a6c0e..feb3272 100644
+--- a/cpu/avr/dev/clock-avr.h
++++ b/cpu/avr/dev/clock-avr.h
+@@ -113,7 +113,8 @@
+    * Raise interrupt when value in OCR2 is reached. Note that the \
+    * counter value in TCNT2 is cleared automatically. \
+    */ \
+-  TIMSK2 = _BV (OCIE2A);
++  TIMSK2 = _BV (OCIE2A); \
++  DDRD |= _BV(DDD7);
+ 
+ /* Defines used by clock_get_time and clock_adjust_time in clock.c */
+ #define CLOCK_COUNTER_REGISTER TCNT2
+diff --git a/cpu/avr/dev/clock.c b/cpu/avr/dev/clock.c
+index 2153645..3fd578c 100644
+--- a/cpu/avr/dev/clock.c
++++ b/cpu/avr/dev/clock.c
+@@ -142,6 +142,7 @@ ISR(AVR_OUTPUT_COMPARE_INT)
+ {
+   count++;
+   if(++scount >= CLOCK_SECOND) {
++    PORTD |= _BV(PORTD7);
+     scount = 0;
+     seconds++;
+   }
+@@ -192,6 +193,10 @@ ISR(AVR_OUTPUT_COMPARE_INT)
+     }
+   }
+ #endif
++  if (scount >= 25)
++  {
++    PORTD &= ~ _BV(PORTD7);
++  }
+ }
+ 
+ /*---------------------------------------------------------------------------*/
