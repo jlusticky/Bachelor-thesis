@@ -1,0 +1,2 @@
+to get serial output before flashing issue the following to setup fuse:
+avrdude -P usb -c dragon_jtag -p atmega1284p  -U lfuse:w:0xE2:m -U hfuse:w:0x99:m -U efuse:w:0xFF:m
