@@ -1,0 +1,218 @@
+diff --git a/core/sys/clock.h b/core/sys/clock.h
+index 4623227..0ceaa75 100644
+--- a/core/sys/clock.h
++++ b/core/sys/clock.h
+@@ -83,6 +83,17 @@
+ #endif
+ 
+ /**
++ * Time specification structure.
++ * We use nanosecond precision, as microsecond precision
++ * would also require 32bit variable.
++ *
++ */
++struct time_spec {
++  long sec;
++  long nsec;
++};
++
++/**
+  * Initialize the clock library.
+  *
+  * This function initializes the clock library and should be called
+@@ -103,19 +114,27 @@ CCIF clock_time_t clock_time(void);
+ /**
+  * Get the current value of the platform seconds.
+  *
+- * This could be the number of seconds since startup, or
+- * since a standard epoch.
++ * This is the number of seconds since startup.
+  *
+  * \return The value.
+  */
+ CCIF unsigned long clock_seconds(void);
+ 
+ /**
+- * Set the value of the platform seconds.
++ * Set the real time in seconds since a standard epoch.
+  * \param sec   The value to set.
+  *
+  */
+-void clock_set_seconds(unsigned long sec);
++void clock_set_time(unsigned long sec);
++
++/**
++ * Get the real time in seconds since a standard epoch.
++ * If the real time was not set using clock_set_time,
++ * this will return the same value as clock_seconds.
++ * \param ts Pointer to a structure to be filled with the current time.
++ *
++ */
++void clock_get_time(struct time_spec *ts);
+ 
+ /**
+  * Wait for a given number of ticks.
+@@ -133,12 +152,24 @@ void clock_wait(clock_time_t t);
+ void clock_delay_usec(uint16_t dt);
+ 
+ /**
++ * Adjust the real time to synchronise system clock.
++ * If the adjustment in delta is positive, then the system clock is speeded up
++ * until the adjustment has been completed.
++ * If the adjustment in delta is negative, then the clock is slowed down
++ * in a similar fashion.
++ * \param delta Pointer to a structure with required adjustment.
++ *
++ */
++void clock_adjust_time(struct time_spec *delta);
++
++/**
+  * Deprecated platform-specific routines.
+  *
+  */
+ int clock_fine_max(void);
+ unsigned short clock_fine(void);
+ void clock_delay(unsigned int delay);
++void clock_set_seconds(unsigned long sec);
+ 
+ #endif /* CLOCK_H_ */
+ 
+diff --git a/cpu/avr/dev/clock-avr.h b/cpu/avr/dev/clock-avr.h
+index 97a79ee..06a6c0e 100644
+--- a/cpu/avr/dev/clock-avr.h
++++ b/cpu/avr/dev/clock-avr.h
+@@ -114,6 +114,14 @@
+    * counter value in TCNT2 is cleared automatically. \
+    */ \
+   TIMSK2 = _BV (OCIE2A);
++
++/* Defines used by clock_get_time and clock_adjust_time in clock.c */
++#define CLOCK_COUNTER_REGISTER TCNT2
++#define CLOCK_COMPARE_REGISTER OCR2A
++#define CLOCK_COMPARE_DEFAULT_VALUE (32768/8/CLOCK_CONF_SECOND - 1)
++/* For exact time values we need to know whether CTC mode is used (less 1 in CLOCK_COMPARE_REGISTER) */
++#define CLOCK_CTC_MODE 1
++
+ #else /* !AVR_CONF_USE32KCRYSTAL */
+ 
+ /* Determine the largest value that can be used with 8 bit timer0 */
+diff --git a/cpu/avr/dev/clock.c b/cpu/avr/dev/clock.c
+index 7fcc720..324f23f 100644
+--- a/cpu/avr/dev/clock.c
++++ b/cpu/avr/dev/clock.c
+@@ -87,6 +87,90 @@ volatile unsigned long seconds;
+ /* sleepseconds is the number of seconds sleeping since startup, available globally */
+ long sleepseconds;
+ 
++/* When the system was booted in seconds */
++volatile unsigned long boottime;
++/* How many clock adjustments must be done to be synchronised */
++volatile int16_t adjcompare;
++
++/*---------------------------------------------------------------------------*/
++/**
++ * Set time, e.g. to a standard epoch for an absolute date/time.
++ * This will set bottime to value in seconds when the system was booted.
++ * Boottime is later used by clock_get_time.
++ */
++void
++clock_set_time(unsigned long sec)
++{
++  /* Cancel adjustments and set the new time */
++  adjcompare = 0;
++  boottime = sec - seconds;
++}
++/*---------------------------------------------------------------------------*/
++/**
++ * Get the current real time.
++ * This will use the bottime + value in seconds since the system was booted.
++ * The comparison avoids the need to disable clock interrupts for an atomic
++ * read of the multi-byte variable.
++ */
++void
++clock_get_time(struct time_spec *ts)
++{
++  uint8_t counter, tmp_scount;
++  do {
++    ts->sec = boottime + seconds;
++    /* Read scount and CLOCK_COUNTER_REGISTER for higher precision.
++     * The comparison avoids an error when scount is incremented after
++     * the CLOCK_COUNTER_REGISTER was read.
++     */
++   do {
++      counter = CLOCK_COUNTER_REGISTER;
++#if TWO_COUNTERS
++      tmp_scount = scount;
++#else
++      tmp_scount = count % CLOCK_SECOND;
++#endif
++    } while (counter != CLOCK_COUNTER_REGISTER);
++
++    ts->nsec = tmp_scount * (1000000000 / CLOCK_SECOND) +
++               counter * (1000000000 / (CLOCK_SECOND * (CLOCK_COMPARE_DEFAULT_VALUE + CLOCK_CTC_MODE)));
++  } while(ts->sec != (boottime + seconds));
++}
++/*---------------------------------------------------------------------------*/
++/**
++ * Adjust the real time to synchronise system clock.
++ * If the adjustment in delta is positive, then the system clock is speeded up
++ * until the adjustment has been completed.
++ * If the adjustment in delta is negative, then the clock is slowed down
++ * in a similar fashion.
++ * This will cause to change the value in CLOCK_COMPARE_REGISTER by ISR.
++ */
++void
++clock_adjust_time(struct time_spec *delta)
++{
++  if (delta->sec == 0L) {
++    if (delta->nsec == 0L) {
++      /* Stop adjustments */
++      adjcompare = 0;
++      return;
++    } else {
++      /* One value in CLOCK_COUNTER_REGISTER equals
++       * 1000000000 / (CLOCK_SECOND * (CLOCK_COMPARE_DEFAULT_VALUE + CLOCK_CTC_MODE))
++       * nanoseconds.
++       */
++      adjcompare = -delta->nsec / (1000000000 / (CLOCK_SECOND * (CLOCK_COMPARE_DEFAULT_VALUE + CLOCK_CTC_MODE)));
++    }
++  } else {
++    /* The following may overflow, maximum allowed delta depends on CLOCK_COMPARE_DEFAULT_VALUE,
++     * CLOCK_SECOND and adjcompare data width.
++     * For CLOCK_COMPARE_DEFAULT_VALUE = 31, CLOCK_CTC_MODE = 1, CLOCK_SECOND = 128 and 16 bit adjcomapre
++     * is maximum suggested delta +-7s (7*128*(31+1) = 28672 will not overflow).
++     */
++    adjcompare = -delta->sec * (CLOCK_SECOND * (CLOCK_COMPARE_DEFAULT_VALUE + CLOCK_CTC_MODE)) +
++                 -delta->nsec / (1000000000 / (CLOCK_SECOND * (CLOCK_COMPARE_DEFAULT_VALUE + CLOCK_CTC_MODE)));
++  }
++}
++/*---------------------------------------------------------------------------*/
++
+ /* Set RADIOSTATS to monitor radio on time (must also be set in the radio driver) */
+ #if RF230BB && AVR_WEBSERVER
+ #define RADIOSTATS 1
+@@ -152,6 +236,7 @@ clock_seconds(void)
+ /*---------------------------------------------------------------------------*/
+ /**
+  * Set seconds, e.g. to a standard epoch for an absolute date/time.
++ * Do NOT use this together with clock_set_time and stimers.
+  */
+ void
+ clock_set_seconds(unsigned long sec)
+@@ -343,6 +428,16 @@ ISR(AVR_OUTPUT_COMPARE_INT)
+ 
+   }
+ 
++  if (adjcompare == 0) { // if not adjusting
++    CLOCK_COMPARE_REGISTER = CLOCK_COMPARE_DEFAULT_VALUE;
++  } else if (adjcompare > 0) { // if slowing down
++    adjcompare--;
++    CLOCK_COMPARE_REGISTER = CLOCK_COMPARE_DEFAULT_VALUE + 1;
++  } else { // if speeding up
++    adjcompare++;
++    CLOCK_COMPARE_REGISTER = CLOCK_COMPARE_DEFAULT_VALUE - 1;
++  }
++
+ #if RADIOSTATS
+    /* Sample radio on time. Less accurate than ENERGEST but a smaller footprint */
+   if (RF230_receive_on) {
